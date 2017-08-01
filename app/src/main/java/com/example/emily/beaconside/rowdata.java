@@ -60,6 +60,7 @@ public class rowdata extends BaseAdapter {
                     .findViewById(R.id.beaconDistance);
             holder.item_setting = (Button) convertView.findViewById(R.id.item_setting);
 
+
             convertView.setTag(holder);//把查找的view通過ViewHolder封裝好緩存起來方便 ​​多次重用，當需要時可以getTag拿出來
         }else{
             holder = (ViewHolder) convertView.getTag();

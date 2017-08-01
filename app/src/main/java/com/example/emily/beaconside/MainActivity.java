@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -25,11 +26,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     Button side_new;
+    ListView listView1;
+    rowdata adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
+
+        listView1=(ListView) findViewById(R.id.listView1);
+        String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
+        String[] testValues2= new String[]{	"3m","5m","1m","1m"};
+
+        adapter=new rowdata(this,testValues,testValues2);//顯示的方式
+        listView1.setAdapter(adapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
