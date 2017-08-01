@@ -55,13 +55,14 @@
                     android:id="@+id/beaconDistance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Beacon2" />
+                    android:textColor=""
+                    android:text="0 m away" />
 
                 <TextView
                     android:id="@+id/beaconNearby"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="" />
             </LinearLayout>
 
             <LinearLayout
