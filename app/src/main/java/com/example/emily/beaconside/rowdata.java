@@ -66,11 +66,23 @@ public class rowdata extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        /* 換圖片 */
-        if(position%2==0){
-            holder.beaconImage.setImageResource(R.drawable.beacon);   // 換圖片
-        }else{
-            holder.beaconImage.setImageResource(R.drawable.beacon);   // 換圖片
+
+        switch(position) {
+            case 0:
+                holder.beaconImage.setImageResource(R.drawable.wallet);
+                break;
+            case 1:
+                holder.beaconImage.setImageResource(R.drawable.key);
+                break;
+            case 2:
+                holder.beaconImage.setImageResource(R.drawable.camera);
+                break;
+            case 3:
+                holder.beaconImage.setImageResource(R.drawable.laptop);
+                break;
+            default:
+                holder.beaconImage.setImageResource(R.drawable.beacon);
+                break;
         }
 
         holder.beaconName.setText(value_deviceName[position]);
