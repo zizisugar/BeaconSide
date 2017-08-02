@@ -118,10 +118,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit:
+
                 return true;
             case R.id.menu_delete:
+
                 return true;
             default:
+                
                 return false;
         }
     }
