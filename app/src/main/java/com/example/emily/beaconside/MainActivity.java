@@ -81,10 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 findViewById(R.id.side_class_ls).setVisibility(View.GONE);
                 findViewById(R.id.side_group_ls).setVisibility(View.VISIBLE);
-                findViewById(R.id.side_group_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_group_l));
-                findViewById(R.id.side_class_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_class));
-                findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseClass).setVisibility(View.GONE);
                 findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
                 findViewById(R.id.chooseClass).setVisibility(View.GONE);
 
@@ -98,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 findViewById(R.id.side_group_ls).setVisibility(View.GONE);
                 findViewById(R.id.side_class_ls).setVisibility(View.VISIBLE);
-                findViewById(R.id.side_group_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_group));
-                findViewById(R.id.side_class_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_class_l));
                 findViewById(R.id.chooseClass).setVisibility(View.VISIBLE);
                 findViewById(R.id.chooseGroup).setVisibility(View.GONE);
 

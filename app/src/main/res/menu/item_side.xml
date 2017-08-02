@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_edit"
-        android:icon="@drawable/my_group"
+        android:icon="@drawable/edit"
         android:title="menu_save" />
     <item android:id="@+id/menu_delete"
-        android:icon="@drawable/my_group"
+        android:icon="@drawable/trash"
         android:title="menu_save" />
     <!--&lt;!&ndash; menu group &ndash;&gt;-->
     <!--<group android:id="@+id/group_delete">-->

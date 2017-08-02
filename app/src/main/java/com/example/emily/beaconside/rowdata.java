@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,7 +59,7 @@ public class rowdata extends BaseAdapter {
                     .findViewById(R.id.beaconName);
             holder.beaconDistance = (TextView) convertView
                     .findViewById(R.id.beaconDistance);
-            holder.item_setting = (Button) convertView.findViewById(R.id.item_setting);
+            holder.item_setting = (ImageButton) convertView.findViewById(R.id.item_setting);
 
 
             convertView.setTag(holder);//把查找的view通過ViewHolder封裝好緩存起來方便 ​​多次重用，當需要時可以getTag拿出來
@@ -95,6 +96,6 @@ public class rowdata extends BaseAdapter {
         TextView beaconName;
         TextView beaconDistance;
         TextView beaconNearby;
-        Button item_setting;
+        ImageButton item_setting;
     }
 }
