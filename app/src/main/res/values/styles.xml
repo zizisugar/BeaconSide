@@ -21,4 +21,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">5</item>
     </style>
+=======
+
+
 </resources>

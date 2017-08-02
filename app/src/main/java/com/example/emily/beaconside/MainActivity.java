@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,6 +55,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        /* plus button */
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -72,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 findViewById(R.id.side_class_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_class));
                 findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
                 findViewById(R.id.chooseClass).setVisibility(View.GONE);
+                findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
+                findViewById(R.id.chooseClass).setVisibility(View.GONE);
+
                 side_new.setText("+ New group");
 //                Toast.makeText(MainActivity.this, "Button1 Click!", Toast.LENGTH_SHORT).show();
 //                onBackPressed();
@@ -118,14 +134,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit:
-
                 return true;
             case R.id.menu_delete:
-
                 return true;
             default:
-                
-                return false;
+                return true;
+
         }
     }
 
@@ -154,6 +168,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* Item setting end */
 
 
+    /* refresh */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.refresh, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_name) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed() {
