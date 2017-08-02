@@ -1,6 +1,10 @@
 package com.example.emily.beaconside;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.view.LayoutInflater;
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
 
+
+
         listView1=(ListView) findViewById(R.id.listView1);
         String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
         String[] testValues2= new String[]{	"3m","5m","1m","1m"};
@@ -61,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SearchDevice.class));//same as following two
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
@@ -83,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 findViewById(R.id.side_group_ls).setVisibility(View.VISIBLE);
                 findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
                 findViewById(R.id.chooseClass).setVisibility(View.GONE);
+
 
                 side_new.setText("+ New group");
 //                Toast.makeText(MainActivity.this, "Button1 Click!", Toast.LENGTH_SHORT).show();
@@ -178,11 +186,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_name) {
+            startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
+//            Intent myIntent = new Intent(getApplicationContext(), new_item.class);
+//            startActivityForResult(myIntent, 0);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+    /* refresh end */
 
     @Override
     public void onBackPressed() {
@@ -205,29 +217,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
 
 

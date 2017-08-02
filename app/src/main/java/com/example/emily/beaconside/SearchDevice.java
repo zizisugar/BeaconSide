@@ -9,11 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.powenko.ifroglab_bt_lib.*;
 
@@ -22,6 +20,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     //	private EditText editText1;
     private ListView listView1;
 
+    private boolean myStatusBT=true, firstOpenBT=true;
     /* 運用library */
     private ifrog mifrog;
     ArrayList<String> Names = new ArrayList<String>();
@@ -45,7 +44,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
 
         /* DeviceList */
         listView1=(ListView) findViewById(R.id.beaconList);   //取得listView1
-
         /* bluetooth */
 
         BTinit();
@@ -69,14 +67,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         mifrog=new ifrog();
         mifrog.setTheListener(this);//設定監聽->CallBack(當有什麼反應會有callback的動作)->新增SearchFindDevicestatus, onDestroy
 
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!mBluetoothAdapter.isEnabled()) {//要求開啟藍芽的視窗
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }else{
-            mifrog.scanLeDevice(true,3600000);
-        }
-
         //取得藍牙service，並把這個service交給此有藍芽的設備(BLE)。有些人有藍芽的設備不見得有藍芽的軟體。// Initializes Bluetooth adapter.
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -85,6 +75,40 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
             finish();
             return;
         }
+
+
+        getStartSearch();
+
+
+
+    }
+    /*經過了dialog卻還是沒開啟 關掉check*/
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_ENABLE_BT && resultCode==RESULT_CANCELED){
+            myStatusBT = false;
+        }
+        else{
+            myStatusBT = true;
+        }
+        getStartSearch();
+    }
+
+    public void getStartSearch(){
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(firstOpenBT || !myStatusBT){
+            if (!mBluetoothAdapter.isEnabled()) {//要求開啟藍芽的視窗
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+
+            }else{
+                mifrog.scanLeDevice(myStatusBT,3600000);//true
+            }
+            firstOpenBT = false;
+        }else{
+            mifrog.scanLeDevice(myStatusBT,3600000);//true
+        }
+
     }
 
     @Override
@@ -153,5 +177,12 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     protected void onDestroy() {//當程式離開了就把service關掉，不然service一直跑會浪費電。
         super.onDestroy();
         mifrog.BTSearchStop();
+    }
+
+    public void onBackPressed() {
+        Intent backPressedIntent = new Intent();
+        backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
+        startActivity(backPressedIntent );
+        finish();
     }
 }
