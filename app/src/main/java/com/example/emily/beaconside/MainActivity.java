@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,12 +21,16 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,PopupMenu.OnMenuItemClickListener{
 
 
     Button side_new;
@@ -62,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 findViewById(R.id.side_group_ls).setVisibility(View.VISIBLE);
                 findViewById(R.id.side_group_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_group_l));
                 findViewById(R.id.side_class_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_class));
+                findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
+                findViewById(R.id.chooseClass).setVisibility(View.GONE);
                 side_new.setText("+ New group");
 //                Toast.makeText(MainActivity.this, "Button1 Click!", Toast.LENGTH_SHORT).show();
 //                onBackPressed();
@@ -74,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 findViewById(R.id.side_class_ls).setVisibility(View.VISIBLE);
                 findViewById(R.id.side_group_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_group));
                 findViewById(R.id.side_class_bt).setBackgroundDrawable(getResources().getDrawable(R.drawable.my_class_l));
+                findViewById(R.id.chooseClass).setVisibility(View.VISIBLE);
+                findViewById(R.id.chooseGroup).setVisibility(View.GONE);
+
                 side_new.setText("+ New classification");
 //                Toast.makeText(MainActivity.this, "Button2 Click!", Toast.LENGTH_SHORT).show();
 //                onBackPressed();
@@ -84,6 +97,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    /* Item setting */
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.item_side, popup.getMenu());
+        popup.show();
+    }
+
+    public void showMenu(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+
+        // This activity implements OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.item_side);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_edit:
+                return true;
+            case R.id.menu_delete:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.item_side, menu);
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.menu_edit:
+//                editNote(info.id);
+                return true;
+            case R.id.menu_delete:
+//                deleteNote(info.id);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+    /* Item setting end */
 
 
 
@@ -131,5 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //
 //        return super.onOptionsItemSelected(item);
 //    }
+
+
 
 }
