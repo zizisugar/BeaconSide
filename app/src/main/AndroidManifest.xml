@@ -8,11 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
-        android:theme="@style/Theme.AppCompat.NoActionBar"><!-- Theme.AppCompat.NoActionBar, AppTheme -->
+        android:theme="@style/AppTheme"> <!-- Theme.AppCompat.NoActionBar, AppTheme -->
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
+            android:label="My beacon"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".rowdata"></activity>
+        <activity android:name=".rowdata" />
+        <activity android:name=".new_item" android:label="Add item" ></activity>
     </application>
 
 </manifest>
