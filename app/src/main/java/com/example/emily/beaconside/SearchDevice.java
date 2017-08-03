@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.powenko.ifroglab_bt_lib.*;
@@ -27,13 +26,11 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     ArrayList<String> Address = new ArrayList<String>();
 
 
-
-
     /* 若沒有開啟藍芽，預設畫面 */
     String[] testValues= new String[]{	"Beacon1","Beacon2","Beacon3","Beacon4"};
     String[] testValues2= new String[]{	"12","34","56","78"};
 
-    private rowdata adapter;
+    private device_rowdata adapter;
     /* 藍芽 */
     final int REQUEST_ENABLE_BT = 18;
 
@@ -41,7 +38,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_device);
-
         /* DeviceList */
         listView1=(ListView) findViewById(R.id.beaconList);   //取得listView1
         /* bluetooth */
@@ -123,7 +119,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     }
 
     private void SetupList() {
-        adapter = new rowdata(this, testValues, testValues2);//顯示的方式
+        adapter = new device_rowdata(this, testValues, testValues2);//顯示的方式
         listView1.setAdapter(adapter);
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() { //選項按下反應
             @Override
@@ -151,6 +147,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         if(device.getName() != null){
 
             if(t_NewDevice==true){//如果是新的device
+                listView1.setVisibility(View.VISIBLE);
                 Address.add(t_address);
                 Names.add(device.getName());//+" RSSI="+Integer.toString(rssi)+" d="+calculateDistance(rssi)+"cm"+" myD ="+Float.toString(turntoTarget));//抓名字然後放進列表
 
@@ -161,6 +158,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
                 testValues = Names.toArray(new String[Names.size()]);//放進array
             }
         }
+
         SetupList();//更新畫面
     }
 
