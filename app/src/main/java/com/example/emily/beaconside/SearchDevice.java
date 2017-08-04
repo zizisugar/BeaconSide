@@ -5,11 +5,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.powenko.ifroglab_bt_lib.*;
@@ -25,6 +27,9 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     ArrayList<String> Names = new ArrayList<String>();
     ArrayList<String> Address = new ArrayList<String>();
 
+    // loading spinner
+    private ProgressBar spinner;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /* 若沒有開啟藍芽，預設畫面 */
     String[] testValues= new String[]{	"Beacon1","Beacon2","Beacon3","Beacon4"};
@@ -41,8 +46,18 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         /* DeviceList */
         listView1=(ListView) findViewById(R.id.beaconList);   //取得listView1
         /* bluetooth */
-
+        spinner = (ProgressBar)findViewById(R.id.progressBar1);
         BTinit();
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Names.clear();
+                Address.clear();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
     }//end onCreate
 
@@ -148,6 +163,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
 
             if(t_NewDevice==true){//如果是新的device
                 listView1.setVisibility(View.VISIBLE);
+                spinner.setVisibility(View.GONE);
                 Address.add(t_address);
                 Names.add(device.getName());//+" RSSI="+Integer.toString(rssi)+" d="+calculateDistance(rssi)+"cm"+" myD ="+Float.toString(turntoTarget));//抓名字然後放進列表
 

@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Button side_new;
     ListView listView1;
     rowdata adapter;
+    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
+    String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
+    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
+
+    BluetoothMethod bluetooth = new BluetoothMethod();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +55,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_side_bar);
 
 
-
         listView1=(ListView) findViewById(R.id.listView1);
-        String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
-        String[] testValues2= new String[]{	"3m","5m","1m","1m"};
 
-        adapter=new rowdata(this,testValues,testValues2);//顯示的方式
+        adapter=new rowdata(this,testValues,testValues2,address);//顯示的方式
         listView1.setAdapter(adapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -93,8 +95,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                 side_new.setText("+ New group");
-//                Toast.makeText(MainActivity.this, "Button1 Click!", Toast.LENGTH_SHORT).show();
-//                onBackPressed();
             }
         });
         findViewById(R.id.side_class_bt).setOnClickListener(new View.OnClickListener() {//class
@@ -106,11 +106,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 findViewById(R.id.chooseGroup).setVisibility(View.GONE);
 
                 side_new.setText("+ New classification");
-//                Toast.makeText(MainActivity.this, "Button2 Click!", Toast.LENGTH_SHORT).show();
-//                onBackPressed();
             }
         });
-
+        bluetooth.refresh();
+//        bluetooth.BTinit();
 
     }
 
@@ -120,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.item_side, popup.getMenu());
+
         popup.show();
     }
 
@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             default:
                 return true;
-
         }
     }
 
@@ -152,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.item_side, menu);
+
     }
     @Override
     public boolean onContextItemSelected(MenuItem item) {

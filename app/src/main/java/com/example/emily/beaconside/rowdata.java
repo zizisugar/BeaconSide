@@ -9,19 +9,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 public class rowdata extends BaseAdapter {
     private final Context context;
     private final String[] value_deviceName;
     private final String[] value_deviceDsc;
+    private final String[] value_address;
 
     private LayoutInflater mInflater;
 
-    public rowdata(Context context, String[] values, String[] values2) {//架構子
+    public rowdata(Context context, String[] values, String[] values2, String[] value_address) {//架構子
         mInflater = LayoutInflater.from(context);//傳入Activity
         this.context = context;
         this.value_deviceName = values;
         this.value_deviceDsc = values2;
+        this.value_address = value_address;
     }
+
 
     @Override
     public int getCount() {//算device Name長度
@@ -57,7 +61,7 @@ public class rowdata extends BaseAdapter {
             holder.beaconDistance = (TextView) convertView
                     .findViewById(R.id.beaconDistance);
             holder.item_setting = (ImageButton) convertView.findViewById(R.id.item_setting);
-
+            holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
 
             convertView.setTag(holder);//把查找的view通過ViewHolder封裝好緩存起來方便 ​​多次重用，當需要時可以getTag拿出來
         }else{
@@ -92,6 +96,7 @@ public class rowdata extends BaseAdapter {
         ImageView beaconImage;
         TextView beaconName;
         TextView beaconDistance;
+        TextView beaconAddress;
         TextView beaconNearby;
         ImageButton item_setting;
     }
