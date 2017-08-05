@@ -39,7 +39,7 @@ import android.widget.ViewFlipper;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,PopupMenu.OnMenuItemClickListener{
 
-
+    Context mContext;
     Button side_new;
     ListView listView1;
     rowdata adapter;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
 
-
+        mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
 
         adapter=new rowdata(this,testValues,testValues2,address);//顯示的方式
@@ -108,9 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 side_new.setText("+ New classification");
             }
         });
-        bluetooth.refresh();
-//        bluetooth.BTinit();
-
+        bluetooth.BTinit(this);
     }
 
 
@@ -218,6 +216,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /*經過了dialog卻還是沒開啟 關掉check*/
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==bluetooth.REQUEST_ENABLE_BT && resultCode==RESULT_CANCELED){
+            bluetooth.myStatusBT = false;
+        }
+        else{
+            bluetooth.myStatusBT = true;
+        }
+        bluetooth.getStartSearch(this);
+    }
 
 
 }

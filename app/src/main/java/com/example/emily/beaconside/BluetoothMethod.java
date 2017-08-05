@@ -1,23 +1,24 @@
 package com.example.emily.beaconside;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.powenko.ifroglab_bt_lib.ifrog;
+import com.powenko.ifroglab_bt_lib.*;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_CANCELED;
 
-public class BluetoothMethod extends AppCompatActivity implements ifrog.ifrogCallBack{
+
+public class BluetoothMethod implements ifrog.ifrogCallBack{
 
 
-    private boolean myStatusBT=true, firstOpenBT=true;
+    public boolean myStatusBT=true, firstOpenBT=true;
     /* 運用library */
     private ifrog mifrog;
     public ArrayList<String> Names = new ArrayList<String>();
@@ -31,32 +32,31 @@ public class BluetoothMethod extends AppCompatActivity implements ifrog.ifrogCal
     double tempdis = 0;
 
     /* 藍芽 */
-    final int REQUEST_ENABLE_BT = 18;
+    public final int REQUEST_ENABLE_BT = 18;
     private boolean firstOpen = true;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    Context mContext;
 
-    /*經過了dialog卻還是沒開啟 關掉check*/
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==REQUEST_ENABLE_BT && resultCode==RESULT_CANCELED){
-            myStatusBT = false;
-        }
-        else{
-            myStatusBT = true;
-        }
-        getStartSearch();
-    }
+////    /*經過了dialog卻還是沒開啟 關掉check*/
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+////        super.onActivityResult(requestCode, resultCode, data);
+//        if(requestCode==REQUEST_ENABLE_BT && resultCode==RESULT_CANCELED){
+//            myStatusBT = false;
+//            Toast.makeText(this,"BT is off",  Toast.LENGTH_SHORT).show();
+//        }
+//        else{
+//            myStatusBT = true;
+//            Toast.makeText(this,"BT is on",  Toast.LENGTH_SHORT).show();
+//        }
+//        getStartSearch(this);
+//    }
 
-    public void getStartSearch(){
+    public void getStartSearch(Context context){
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(firstOpenBT || !myStatusBT){
             if (!mBluetoothAdapter.isEnabled()) {//要求開啟藍芽的視窗
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                ((Activity)context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
             }else{
                 mifrog.scanLeDevice(myStatusBT,3600000);//true
@@ -73,19 +73,19 @@ public class BluetoothMethod extends AppCompatActivity implements ifrog.ifrogCal
         mifrog.scanLeDevice(myStatusBT,3600000);
     }
 
-    public void BTinit(){//藍芽初始化動作
+    public void BTinit(Context context){//藍芽初始化動作
         mifrog=new ifrog();
         mifrog.setTheListener(this);//設定監聽->CallBack(當有什麼反應會有callback的動作)->新增SearchFindDevicestatus, onDestroy
-
+        mContext = context;
         //取得藍牙service，並把這個service交給此有藍芽的設備(BLE)。有些人有藍芽的設備不見得有藍芽的軟體。// Initializes Bluetooth adapter.
         final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+                (BluetoothManager) context.getSystemService(context.BLUETOOTH_SERVICE);
         if (mifrog.InitCheckBT(bluetoothManager) == null) {
-            Toast.makeText(this,"this Device doesn't support Bluetooth BLE", Toast.LENGTH_SHORT).show();
-            finish();
+            Toast.makeText(context,"this Device doesn't support Bluetooth BLE", Toast.LENGTH_SHORT).show();
+            ((Activity)context).finish();
             return;
         }
-        getStartSearch();
+        getStartSearch(mContext);
     }
 
 
@@ -126,6 +126,7 @@ public class BluetoothMethod extends AppCompatActivity implements ifrog.ifrogCal
 
     @Override
     public void BTSearchFindDevice(BluetoothDevice device, int rssi, byte[] scanRecord) {
+
         String t_address= device.getAddress();//有找到裝置的話先抓Address
 
         int index=0;
@@ -172,14 +173,10 @@ public class BluetoothMethod extends AppCompatActivity implements ifrog.ifrogCal
     @Override
     public void BTSearchFindDevicestatus(boolean arg0) {//arg0:true/false，代表有沒有在找
         if(arg0==false){
-            Toast.makeText(getBaseContext(),"Stop Search", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext,"Stop Search", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(getBaseContext(),"Start Search",  Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext,"Start Search",  Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void refresh() {
-
     }
 
 }
