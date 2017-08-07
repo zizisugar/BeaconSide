@@ -13,14 +13,19 @@
             android:name=".MainActivity"
             android:label="My beacon"
             android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name=".rowdata" />
+        <activity
+            android:name=".new_item"
+            android:label="Add item" />
+        <activity android:name=".sign_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".rowdata" />
-        <activity android:name=".new_item" android:label="Add item" ></activity>
     </application>
 
 </manifest>

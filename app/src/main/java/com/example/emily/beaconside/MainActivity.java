@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
+//            Intent myIntent = new Intent(getApplicationContext(), new_item.class);
+//            startActivityForResult(myIntent, 0);
+                
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
@@ -185,9 +189,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_name) {
-            startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
-//            Intent myIntent = new Intent(getApplicationContext(), new_item.class);
-//            startActivityForResult(myIntent, 0);
             return true;
         }
 

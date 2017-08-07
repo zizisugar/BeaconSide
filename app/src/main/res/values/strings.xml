@@ -9,4 +9,15 @@
     <string name="vertical_ellipsis">&#8942;</string>
 
     <string name="descr_overflow_button">test</string>
+
+
+    <!--Log in page-->
+    <string name="fb_login">FB</string>
+    <string name="google_login">Google</string>
+    <string name="account_input">Name</string>
+    <string name="pwd_input"></string>
+    <string name="login">Sign in</string>
+    <string name="forgiveAccount">Forgot email?</string>
+    <string name="addMemeber">Create account</string>
+
 </resources>
