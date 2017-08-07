@@ -6,13 +6,16 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.powenko.ifroglab_bt_lib.*;
 
 import java.util.ArrayList;
-
-import static android.app.Activity.RESULT_CANCELED;
+import java.util.Arrays;
+import java.util.Collections;
 
 
 public class BluetoothMethod implements ifrog.ifrogCallBack{
@@ -37,6 +40,8 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 
     Context mContext;
 
+    public ArrayList<String> mac = new ArrayList<String>(Arrays.asList("84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","1C:BA:8C:28:8B:5F","laptop"));
+    public ArrayList<String> myDeviceDistance = new ArrayList<>(Collections.nCopies(mac.size(),"Out of Range"));
 ////    /*經過了dialog卻還是沒開啟 關掉check*/
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 ////        super.onActivityResult(requestCode, resultCode, data);
@@ -51,7 +56,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 //        getStartSearch(this);
 //    }
 
-    public void getStartSearch(Context context){
+    public void getStartSearch(Context context, Long time){
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(firstOpenBT || !myStatusBT){
             if (!mBluetoothAdapter.isEnabled()) {//要求開啟藍芽的視窗
@@ -59,11 +64,11 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 ((Activity)context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
             }else{
-                mifrog.scanLeDevice(myStatusBT,3600000);//true
+                mifrog.scanLeDevice(myStatusBT,time);//true
             }
             firstOpenBT = false;
         }else{
-            mifrog.scanLeDevice(myStatusBT,3600000);//true
+            mifrog.scanLeDevice(myStatusBT,time);//true
         }
 
     }
@@ -85,7 +90,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
             ((Activity)context).finish();
             return;
         }
-        getStartSearch(mContext);
+//        getStartSearch(mContext);
     }
 
 
@@ -152,6 +157,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                                 "\nRssi : "+Integer.toString(rssi)+
                                 "\nDistance : "+Double.toString(calculateDistance(rssi))
                 );
+                Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
 //                testValues = Names.toArray(new String[Names.size()]);
 //                testValues2 =Address.toArray(new String[Address.size()]);
 //                testValues3 = Information.toArray(new String[Information.size()]);
@@ -168,6 +174,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 //                testValues3 = Information.toArray(new String[Information.size()]);
             }
         }
+        ifDeviceExist(mac);
     }
 
     @Override
@@ -176,6 +183,28 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
             Toast.makeText(mContext,"Stop Search", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(mContext,"Start Search",  Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void ifDeviceExist(ArrayList<String> mac) {
+        int i,j;
+        String d="Out of Range";
+        for (i=0; i<mac.size(); i++) {
+            for(j=0;j<Address.size();j++){
+//                Toast.makeText(mContext,"Now is"+Address.get(j), Toast.LENGTH_SHORT).show();
+                if(mac.get(i).equals(Address.get(j))){
+                    d = String.valueOf(Distance.get(j));
+//                    Toast.makeText(mContext,"Find Device!"+mac.get(i)+myDeviceDistance.get(myDeviceDistance.size()-1), Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                else{
+//                    myDeviceDistance.add("Out of Range");
+                    d = "Out of Range";
+//                    Toast.makeText(mContext,mac.get(i) + " Out of Range", Toast.LENGTH_SHORT).show();
+                }
+            }
+            myDeviceDistance.set(i,d);
+//            Toast.makeText(mContext,"We have"+i+" "+ myDeviceDistance.get(i), Toast.LENGTH_SHORT).show();
         }
     }
 

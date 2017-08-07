@@ -1,20 +1,12 @@
 package com.example.emily.beaconside;
 
-import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.view.LayoutInflater;
+import android.os.Handler;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,17 +16,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.ViewStub;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
+import android.widget.ProgressBar;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static com.example.emily.beaconside.R.layout.activity_rowdata;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,PopupMenu.OnMenuItemClickListener{
@@ -43,9 +34,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Button side_new;
     ListView listView1;
     rowdata adapter;
-    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
-    String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
-    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
+    ArrayList<String> name= new ArrayList<>(Arrays.asList("Wallet(Tag02)","Key(Qmote)","Camera(xBeacon)","Laptop(xBeacon)"));
+    ArrayList<String> distance= new ArrayList<>(Arrays.asList("Out of Range","Out of Range","Out of Range","Out of Range"));
+    ArrayList<String> address = new ArrayList<>(Arrays.asList("D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80","1C:BA:8C:28:8B:5F","1C:BA:8C:28:8B:5F"));
 
     BluetoothMethod bluetooth = new BluetoothMethod();
 
@@ -55,10 +46,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_side_bar);
 
         mContext = this;
+
         listView1=(ListView) findViewById(R.id.listView1);
 
-        adapter=new rowdata(this,testValues,testValues2,address);//顯示的方式
+        adapter=new rowdata(this,name,distance,address);//顯示的方式
         listView1.setAdapter(adapter);
+
+//        ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+//        spinner.setVisibility(View.VISIBLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -109,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         bluetooth.BTinit(this);
+        bluetooth.mac = address;
+
     }
 
 
@@ -184,9 +181,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_name) {
-            startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
+//            startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
 //            Intent myIntent = new Intent(getApplicationContext(), new_item.class);
 //            startActivityForResult(myIntent, 0);
+            refresh();
             return true;
         }
 
@@ -225,8 +223,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else{
             bluetooth.myStatusBT = true;
         }
-        bluetooth.getStartSearch(this);
+        bluetooth.getStartSearch(this, new Long(5000));
     }
 
+    public void refresh() {
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                bluetooth.getStartSearch(getBaseContext(), new Long(360000));
+            }
+        }, 10000);
+        adapter=new rowdata(this,name,bluetooth.myDeviceDistance,bluetooth.mac);//顯示的方式
+        listView1.setAdapter(adapter);
+//        spinner.setVisibility(View.GONE);
+    }
 
 }

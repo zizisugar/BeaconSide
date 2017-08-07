@@ -7,18 +7,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 public class rowdata extends BaseAdapter {
     private final Context context;
-    private final String[] value_deviceName;
-    private final String[] value_deviceDsc;
-    private final String[] value_address;
+    private final ArrayList<String> value_deviceName;
+    private final ArrayList<String> value_deviceDsc;
+    private final ArrayList<String> value_address;
 
     private LayoutInflater mInflater;
 
-    public rowdata(Context context, String[] values, String[] values2, String[] value_address) {//架構子
+    public rowdata(Context context, ArrayList<String> values, ArrayList<String> values2, ArrayList<String> value_address) {//架構子
         mInflater = LayoutInflater.from(context);//傳入Activity
         this.context = context;
         this.value_deviceName = values;
@@ -29,7 +32,7 @@ public class rowdata extends BaseAdapter {
 
     @Override
     public int getCount() {//算device Name長度
-        return value_deviceName.length;
+        return value_deviceName.size();
     }
 
     @Override
@@ -60,8 +63,10 @@ public class rowdata extends BaseAdapter {
                     .findViewById(R.id.beaconName);
             holder.beaconDistance = (TextView) convertView
                     .findViewById(R.id.beaconDistance);
+            holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
             holder.item_setting = (ImageButton) convertView.findViewById(R.id.item_setting);
             holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
+//            holder.spinner = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
             convertView.setTag(holder);//把查找的view通過ViewHolder封裝好緩存起來方便 ​​多次重用，當需要時可以getTag拿出來
         }else{
@@ -87,8 +92,10 @@ public class rowdata extends BaseAdapter {
                 break;
         }
 
-        holder.beaconName.setText(value_deviceName[position]);
-        holder.beaconDistance.setText(value_deviceDsc[position]);
+        holder.beaconName.setText(value_deviceName.get(position));
+        holder.beaconDistance.setText(value_deviceDsc.get(position));
+        holder.beaconAddress.setText(value_address.get(position));
+        holder.spinner.setVisibility(View.VISIBLE);
         return convertView;
     }
 
@@ -99,5 +106,6 @@ public class rowdata extends BaseAdapter {
         TextView beaconAddress;
         TextView beaconNearby;
         ImageButton item_setting;
+        ProgressBar spinner;
     }
 }
