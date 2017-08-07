@@ -17,10 +17,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,16 +47,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
-
+        // 初始化藍牙
+//        bluetooth.BTinit(getBaseContext());
+//        bluetooth.mac = address;
+        // 設置listview
         mContext = this;
-
         listView1=(ListView) findViewById(R.id.listView1);
-
         adapter=new rowdata(this,name,distance,address);//顯示的方式
         listView1.setAdapter(adapter);
+        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item = name.get(position);      //哪一個列表
+                Toast.makeText(MainActivity.this, item + " selected", Toast.LENGTH_LONG).show(); //顯示訊號
+//                bluetooth.bluetoothFunction="searchItem";
+//                bluetooth.currentItem= address.get(position);
+                /*換畫面 不換Activity*/
+                setContentView(R.layout.activity_search);
 
-//        ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
-//        spinner.setVisibility(View.VISIBLE);
+                /* infomation on the second page*/
+                TextView deviceInfo = (TextView) findViewById(R.id.beaconinfo);
+                TextView devicedegree = (TextView) findViewById(R.id.beaconinfo);
+                String itemlist = String.valueOf(bluetooth.currentDistance);
+                deviceInfo.setText(itemlist);
+                devicedegree.setText(String.valueOf(bluetooth.currentDegree));
+//
+//
+//                page = 2;
+//
+//
+//                //image direction
+//                image = (ImageView) findViewById(R.id.imageViewCompass);
+                /*換頁面 有換Activity*/
+//                Intent intent = new Intent();
+//                intent.setClass(MainActivity.this, search.class);
+//                intent.putExtra("sayHi",123);//試著傳值
+//                startActivity(intent);
+            }
+        } );
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -103,8 +134,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 side_new.setText("+ New classification");
             }
         });
-        bluetooth.BTinit(this);
-        bluetooth.mac = address;
 
     }
 
@@ -227,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void refresh() {
-
+        bluetooth.bluetoothFunction = "myItemDistance";
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -236,7 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }, 10000);
         adapter=new rowdata(this,name,bluetooth.myDeviceDistance,bluetooth.mac);//顯示的方式
         listView1.setAdapter(adapter);
-//        spinner.setVisibility(View.GONE);
     }
 
 }

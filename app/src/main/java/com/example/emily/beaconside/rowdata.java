@@ -66,7 +66,6 @@ public class rowdata extends BaseAdapter {
             holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
             holder.item_setting = (ImageButton) convertView.findViewById(R.id.item_setting);
             holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
-//            holder.spinner = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
             convertView.setTag(holder);//把查找的view通過ViewHolder封裝好緩存起來方便 ​​多次重用，當需要時可以getTag拿出來
         }else{
@@ -95,7 +94,6 @@ public class rowdata extends BaseAdapter {
         holder.beaconName.setText(value_deviceName.get(position));
         holder.beaconDistance.setText(value_deviceDsc.get(position));
         holder.beaconAddress.setText(value_address.get(position));
-        holder.spinner.setVisibility(View.VISIBLE);
         return convertView;
     }
 
@@ -106,6 +104,5 @@ public class rowdata extends BaseAdapter {
         TextView beaconAddress;
         TextView beaconNearby;
         ImageButton item_setting;
-        ProgressBar spinner;
     }
 }
