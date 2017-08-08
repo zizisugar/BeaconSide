@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 TextView deviceInfo = (TextView) findViewById(R.id.beaconinfo);
                 TextView devicedegree = (TextView) findViewById(R.id.beaconinfo);
                 String itemlist = String.valueOf(bluetooth.currentDistance);
-                deviceInfo.setText(itemlist);
-                devicedegree.setText(String.valueOf(bluetooth.currentDegree));
+//                deviceInfo.setText(itemlist);
+//                devicedegree.setText(String.valueOf(bluetooth.currentDegree));
 //
 //
 //                page = 2;

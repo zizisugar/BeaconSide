@@ -6,12 +6,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.Toast;
 
 import com.powenko.ifroglab_bt_lib.*;
@@ -21,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 
-public class BluetoothMethod implements ifrog.ifrogCallBack,SensorEventListener {
+public class BluetoothMethod implements ifrog.ifrogCallBack{
 
 
     public boolean myStatusBT=true, firstOpenBT=true;
@@ -39,20 +33,16 @@ public class BluetoothMethod implements ifrog.ifrogCallBack,SensorEventListener 
 
     /* 藍芽 */
     public final int REQUEST_ENABLE_BT = 18;
-    private boolean firstOpen = true;
-    /* 方位 */
-    private SensorManager mSensorManager;// device sensor manager
-    private float minRSSI = 1000000;
-    private float turntoTarget = 0;
+//    private boolean firstOpen = true;
     /* 呼叫藍牙方法的Activity */
     Context mContext;
     /* public 藍牙資訊 */
     public ArrayList<String> mac = new ArrayList<String>(Arrays.asList("84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","1C:BA:8C:28:8B:5F","laptop"));
     public ArrayList<String> myDeviceDistance = new ArrayList<>(Collections.nCopies(mac.size(),"Out of Range"));
-    public float currentDegree= 0f;
-    public double currentDistance=0;
+    public double currentRssi = 0;  // 目前指定要搜尋的特定藍牙裝置之訊號強度
+    public double currentDistance=0;    // 目前指定要搜尋的特定藍牙裝置之距離
     public String bluetoothFunction = ""; // 目前要使用的藍牙功能
-    public String currentItem = "D0:39:72:DE:DC:3A";
+    public String currentItem = "D0:39:72:DE:DC:3A";    // 目前指定要搜尋的特定藍牙裝置
 
     public void getStartSearch(Context context, Long time){
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -100,7 +90,6 @@ public class BluetoothMethod implements ifrog.ifrogCallBack,SensorEventListener 
         /*   d = 10^((abs(RSSI) - A) / (10 * n))  */
         double result = 0;
 
-        //if(count>15){
         if(count>15){
             tempdis = distanceTotal/count;
             count = 0;
@@ -130,19 +119,18 @@ public class BluetoothMethod implements ifrog.ifrogCallBack,SensorEventListener 
     @Override
     public void BTSearchFindDevice(BluetoothDevice device, int rssi, byte[] scanRecord) {
         switch (bluetoothFunction) {
-            case "searchItem":
-                searchDevice(device,rssi);
+            case "searchItem":  // 搜尋特定MAC地址的藍牙裝置的rssi及距離資訊，會儲存到public變數中
                 searchItem(device,currentItem,rssi);
                 break;
-            case "searchDevice":
+            case "searchDevice":    // 掃描周圍所有藍牙裝置，將裝置名稱、地址、距離儲存到public的ArrayList中
                 searchDevice(device,rssi);
                 break;
-            case "myItemDistance":
+            case "myItemDistance":  // 掃描周圍所有藍牙裝置，檢查使用者的beacon是否有在周圍，如果有的話則顯示距離資訊
                 searchDevice(device,rssi);
                 myItemDistance(mac);
                 break;
             default:
-                searchDevice(device,rssi);
+                searchDevice(device,rssi); // 預設為掃描周圍所有藍牙裝置
                 break;
         }
 
@@ -176,45 +164,10 @@ public class BluetoothMethod implements ifrog.ifrogCallBack,SensorEventListener 
     public void searchItem(BluetoothDevice device,String item,int rssi) {
         Toast.makeText(mContext,item +" || "+device.getAddress(), Toast.LENGTH_SHORT).show();
         if(item.equals(device.getAddress())){
+            currentRssi = rssi;
             currentDistance = calculateDistance(rssi);
             Toast.makeText(mContext,item +"is "+currentDistance+"cm away", Toast.LENGTH_SHORT).show();
-            /* direction */
-            if( minRSSI > Math.abs(rssi)){
-                minRSSI = Math.abs(rssi);
-                turntoTarget = -currentDegree;//N:0, E:+
-            }
         }
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        // get the angle around the z-axis rotated
-        float degree = Math.round(event.values[0]);
-
-        // create a rotation animation (reverse turn degree degrees)
-        RotateAnimation ra = new RotateAnimation(
-                currentDegree+turntoTarget,
-                -degree,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f);
-
-        // how long the animation will take place
-        ra.setDuration(210);
-
-        // set the animation after the end of the reservation status
-        ra.setFillAfter(true);
-
-//        if(page == 2) {
-//            // Start the animation
-//            image.startAnimation(ra);
-//        }
-        currentDegree = -degree;
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // not in use
     }
 
     public void searchDevice(BluetoothDevice device,int rssi){
@@ -236,22 +189,10 @@ public class BluetoothMethod implements ifrog.ifrogCallBack,SensorEventListener 
                 //null can appear
                 Names.add(device.getName());
                 Distance.add(calculateDistance(rssi));
-                Information.add(
-                        "Device : "+device.getName()+
-                                "\nAddress : "+t_address+
-                                "\nRssi : "+Integer.toString(rssi)+
-                                "\nDistance : "+Double.toString(calculateDistance(rssi))
-                );
                 Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
             }else{//如果不是新的device
                 Names.set(index,device.getName());
                 Distance.set(index,calculateDistance(rssi));
-                Information.add(
-                        "Device : "+device.getName()+
-                                "\nAddress : "+t_address+
-                                "\nRssi : "+Integer.toString(rssi)+
-                                "\nDistance : "+Double.toString(calculateDistance(rssi))+"cm"
-                );
             }
         }
     }
