@@ -22,20 +22,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.example.emily.beaconside.R.layout.activity_rowdata;
-
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,PopupMenu.OnMenuItemClickListener{
 
     Context mContext;
-    Button side_new;
+    Button side_new,side_group_bt,side_class_bt;
+    View side_class_ls,side_group_ls;
+    ImageView chooseGroup,chooseClass;
     ListView listView1;
     rowdata adapter;
     ArrayList<String> name= new ArrayList<>(Arrays.asList("Wallet(Tag02)","Key(Qmote)","Camera(xBeacon)","Laptop(xBeacon)"));
@@ -99,7 +96,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, SearchDevice.class));//same as following two
+
+            startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
+//            Intent myIntent = new Intent(getApplicationContext(), new_item.class);
+//            startActivityForResult(myIntent, 0);
+
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
@@ -110,27 +111,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //some id
         side_new = (Button)findViewById(R.id.side_new);
+        side_group_bt = (Button)findViewById(R.id.side_group_bt);
+        side_class_bt = (Button)findViewById(R.id.side_class_bt);
+        side_class_ls = (View)findViewById(R.id.side_class_ls);
+        side_group_ls = (View)findViewById(R.id.side_group_ls);
+        chooseGroup = (ImageView)findViewById(R.id.chooseGroup);
+        chooseClass = (ImageView)findViewById(R.id.chooseClass);
 
-        findViewById(R.id.side_group_bt).setOnClickListener(new View.OnClickListener() {//group
+        side_group_bt.setOnClickListener(new View.OnClickListener() {//group
             @Override
             public void onClick(View v) {
-                findViewById(R.id.side_class_ls).setVisibility(View.GONE);
-                findViewById(R.id.side_group_ls).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseClass).setVisibility(View.GONE);
+                side_class_ls.setVisibility(View.GONE);
+                side_group_ls.setVisibility(View.VISIBLE);
+                chooseGroup.setVisibility(View.VISIBLE);
+                chooseClass.setVisibility(View.GONE);
 
 
                 side_new.setText("+ New group");
             }
         });
-        findViewById(R.id.side_class_bt).setOnClickListener(new View.OnClickListener() {//class
+        side_class_bt.setOnClickListener(new View.OnClickListener() {//class
             @Override
             public void onClick(View v) {
-                findViewById(R.id.side_group_ls).setVisibility(View.GONE);
-                findViewById(R.id.side_class_ls).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseClass).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseGroup).setVisibility(View.GONE);
+                side_group_ls.setVisibility(View.GONE);
+                side_class_ls.setVisibility(View.VISIBLE);
+                chooseClass.setVisibility(View.VISIBLE);
+                chooseGroup.setVisibility(View.GONE);
 
                 side_new.setText("+ New classification");
             }
@@ -211,9 +219,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_name) {
-//            startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
-//            Intent myIntent = new Intent(getApplicationContext(), new_item.class);
-//            startActivityForResult(myIntent, 0);
             refresh();
             return true;
         }

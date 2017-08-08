@@ -13,4 +13,10 @@
     <color name="nav_header_b">#FFFFFFFF</color>
     <color name="nav_header_t">#FF000000</color>
 
+    <!--new item-->
+    <color name="title">#FF000000</color>
+    <color name="alarm_text">#FF494949</color>
+    <color name="notification_title">#FF000000</color>
+    <color name="notification_content">#FF414141</color>
+
 </resources>

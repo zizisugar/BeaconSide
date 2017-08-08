@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera"/>
     <uses-feature android:name="android.hardware.camera.autofocus"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +18,8 @@
         <activity
             android:name=".MainActivity"
             android:label="My beacon"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".sign_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,6 +30,7 @@
         <activity android:name=".new_item" android:label="Add item" ></activity>
         <activity android:name=".SearchDevice" android:label="Search Device" ></activity>
         <activity android:name=".Compass" android:label="Compass" ></activity>
+        <activity android:name=".AutoResizeTextView"></activity>
     </application>
 
 </manifest>

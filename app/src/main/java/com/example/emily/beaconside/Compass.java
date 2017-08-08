@@ -1,6 +1,5 @@
 package com.example.emily.beaconside;
 
-import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

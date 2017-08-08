@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class new_item extends AppCompatActivity {
+public class new_item extends AppCompatActivity  {
 
 
     @Override
@@ -26,6 +26,11 @@ public class new_item extends AppCompatActivity {
 
     }
 
+
+
+
+
+
     /* cancel : go back button */
     @Override
     public boolean onSupportNavigateUp(){
@@ -33,7 +38,7 @@ public class new_item extends AppCompatActivity {
         return true;
     }
 
-    /* check */
+    /* check button*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
