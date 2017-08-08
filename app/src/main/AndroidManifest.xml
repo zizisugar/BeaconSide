@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.emily.beaconside">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,13 +15,7 @@
         <activity
             android:name=".MainActivity"
             android:label="My beacon"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".rowdata" />
-        <activity
-            android:name=".new_item"
-            android:label="Add item" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".sign_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".rowdata" />
+        <activity
+            android:name=".new_item"
+            android:label="Add item" />
+        <activity
+            android:name=".SearchDevice"
+            android:label="Search Device" />
+        <activity android:name=".AutoResizeTextView"></activity>
     </application>
 
 </manifest>

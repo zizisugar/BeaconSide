@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewStub;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView;
@@ -39,23 +40,27 @@ import android.widget.ViewFlipper;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,PopupMenu.OnMenuItemClickListener{
 
-
-    Button side_new;
+    Context mContext;
+    Button side_new,side_group_bt,side_class_bt;
+    View side_class_ls,side_group_ls;
+    ImageView chooseGroup,chooseClass;
     ListView listView1;
     rowdata adapter;
+    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
+    String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
+    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
+
+    BluetoothMethod bluetooth = new BluetoothMethod();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
 
-
-
+        mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
-        String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
-        String[] testValues2= new String[]{	"3m","5m","1m","1m"};
 
-        adapter=new rowdata(this,testValues,testValues2);//顯示的方式
+        adapter=new rowdata(this,testValues,testValues2,address);//顯示的方式
         listView1.setAdapter(adapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -67,10 +72,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
             startActivity(new Intent(MainActivity.this, new_item.class));//same as following two
 //            Intent myIntent = new Intent(getApplicationContext(), new_item.class);
 //            startActivityForResult(myIntent, 0);
-                
+
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
@@ -81,40 +87,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-
+        //some id
         side_new = (Button)findViewById(R.id.side_new);
+        side_group_bt = (Button)findViewById(R.id.side_group_bt);
+        side_class_bt = (Button)findViewById(R.id.side_class_bt);
+        side_class_ls = (View)findViewById(R.id.side_class_ls);
+        side_group_ls = (View)findViewById(R.id.side_group_ls);
+        chooseGroup = (ImageView)findViewById(R.id.chooseGroup);
+        chooseClass = (ImageView)findViewById(R.id.chooseClass);
 
 
-
-        findViewById(R.id.side_group_bt).setOnClickListener(new View.OnClickListener() {//group
+        side_group_bt.setOnClickListener(new View.OnClickListener() {//group
             @Override
             public void onClick(View v) {
-                findViewById(R.id.side_class_ls).setVisibility(View.GONE);
-                findViewById(R.id.side_group_ls).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseGroup).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseClass).setVisibility(View.GONE);
+                side_class_ls.setVisibility(View.GONE);
+                side_group_ls.setVisibility(View.VISIBLE);
+                chooseGroup.setVisibility(View.VISIBLE);
+                chooseClass.setVisibility(View.GONE);
 
 
                 side_new.setText("+ New group");
-//                Toast.makeText(MainActivity.this, "Button1 Click!", Toast.LENGTH_SHORT).show();
-//                onBackPressed();
             }
         });
-        findViewById(R.id.side_class_bt).setOnClickListener(new View.OnClickListener() {//class
+        side_class_bt.setOnClickListener(new View.OnClickListener() {//class
             @Override
             public void onClick(View v) {
-                findViewById(R.id.side_group_ls).setVisibility(View.GONE);
-                findViewById(R.id.side_class_ls).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseClass).setVisibility(View.VISIBLE);
-                findViewById(R.id.chooseGroup).setVisibility(View.GONE);
+                side_group_ls.setVisibility(View.GONE);
+                side_class_ls.setVisibility(View.VISIBLE);
+                chooseClass.setVisibility(View.VISIBLE);
+                chooseGroup.setVisibility(View.GONE);
 
                 side_new.setText("+ New classification");
-//                Toast.makeText(MainActivity.this, "Button2 Click!", Toast.LENGTH_SHORT).show();
-//                onBackPressed();
             }
         });
-
-
+//        bluetooth.BTinit(this);
     }
 
 
@@ -123,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.item_side, popup.getMenu());
+
         popup.show();
     }
 
@@ -144,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             default:
                 return true;
-
         }
     }
 
@@ -155,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.item_side, menu);
+
     }
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -189,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_name) {
+
             return true;
         }
 
@@ -218,6 +226,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /*經過了dialog卻還是沒開啟 關掉check*/
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==bluetooth.REQUEST_ENABLE_BT && resultCode==RESULT_CANCELED){
+            bluetooth.myStatusBT = false;
+        }
+        else{
+            bluetooth.myStatusBT = true;
+        }
+        bluetooth.getStartSearch(this);
+    }
 
 
 }

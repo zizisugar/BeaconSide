@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class new_item extends AppCompatActivity {
+public class new_item extends AppCompatActivity  {
 
 
     @Override
@@ -25,6 +25,11 @@ public class new_item extends AppCompatActivity {
 
 
     }
+
+
+
+
+
 
     /* cancel : go back button */
     @Override

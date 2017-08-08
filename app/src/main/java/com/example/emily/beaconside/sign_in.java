@@ -8,14 +8,14 @@ import android.widget.Button;
 
 public class sign_in extends AppCompatActivity {
 
-    Button login;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        login = (Button)findViewById(R.id.login);
+
 
 
 //        將文字變成連結
