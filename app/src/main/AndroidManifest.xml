@@ -24,6 +24,7 @@
         <activity android:name=".rowdata" />
         <activity android:name=".new_item" android:label="Add item" ></activity>
         <activity android:name=".SearchDevice" android:label="Search Device" ></activity>
+        <activity android:name=".Compass" android:label="Compass" ></activity>
     </application>
 
 </manifest>

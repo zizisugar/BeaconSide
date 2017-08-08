@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     rowdata adapter;
     ArrayList<String> name= new ArrayList<>(Arrays.asList("Wallet(Tag02)","Key(Qmote)","Camera(xBeacon)","Laptop(xBeacon)"));
     ArrayList<String> distance= new ArrayList<>(Arrays.asList("Out of Range","Out of Range","Out of Range","Out of Range"));
-    ArrayList<String> address = new ArrayList<>(Arrays.asList("D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80","1C:BA:8C:28:8B:5F","1C:BA:8C:28:8B:5F"));
+    ArrayList<String> address = new ArrayList<>(Arrays.asList("D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80","1C:BA:8C:28:8B:5F","5B:58:1A:1E:A6:D7"));
 
     BluetoothMethod bluetooth = new BluetoothMethod();
 
@@ -48,41 +48,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
         // 初始化藍牙
-//        bluetooth.BTinit(getBaseContext());
-//        bluetooth.mac = address;
+        bluetooth.BTinit(this);
+        bluetooth.getStartSearchDevice();
         // 設置listview
         mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
-        adapter=new rowdata(this,name,distance,address);//顯示的方式
+        adapter=new rowdata(this,name,distance,address,false);//顯示的方式
         listView1.setAdapter(adapter);
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = name.get(position);      //哪一個列表
-                Toast.makeText(MainActivity.this, item + " selected", Toast.LENGTH_LONG).show(); //顯示訊號
-//                bluetooth.bluetoothFunction="searchItem";
-//                bluetooth.currentItem= address.get(position);
-                /*換畫面 不換Activity*/
-                setContentView(R.layout.activity_search);
+                String itemName = name.get(position);      //哪一個列表
+                String itemAddress = address.get(position);
+                Toast.makeText(MainActivity.this, itemName + " selected", Toast.LENGTH_SHORT).show(); //顯示訊號
+                bluetooth.bluetoothFunction="searchItem";
 
-                /* infomation on the second page*/
-                TextView deviceInfo = (TextView) findViewById(R.id.beaconinfo);
-                TextView devicedegree = (TextView) findViewById(R.id.beaconinfo);
-                String itemlist = String.valueOf(bluetooth.currentDistance);
-//                deviceInfo.setText(itemlist);
-//                devicedegree.setText(String.valueOf(bluetooth.currentDegree));
-//
-//
-//                page = 2;
-//
-//
-//                //image direction
-//                image = (ImageView) findViewById(R.id.imageViewCompass);
-                /*換頁面 有換Activity*/
-//                Intent intent = new Intent();
-//                intent.setClass(MainActivity.this, search.class);
-//                intent.putExtra("sayHi",123);//試著傳值
-//                startActivity(intent);
+//                /*換頁面 有換Activity*/
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, Compass.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("itemName", itemName);
+                bundle.putString("itemAddress", itemAddress);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         } );
 
@@ -252,19 +240,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else{
             bluetooth.myStatusBT = true;
         }
-        bluetooth.getStartSearch(this, new Long(5000));
+//        bluetooth.getStartSearch(this, new Long(5000));
     }
 
     public void refresh() {
-        bluetooth.bluetoothFunction = "myItemDistance";
+        bluetooth.getStartMyItemDistance(address);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
+        adapter=new rowdata(getBaseContext(),name,bluetooth.myDeviceDistance,bluetooth.mac,true);//顯示的方式
+        listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                bluetooth.getStartSearch(getBaseContext(), new Long(360000));
+                adapter=new rowdata(getBaseContext(),name,bluetooth.myDeviceDistance,bluetooth.mac,false);//顯示的方式
+                listView1.setAdapter(adapter);
             }
-        }, 10000);
-        adapter=new rowdata(this,name,bluetooth.myDeviceDistance,bluetooth.mac);//顯示的方式
-        listView1.setAdapter(adapter);
+        }, 3000);
     }
 
 }

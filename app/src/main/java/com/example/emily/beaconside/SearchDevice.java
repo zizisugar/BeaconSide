@@ -194,9 +194,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     }
 
     public void onBackPressed() {
-        Intent backPressedIntent = new Intent();
-        backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
-        startActivity(backPressedIntent );
-        finish();
+        mifrog.BTSearchStop();
     }
 }

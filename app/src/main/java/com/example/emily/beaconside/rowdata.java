@@ -18,15 +18,17 @@ public class rowdata extends BaseAdapter {
     private final ArrayList<String> value_deviceName;
     private final ArrayList<String> value_deviceDsc;
     private final ArrayList<String> value_address;
+    private boolean isLoading;
 
     private LayoutInflater mInflater;
 
-    public rowdata(Context context, ArrayList<String> values, ArrayList<String> values2, ArrayList<String> value_address) {//架構子
+    public rowdata(Context context, ArrayList<String> values, ArrayList<String> values2, ArrayList<String> value_address, Boolean isLoading) {//架構子
         mInflater = LayoutInflater.from(context);//傳入Activity
         this.context = context;
         this.value_deviceName = values;
         this.value_deviceDsc = values2;
         this.value_address = value_address;
+        this.isLoading = isLoading;
     }
 
 
@@ -65,7 +67,9 @@ public class rowdata extends BaseAdapter {
                     .findViewById(R.id.beaconDistance);
             holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
             holder.item_setting = (ImageButton) convertView.findViewById(R.id.item_setting);
+            holder.item_setting.setFocusable(false);
             holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
+            holder.spinner = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
             convertView.setTag(holder);//把查找的view通過ViewHolder封裝好緩存起來方便 ​​多次重用，當需要時可以getTag拿出來
         }else{
@@ -94,6 +98,10 @@ public class rowdata extends BaseAdapter {
         holder.beaconName.setText(value_deviceName.get(position));
         holder.beaconDistance.setText(value_deviceDsc.get(position));
         holder.beaconAddress.setText(value_address.get(position));
+        if(isLoading)
+            holder.spinner.setVisibility(View.VISIBLE);
+        else
+            holder.spinner.setVisibility(View.GONE);
         return convertView;
     }
 
@@ -104,5 +112,6 @@ public class rowdata extends BaseAdapter {
         TextView beaconAddress;
         TextView beaconNearby;
         ImageButton item_setting;
+        ProgressBar spinner;
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.powenko.ifroglab_bt_lib.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,7 +25,6 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     public ArrayList<String> Names = new ArrayList<String>();
     public ArrayList<String> Address = new ArrayList<String>();
     public ArrayList<Double> Distance = new ArrayList<Double>();
-    public ArrayList<String> Information = new ArrayList<String>();
 
     /* 調整distance */
     private double count = 0;
@@ -78,7 +78,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
             ((Activity)context).finish();
             return;
         }
-        getStartSearch(mContext,new Long(36000));
+        getStartSearch(mContext,new Long(360000));
     }
 
 
@@ -162,11 +162,11 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     }
 
     public void searchItem(BluetoothDevice device,String item,int rssi) {
-        Toast.makeText(mContext,item +" || "+device.getAddress(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(mContext,item +" || "+device.getAddress(), Toast.LENGTH_SHORT).show();
         if(item.equals(device.getAddress())){
             currentRssi = rssi;
             currentDistance = calculateDistance(rssi);
-            Toast.makeText(mContext,item +"is "+currentDistance+"cm away", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext,item +"is "+currentDistance+"cm away", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -195,5 +195,31 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 Distance.set(index,calculateDistance(rssi));
             }
         }
+    }
+
+    public void getStartSearchItem(String item) {
+        bluetoothFunction="searchItem";
+        currentItem = item;
+        getStartSearch(mContext, new Long(360000));
+    }
+
+    public void getStartMyItemDistance(ArrayList<String> address) {
+        bluetoothFunction="myItemDistance";
+        mac = address;
+        if(!myStatusBT)
+            getStartSearch(mContext, new Long(5000));
+    }
+
+    public void getStartSearchDevice() {
+        bluetoothFunction="searchDevice";
+        getStartSearch(mContext, new Long(360000));
+    }
+
+    public double getDistance() {
+        return currentDistance;
+    }
+
+    public double getRssi() {
+        return currentRssi;
     }
 }
