@@ -1,17 +1,23 @@
 package com.example.emily.beaconside;
 
 import android.content.Intent;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 
 /**
@@ -31,6 +37,12 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
     private TextView itemName;
     private TextView itemDistance;
     private TextView itemDegree;
+    /* camera */
+    private ToggleButton cameraBtn;
+    Camera camera;
+    SurfaceView surfaceView;
+    SurfaceHolder surfaceHolder;
+    private final String tag = "VideoServer";
     /* bluetooth */
     BluetoothMethod bluetooth = new BluetoothMethod();
 
@@ -55,6 +67,46 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
         itemName.setText(name + "" + address);
         itemDistance = (TextView) findViewById(R.id.itemDistance);
         itemDegree = (TextView) findViewById(R.id.itemDegree);
+        /* camera */
+        surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.addCallback(new SurfaceHolder.Callback(){
+            public void surfaceChanged(SurfaceHolder holder, int format,
+                                       int width, int height) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void surfaceCreated(SurfaceHolder holder) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        cameraBtn=  (ToggleButton) findViewById(R.id.toggleButton);
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // 當按鈕第一次被點擊時候響應的事件
+                if (cameraBtn.isChecked()) {
+                    Toast.makeText(getBaseContext(), "開啟相機", Toast.LENGTH_SHORT).show();
+                    start_camera();
+                    surfaceView.setVisibility(View.VISIBLE);
+                    image.setVisibility(View.GONE);
+                }
+                // 當按鈕再次被點擊時候響應的事件
+                else {
+                    Toast.makeText(getBaseContext(), "關閉相機", Toast.LENGTH_SHORT).show();
+                    stop_camera();
+                    surfaceView.setVisibility(View.GONE);
+                    image.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
@@ -116,8 +168,34 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
         // not in use
     }
 
-    @Override
-    public void onBackPressed() {
-        bluetooth.stopSearch();
+    private void start_camera()
+    {
+        try{
+            camera = Camera.open();
+        }catch(RuntimeException e){
+            Log.e(tag, "init_camera: " + e);
+            return;
+        }
+        Camera.Parameters param;
+        param = camera.getParameters();
+        //modify parameter
+        param.setPreviewFrameRate(20);
+        //param.setPreviewSize(176,144);
+//        param.setPreviewFormat();
+        camera.setParameters(param);
+        try {
+            camera.setPreviewDisplay(surfaceHolder);
+            camera.setDisplayOrientation(90);
+            camera.startPreview();
+        } catch (Exception e) {
+            Log.e(tag, "init_camera: " + e);
+            return;
+        }
+    }
+
+    private void stop_camera()
+    {
+        camera.stopPreview();
+        camera.release();
     }
 }

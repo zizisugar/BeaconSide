@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
 import android.view.ContextMenu;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<String> address = new ArrayList<>(Arrays.asList("D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80","1C:BA:8C:28:8B:5F","5B:58:1A:1E:A6:D7"));
 
     BluetoothMethod bluetooth = new BluetoothMethod();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 初始化藍牙
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
+        // 設置SwipeView重整
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_main);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        refresh();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 300);
+            }
+        });
         // 設置listview
         mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
@@ -94,10 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-
         side_new = (Button)findViewById(R.id.side_new);
-
-
 
         findViewById(R.id.side_group_bt).setOnClickListener(new View.OnClickListener() {//group
             @Override

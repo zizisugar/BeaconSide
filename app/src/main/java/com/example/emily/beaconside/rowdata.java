@@ -98,8 +98,10 @@ public class rowdata extends BaseAdapter {
         holder.beaconName.setText(value_deviceName.get(position));
         holder.beaconDistance.setText(value_deviceDsc.get(position));
         holder.beaconAddress.setText(value_address.get(position));
-        if(isLoading)
+        if(isLoading) {
             holder.spinner.setVisibility(View.VISIBLE);
+            holder.beaconDistance.setVisibility(View.GONE);
+        }
         else
             holder.spinner.setVisibility(View.GONE);
         return convertView;

@@ -193,7 +193,4 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         mifrog.BTSearchStop();
     }
 
-    public void onBackPressed() {
-        mifrog.BTSearchStop();
-    }
 }

@@ -19,7 +19,7 @@ import java.util.Collections;
 public class BluetoothMethod implements ifrog.ifrogCallBack{
 
 
-    public boolean myStatusBT=true, firstOpenBT=true;
+    public boolean myStatusBT=true, firstOpenBT=true; boolean isSearching;
     /* 運用library */
     private ifrog mifrog;
     public ArrayList<String> Names = new ArrayList<String>();
@@ -140,8 +140,10 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     public void BTSearchFindDevicestatus(boolean arg0) {//arg0:true/false，代表有沒有在找
         if(arg0==false){
             Toast.makeText(mContext,"Stop Search", Toast.LENGTH_SHORT).show();
+            isSearching = false;
         }else{
             Toast.makeText(mContext,"Start Search",  Toast.LENGTH_SHORT).show();
+            isSearching = true;
         }
     }
 
@@ -200,19 +202,19 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     public void getStartSearchItem(String item) {
         bluetoothFunction="searchItem";
         currentItem = item;
-        getStartSearch(mContext, new Long(360000));
+        getStartSearch(mContext, new Long(3600000));
     }
 
     public void getStartMyItemDistance(ArrayList<String> address) {
         bluetoothFunction="myItemDistance";
         mac = address;
-        if(!myStatusBT)
-            getStartSearch(mContext, new Long(5000));
+        if(!isSearching) // 如果現在還沒開始搜尋
+            getStartSearch(mContext, new Long(10000));
     }
 
     public void getStartSearchDevice() {
         bluetoothFunction="searchDevice";
-        getStartSearch(mContext, new Long(360000));
+        getStartSearch(mContext, new Long(3600000));
     }
 
     public double getDistance() {
