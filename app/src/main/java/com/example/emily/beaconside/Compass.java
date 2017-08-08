@@ -23,7 +23,7 @@ import android.widget.ToggleButton;
 /**
  * Created by jennifer9759 on 2017/8/8.
  */
-public class Compass extends AppCompatActivity implements SensorEventListener {
+public class Compass extends AppCompatActivity implements SurfaceHolder.Callback,SensorEventListener {
     /* compass */
     private float currentDegree = 0f;// record the angle turned
     private SensorManager mSensorManager;// device sensor manager
@@ -68,25 +68,13 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
         itemDistance = (TextView) findViewById(R.id.itemDistance);
         itemDegree = (TextView) findViewById(R.id.itemDegree);
         /* camera */
+        setCamera();
+    }
+
+    private void setCamera() {
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(new SurfaceHolder.Callback(){
-            public void surfaceChanged(SurfaceHolder holder, int format,
-                                       int width, int height) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void surfaceCreated(SurfaceHolder holder) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                // TODO Auto-generated method stub
-
-            }
-        });
+        surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         cameraBtn=  (ToggleButton) findViewById(R.id.toggleButton);
         cameraBtn.setOnClickListener(new View.OnClickListener() {
@@ -95,20 +83,19 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
                 if (cameraBtn.isChecked()) {
                     Toast.makeText(getBaseContext(), "開啟相機", Toast.LENGTH_SHORT).show();
                     start_camera();
-                    surfaceView.setVisibility(View.VISIBLE);
-                    image.setVisibility(View.GONE);
+//                    surfaceView.setVisibility(View.VISIBLE);
+//                    image.setVisibility(View.GONE);
                 }
                 // 當按鈕再次被點擊時候響應的事件
                 else {
                     Toast.makeText(getBaseContext(), "關閉相機", Toast.LENGTH_SHORT).show();
                     stop_camera();
-                    surfaceView.setVisibility(View.GONE);
-                    image.setVisibility(View.VISIBLE);
+//                    surfaceView.setVisibility(View.GONE);
+//                    image.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -144,6 +131,11 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
             turntoTarget = -currentDegree;//N:0, E:+
         }
 
+        if (degree <=(turntoTarget+15) && degree>=(turntoTarget-15)){
+            image.setVisibility(View.VISIBLE);
+        }
+        else
+            image.setVisibility(View.INVISIBLE);
         // create a rotation animation (reverse turn degree degrees)
         RotateAnimation ra = new RotateAnimation(
                 currentDegree+turntoTarget,
@@ -198,4 +190,17 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
         camera.stopPreview();
         camera.release();
     }
+
+    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+        // TODO Auto-generated method stub
+    }
+
+    public void surfaceCreated(SurfaceHolder holder) {
+        // TODO Auto-generated method stub
+    }
+
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        // TODO Auto-generated method stub
+    }
+
 }
