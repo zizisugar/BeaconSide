@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera"/>
     <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -31,6 +32,12 @@
         <activity android:name=".SearchDevice" android:label="Search Device" ></activity>
         <activity android:name=".Compass" android:label="Compass" ></activity>
         <activity android:name=".AutoResizeTextView"></activity>
+        <activity android:name=".EditActivity" />
+        <activity android:name=".Main2Activity" />
+        <activity
+            android:name=".addNewBeacon"
+            android:label="@string/title_activity_add_new_beacon"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

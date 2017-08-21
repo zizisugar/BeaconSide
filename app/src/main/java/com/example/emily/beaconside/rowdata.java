@@ -20,15 +20,18 @@ public class rowdata extends BaseAdapter {
     private final ArrayList<String> value_address;
     private boolean isLoading;
 
+    private final ArrayList<String> value_bPic;
+
     private LayoutInflater mInflater;
 
-    public rowdata(Context context, ArrayList<String> values, ArrayList<String> values2, ArrayList<String> value_address, Boolean isLoading) {//架構子
+    public rowdata(Context context, ArrayList<String> name, ArrayList<String> distance, ArrayList<String> address, ArrayList<String> value_bPic, boolean isLoading) {//架構子
         mInflater = LayoutInflater.from(context);//傳入Activity
         this.context = context;
-        this.value_deviceName = values;
-        this.value_deviceDsc = values2;
-        this.value_address = value_address;
+        this.value_deviceName = name;
+        this.value_deviceDsc = distance;
+        this.value_address = address;
         this.isLoading = isLoading;
+        this.value_bPic = value_bPic;
     }
 
 
@@ -76,25 +79,10 @@ public class rowdata extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-
-        switch(position) {
-            case 0:
-                holder.beaconImage.setImageResource(R.drawable.wallet);
-                break;
-            case 1:
-                holder.beaconImage.setImageResource(R.drawable.key);
-                break;
-            case 2:
-                holder.beaconImage.setImageResource(R.drawable.camera);
-                break;
-            case 3:
-                holder.beaconImage.setImageResource(R.drawable.laptop);
-                break;
-            default:
-                holder.beaconImage.setImageResource(R.drawable.beacon);
-                break;
-        }
-
+        //根據value_bPic array來顯示圖片
+        String bPic = value_bPic.get(position);
+        int resID = context.getResources().getIdentifier(bPic, "drawable","com.example.emily.beaconside");
+        holder.beaconImage.setImageResource(resID);
         holder.beaconName.setText(value_deviceName.get(position));
         holder.beaconDistance.setText(value_deviceDsc.get(position));
         holder.beaconAddress.setText(value_address.get(position));
@@ -106,6 +94,8 @@ public class rowdata extends BaseAdapter {
             holder.spinner.setVisibility(View.GONE);
         return convertView;
     }
+
+
 
     static class ViewHolder {//緩存用。一種設計方法，就是設計個靜態類，緩存一下，省得Listview更新的時候，還要重新操作。
         ImageView beaconImage;

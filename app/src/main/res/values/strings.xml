@@ -10,7 +10,6 @@
 
     <string name="descr_overflow_button">test</string>
 
-
     <!--Log in page-->
     <string name="fb_login">FB</string>
     <string name="google_login">Google</string>
@@ -20,6 +19,6 @@
     <string name="forgiveAccount">Forgot email?</string>
     <string name="addMemeber">Create account</string>
 
-
-
+    <string name="title_activity_add_new">AddNewActivity</string>
+    <string name="title_activity_add_new_beacon">addNewBeacon</string>
 </resources>

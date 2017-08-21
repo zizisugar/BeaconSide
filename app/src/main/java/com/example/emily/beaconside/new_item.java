@@ -17,6 +17,7 @@ public class new_item extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_item);
+        setContentView(R.layout.activity_add_new_beacon);
 
 
 
@@ -64,4 +65,5 @@ public class new_item extends AppCompatActivity  {
     /* check end */
 
 
-}
+
+    }

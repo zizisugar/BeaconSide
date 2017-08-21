@@ -26,6 +26,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     private ifrog mifrog;
     ArrayList<String> Names = new ArrayList<String>();
     ArrayList<String> Address = new ArrayList<String>();
+    //ArrayList<String> cName_list = new ArrayList<String>();//我的event名稱list
 
     // loading spinner
     private ProgressBar spinner;
@@ -48,6 +49,9 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         /* bluetooth */
         spinner = (ProgressBar)findViewById(R.id.progressBar1);
         BTinit();
+
+        //Intent i = getIntent();
+        //cName_list = i.getStringArrayListExtra("cName_list");
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -139,8 +143,21 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() { //選項按下反應
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = testValues[position];      //哪一個列表
-                Toast.makeText(SearchDevice.this, item + " selected", Toast.LENGTH_LONG).show(); //顯示訊號
+
+                String bName = testValues[position];//取得選擇beacon的名字
+                String macAddress = testValues2[position];//取得選擇beacon的macAddress
+                Toast.makeText(SearchDevice.this, bName + " selected", Toast.LENGTH_LONG).show(); //顯示訊號
+
+                /**換頁到addNewBeacon**/
+                Intent intent = new Intent();
+                intent.setClass(SearchDevice.this,addNewBeacon.class);
+                //傳遞變數
+                intent.putExtra("bName",bName);
+                intent.putExtra("macAddress",macAddress);
+                startActivity(intent);
+                finish();
+                /******/
+
             }
         });
     }
@@ -193,4 +210,10 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         mifrog.BTSearchStop();
     }
 
+    public void onBackPressed() {
+        Intent backPressedIntent = new Intent();
+        backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
+        startActivity(backPressedIntent );
+        finish();
+    }
 }

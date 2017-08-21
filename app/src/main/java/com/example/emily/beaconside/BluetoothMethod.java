@@ -10,14 +10,12 @@ import android.widget.Toast;
 
 import com.powenko.ifroglab_bt_lib.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 
 public class BluetoothMethod implements ifrog.ifrogCallBack{
-
 
     public boolean myStatusBT=true, firstOpenBT=true; boolean isSearching;
     /* 運用library */
@@ -37,8 +35,8 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     /* 呼叫藍牙方法的Activity */
     Context mContext;
     /* public 藍牙資訊 */
-    public ArrayList<String> mac = new ArrayList<String>(Arrays.asList("84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","1C:BA:8C:28:8B:5F","laptop"));
-    public ArrayList<String> myDeviceDistance = new ArrayList<>(Collections.nCopies(mac.size(),"Out of Range"));
+    public ArrayList<String> mac = new ArrayList<String>();
+    public ArrayList<String> myDeviceDistance = new ArrayList<>();
     public double currentRssi = 0;  // 目前指定要搜尋的特定藍牙裝置之訊號強度
     public double currentDistance=0;    // 目前指定要搜尋的特定藍牙裝置之距離
     public String bluetoothFunction = ""; // 目前要使用的藍牙功能
@@ -165,7 +163,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 
     public void searchItem(BluetoothDevice device,String item,int rssi) {
 //        Toast.makeText(mContext,item +" || "+device.getAddress(), Toast.LENGTH_SHORT).show();
-        if(item.equals(device.getAddress())){
+        if(item.equals(device.getAddress())) {
             currentRssi = rssi;
             currentDistance = calculateDistance(rssi);
 //            Toast.makeText(mContext,item +"is "+currentDistance+"cm away", Toast.LENGTH_SHORT).show();
@@ -198,7 +196,6 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
             }
         }
     }
-
     public void getStartSearchItem(String item) {
         bluetoothFunction="searchItem";
         currentItem = item;
@@ -224,4 +221,5 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     public double getRssi() {
         return currentRssi;
     }
+
 }
