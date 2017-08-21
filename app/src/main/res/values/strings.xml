@@ -21,4 +21,6 @@
 
     <string name="title_activity_add_new">AddNewActivity</string>
     <string name="title_activity_add_new_beacon">addNewBeacon</string>
+    <string name="facebook_app_id">1412054392241141</string>
+    <string name="fb_login_protocol_scheme">fb1412054392241141</string>
 </resources>

@@ -17,6 +17,8 @@ public class Config{
     public static final String URL_GET_NOTICE = "http://140.117.71.114/beacon/getNotice.php?macAddress=";
     public static final String URL_ADD_BEACON="http://140.117.71.114/beacon/addBeacon.php";
     public static final String URL_GET_USER_EVENT="http://140.117.71.114/beacon/getUserCategory.php?uEmail=";
+    public static final String URL_ADD_USER = "http://140.117.71.114/beacon/addUser.php";
+    public static final String URL_SEARCH = "http://140.117.71.114/beacon/search.php";
 
     //Keys that will be used to send the request to php scripts
 //    public static final String KEY_EMP_ID = "id";
