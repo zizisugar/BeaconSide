@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //將取得的json轉換為array list, 顯示在畫面上
     private void showMyBeacon(){
         JSONObject jsonObject = null;
+
         try {
             jsonObject = new JSONObject(JSON_STRING);//放入JSON_STRING 即在getBeacno()中得到的json
             JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);//轉換為array
@@ -227,10 +228,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 bName_list.add(bName);
                 macAddress_list.add(macAddress);
                 bPic_list.add(bPic);
-                distance.add("out of range");//distance先寫死
+
+//                distance.add("out of range");//distance先寫死
             }
             bluetooth.mac = macAddress_list;
-
+            bluetooth.getStartMyItemDistance(macAddress_list);
             //上面的資料讀取完  才設置listview
             adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
             listView1.setAdapter(adapter);
@@ -452,16 +454,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
-        Toast.makeText(this, "address array here"+macAddress_list, Toast.LENGTH_SHORT).show();
-//        while(bluetooth.myDeviceDistance.size() < 1) {
-//
-//        }
         adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
         listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
+                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式
                 listView1.setAdapter(adapter);
             }
         }, 3000);

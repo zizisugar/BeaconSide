@@ -11,9 +11,6 @@ import android.widget.Toast;
 import com.powenko.ifroglab_bt_lib.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
 
 public class BluetoothMethod implements ifrog.ifrogCallBack{
 
@@ -215,7 +212,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
         bluetoothFunction="myItemDistance";
         mac = address;
         if(!isSearching) // 如果現在還沒開始搜尋
-            getStartSearch(mContext, new Long(10000));
+            getStartSearch(mContext, new Long(100000));
     }
 
     public void getStartSearchDevice() {

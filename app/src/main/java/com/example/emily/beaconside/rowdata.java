@@ -79,14 +79,20 @@ public class rowdata extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        if(value_deviceDsc.size() < 1) {
+            for (int i = 0; i < value_deviceName.size(); i++) {
+                value_deviceDsc.add("Out of Range");
+            }
+        }
         //根據value_bPic array來顯示圖片
         String bPic = value_bPic.get(position);
         int resID = context.getResources().getIdentifier(bPic, "drawable","com.example.emily.beaconside");
         holder.beaconImage.setImageResource(resID);
         holder.beaconName.setText(value_deviceName.get(position));
-//        holder.beaconDistance.setText(value_deviceDsc.get(position));
+        holder.beaconDistance.setText(value_deviceDsc.get(position));
         holder.beaconAddress.setText(value_address.get(position));
-        Toast.makeText(context, "distance array"+ value_deviceDsc, Toast.LENGTH_SHORT).show();
+
+
         if(isLoading) {
             holder.spinner.setVisibility(View.VISIBLE);
             holder.beaconDistance.setVisibility(View.GONE);
