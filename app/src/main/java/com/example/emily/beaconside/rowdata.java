@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -61,7 +62,6 @@ public class rowdata extends BaseAdapter {
         if(convertView==null){
             convertView=mInflater.inflate(R.layout.activity_rowdata,null);//inflate(要加載的佈局id，佈局外面再嵌套一層父佈局(root)->如果不需要就寫null)
             holder = new ViewHolder();
-
             holder.beaconImage = (ImageView) convertView
                     .findViewById(R.id.beaconImage);
             holder.beaconName = (TextView) convertView
@@ -84,8 +84,9 @@ public class rowdata extends BaseAdapter {
         int resID = context.getResources().getIdentifier(bPic, "drawable","com.example.emily.beaconside");
         holder.beaconImage.setImageResource(resID);
         holder.beaconName.setText(value_deviceName.get(position));
-        holder.beaconDistance.setText(value_deviceDsc.get(position));
+//        holder.beaconDistance.setText(value_deviceDsc.get(position));
         holder.beaconAddress.setText(value_address.get(position));
+        Toast.makeText(context, "distance array"+ value_deviceDsc, Toast.LENGTH_SHORT).show();
         if(isLoading) {
             holder.spinner.setVisibility(View.VISIBLE);
             holder.beaconDistance.setVisibility(View.GONE);

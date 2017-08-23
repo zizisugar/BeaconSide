@@ -20,9 +20,9 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     public boolean myStatusBT=true, firstOpenBT=true; boolean isSearching;
     /* 運用library */
     private ifrog mifrog;
-    public ArrayList<String> Names = new ArrayList<String>();
-    public ArrayList<String> Address = new ArrayList<String>();
-    public ArrayList<Double> Distance = new ArrayList<Double>();
+    public ArrayList<String> Names = new ArrayList<String>();   // 周圍所有藍牙裝置的名稱
+    public ArrayList<String> Address = new ArrayList<String>(); // 周圍所有藍牙裝置的地址
+    public ArrayList<Double> Distance = new ArrayList<Double>();    // 周圍所有藍牙裝置的距離
 
     /* 調整distance */
     private double count = 0;
@@ -35,8 +35,8 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     /* 呼叫藍牙方法的Activity */
     Context mContext;
     /* public 藍牙資訊 */
-    public ArrayList<String> mac = new ArrayList<String>();
-    public ArrayList<String> myDeviceDistance = new ArrayList<>();
+    public ArrayList<String> mac = new ArrayList<String>(); // 使用者擁有裝置的地址，從資料庫獲取
+    public ArrayList<String> myDeviceDistance = new ArrayList<>(); // 使用者擁有的所有裝置的目前距離
     public double currentRssi = 0;  // 目前指定要搜尋的特定藍牙裝置之訊號強度
     public double currentDistance=0;    // 目前指定要搜尋的特定藍牙裝置之距離
     public String bluetoothFunction = ""; // 目前要使用的藍牙功能
@@ -147,6 +147,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 
     public void myItemDistance(ArrayList<String> mac) {
         int i,j;
+
         String d="Out of Range";
         for (i=0; i<mac.size(); i++) {
             for(j=0;j<Address.size();j++){
@@ -157,8 +158,16 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 else
                     d = "Out of Range";
             }
-            myDeviceDistance.set(i,d);
+            if(myDeviceDistance.size() < mac.size()){
+                myDeviceDistance.add(d);
+            }
+            else{
+                myDeviceDistance.set(i,d);
+            }
+
         }
+//                Toast.makeText(mContext,"myDevice: "+mac, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,"myDistance: "+myDeviceDistance, Toast.LENGTH_SHORT).show();
     }
 
     public void searchItem(BluetoothDevice device,String item,int rssi) {

@@ -226,10 +226,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //bName,macAddress各自單獨存成一個array
                 bName_list.add(bName);
                 macAddress_list.add(macAddress);
-                bluetooth.mac = macAddress_list;
                 bPic_list.add(bPic);
                 distance.add("out of range");//distance先寫死
             }
+            bluetooth.mac = macAddress_list;
 
             //上面的資料讀取完  才設置listview
             adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
@@ -452,12 +452,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
-        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,bluetooth.mac,bPic_list,true);//顯示的方式
+        Toast.makeText(this, "address array here"+macAddress_list, Toast.LENGTH_SHORT).show();
+//        while(bluetooth.myDeviceDistance.size() < 1) {
+//
+//        }
+        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
         listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,bluetooth.mac,bPic_list,false);//顯示的方式
+                adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
                 listView1.setAdapter(adapter);
             }
         }, 3000);

@@ -67,7 +67,6 @@
                             style="@style/content"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
-                            android:text="25 m away"
                             android:textColor="@color/colorGreen"
                             android:visibility="visible" />
 
