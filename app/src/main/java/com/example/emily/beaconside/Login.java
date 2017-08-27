@@ -1,29 +1,26 @@
 package com.example.emily.beaconside;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-//import android.app.ProgressDialog;
-//import android.content.Intent;
-//import android.os.AsyncTask;
-//import android.os.Bundle;
-//import android.support.v7.app.AppCompatActivity;
-//import android.view.View;
-//import android.widget.Button;
-//import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -32,23 +29,21 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
-//import org.json.JSONArray;
-//import org.json.JSONException;
-//import org.json.JSONObject;
-//
-//import java.util.Arrays;
-//import java.util.HashMap;
+import com.facebook.share.ShareApi;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
 
 
-public class Login extends AppCompatActivity implements View.OnClickListener{
+
+public class Login extends AppCompatActivity implements View.OnClickListener {
 
     CallbackManager callbackManager;
-    AccessToken accessToken = AccessToken.getCurrentAccessToken();
-
+//    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    AccessToken accessToken;
     private Button btn_add;
     private Button btn_friends;
     private Button btn_search;
@@ -62,12 +57,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_login);
+
+
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
-
+        setContentView(R.layout.activity_login);
         btn_friends = (Button) findViewById(R.id.btn_friends);
         btn_friends.setOnClickListener(this);
+        accessToken = AccessToken.getCurrentAccessToken();
 
 /**
  *         FB登入按鈕，要求使用者權限，能要求的有email、friends、profile
@@ -119,25 +116,24 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     }
 
 
-
-    /**
+/**
      *  分享到user塗鴉牆，需另外要求權限，未使用dialog方塊
      */
-//    private void publishImage(){
-//        Bitmap image = BitmapFactory.decodeResource(getResources(),     R.mipmap.ic_launcher);
-//
-//        SharePhoto photo = new SharePhoto.Builder()
-//                .setBitmap(image)
+    private void publishImage(){
+        Bitmap image = BitmapFactory.decodeResource(getResources(),     R.mipmap.ic_launcher);
+
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
 //                分享出的內容
-//                .setCaption("Welcome To Facebook Photo Sharing on steroids!")
-//                .build();
-//
-//        SharePhotoContent content = new SharePhotoContent.Builder()
-//                .addPhoto(photo)
-//                .build();
-//        ShareApi.share(content, null);
-//
-//    }
+                .setCaption("Welcome To Facebook Photo Sharing on steroids!")
+                .build();
+
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        ShareApi.share(content, null);
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
@@ -268,7 +264,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 //                                }
 //
 //
-//                                ListAdapter adapter = new SimpleAdapter(MainActivity.this , list , android.R.layout.simple_list_item_2
+//                                ListAdapter adapter = new SimpleAdapter(.Login.this , list , android.R.layout.simple_list_item_2
 //                                        ,new String[]{"name" , "id"},new int[]{android.R.id.text1 , android.R.id.text2});
 //                                List.setAdapter(adapter);
 //
@@ -298,4 +294,4 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             search();
         }
     }}
-
+//

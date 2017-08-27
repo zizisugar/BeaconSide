@@ -28,6 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:tint="@color/white"
+        android:tintMode="add"
         app:backgroundTint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_action_add" />
 
@@ -47,6 +49,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/checkItem"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/button_round"
+            android:text="CHECK ALL ITEMS"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
