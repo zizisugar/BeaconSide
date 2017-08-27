@@ -33,25 +33,12 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-        import android.widget.ListAdapter;
-        import android.widget.ListView;
-        import android.widget.AdapterView;
-        import android.widget.PopupMenu;
-        import android.widget.ProgressBar;
-        import android.widget.SimpleAdapter;
-        import android.widget.TextView;
-        import android.widget.Toast;
 
-        import org.json.JSONArray;
-        import org.json.JSONException;
-        import org.json.JSONObject;
 
-        import java.util.ArrayList;
-        import java.util.Arrays;
-        import java.util.HashMap;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-        import static com.example.emily.beaconside.R.layout.activity_rowdata;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PopupMenu.OnMenuItemClickListener {
 
@@ -61,9 +48,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView chooseGroup,chooseClass;
     ListView listView1;
     rowdata adapter;
-//    ArrayList<String> name= new ArrayList<>(Arrays.asList("Wallet(Tag02)","Key(Qmote)","Camera(xBeacon)","Laptop(xBeacon)"));
-//    ArrayList<String> distance= new ArrayList<>(Arrays.asList("Out of Range","Out of Range","Out of Range","Out of Range"));
-//    ArrayList<String> address = new ArrayList<>(Arrays.asList("D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80","1C:BA:8C:28:8B:5F","5B:58:1A:1E:A6:D7"));
 
     BluetoothMethod bluetooth = new BluetoothMethod();
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -72,8 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     //寫死目前的用戶
-    public String uEmail = "\"sandy@gmail.com\"";
-
+    public String uEmail;
     private String JSON_STRING; //用來接收php檔傳回的json
 
     ArrayList<String> bName_list = new ArrayList<String>();//我的beacon名稱list
@@ -82,16 +65,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<String> cName_list = new ArrayList<String>();//我的event名稱list
     ArrayList<String> distance= new ArrayList<String>();
 
-    //ArrayList<String> name= new ArrayList<>(Arrays.asList("Wallet(Tag02)","Key(Qmote)","Camera(xBeacon)","Laptop(xBeacon)"));
-    //distance距離先寫死
-    //ArrayList<String> distance= new ArrayList<>(Arrays.asList("Out of Range","Out of Range","Out of Range","Out of Range"));
-
-    //ArrayList<String> address = new ArrayList<>(Arrays.asList("D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80","1C:BA:8C:28:8B:5F","1C:BA:8C:28:8B:5F"));
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
+        // 取得從Login頁面傳來的用戶的FB帳號
+        Intent intent = this.getIntent();
+        uEmail = "\""+intent.getStringExtra("uEmail")+"\"";
+        Toast.makeText(this, uEmail, Toast.LENGTH_SHORT).show();
         // 初始化藍牙
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
@@ -115,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //取得用戶擁有的beacon
         getBeacon();
-        //getUserEvent();
+        getUserEvent();
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -276,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 JSON_STRING = s;
                 //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
                 //將取得的json轉換為array list, 顯示在畫面上
-                //showUserEvent();
+                showUserEvent();
 
             }
 

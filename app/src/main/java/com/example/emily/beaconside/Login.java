@@ -91,6 +91,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     uName=(String) object.get("name");
                                     uEmail=(String) object.get("email");
                                     addUser();
+                                    /**換頁到Main**/
+                                    Intent intent = new Intent();
+                                    intent.setClass(Login.this,MainActivity.class);
+                                    //傳遞變數
+                                    intent.putExtra("uEmail",uEmail);
+                                    startActivity(intent);
+                                    finish();
+                                    /******/
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -100,6 +108,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 parameters.putString("fields" , "id,name,link,email");
                 request.setParameters(parameters);
                 request.executeAsync();
+
             }
             @Override
             public void onCancel() {
