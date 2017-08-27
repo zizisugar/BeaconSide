@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private Button btn_friends;
     private Button btn_search;
 
-    private String uEmail;
+    public static String uEmail;
     private String uId ;
     private String uName ;
 

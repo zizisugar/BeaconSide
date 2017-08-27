@@ -48,8 +48,8 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
     ListView event_dialog_listview;//增加event的視窗內的listview
     List<Boolean> listShow;    // 這個用來記錄哪幾個 item 是被打勾的
 
-    String uEmail = "sandy@gmail.com";
-    String get_uEmail = "\"sandy@gmail.com\"";
+    String uEmail = MainActivity.uEmail;
+    String get_uEmail = MainActivity.get_uEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

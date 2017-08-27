@@ -52,11 +52,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     BluetoothMethod bluetooth = new BluetoothMethod();
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-
-
-
     //寫死目前的用戶
-    public String uEmail;
+    public static String uEmail;
+    public static String get_uEmail;
     private String JSON_STRING; //用來接收php檔傳回的json
 
     ArrayList<String> bName_list = new ArrayList<String>();//我的beacon名稱list
@@ -71,8 +69,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_side_bar);
         // 取得從Login頁面傳來的用戶的FB帳號
         Intent intent = this.getIntent();
-        uEmail = "\""+intent.getStringExtra("uEmail")+"\"";
-        Toast.makeText(this, uEmail, Toast.LENGTH_SHORT).show();
+        uEmail = intent.getStringExtra("uEmail");
+        get_uEmail = "\""+intent.getStringExtra("uEmail")+"\"";
+//        Toast.makeText(this, get_uEmail, Toast.LENGTH_SHORT).show();
         // 初始化藍牙
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
@@ -93,11 +92,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //listview
         mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
-
-        //取得用戶擁有的beacon
-        getBeacon();
-        getUserEvent();
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -155,9 +149,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 side_new.setText("+ New classification");
             }
         });
-
+//        refresh();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        uEmail = Login.uEmail;
+        get_uEmail = "\""+uEmail+"\"";
+        refresh();
+    }
     //取得用戶擁有的beacon
     private void getBeacon(){
         class GetBeacon extends AsyncTask<Void,Void,String> {
@@ -165,13 +166,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(MainActivity.this,"Fetching...","Wait...",false,false);
+//                loading = ProgressDialog.show(MainActivity.this,"Fetching...","Wait...",false,false);
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                loading.dismiss();
+//                loading.dismiss();
                 JSON_STRING = s;
                 //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
                 //將取得的json轉換為array list, 顯示在畫面上
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
-                String s = rh.sendGetRequestParam(Config.URL_GET_ALL_BEACON,uEmail);
+                String s = rh.sendGetRequestParam(Config.URL_GET_ALL_BEACON,get_uEmail);
                 return s;
             }
         }
@@ -198,6 +199,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             jsonObject = new JSONObject(JSON_STRING);//放入JSON_STRING 即在getBeacno()中得到的json
             JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);//轉換為array
+            bName_list = new ArrayList<>();
+            macAddress_list = new ArrayList<>();
+            bPic_list = new ArrayList<>();
 
             for(int i = 0; i<result.length(); i++){//從頭到尾跑一次array
                 JSONObject jo = result.getJSONObject(i);
@@ -212,10 +216,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //                distance.add("out of range");//distance先寫死
             }
-            bluetooth.mac = macAddress_list;
-            bluetooth.getStartMyItemDistance(macAddress_list);
+//            bluetooth.mac = macAddress_list;
+//            bluetooth.getStartMyItemDistance(macAddress_list);
             //上面的資料讀取完  才設置listview
-            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
+//            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
+            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
             listView1.setAdapter(adapter);
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
@@ -241,19 +246,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
+
     private void getUserEvent(){
         class GetBeacon extends AsyncTask<Void,Void,String> {
             ProgressDialog loading;
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(MainActivity.this,"Fetching...","Wait...",false,false);
+//                loading = ProgressDialog.show(MainActivity.this,"Fetching...","Wait...",false,false);
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                loading.dismiss();
+//                loading.dismiss();
                 JSON_STRING = s;
                 //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
                 //將取得的json轉換為array list, 顯示在畫面上
@@ -264,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             protected String doInBackground(Void... params) {
                 RequestHandler rh = new RequestHandler();
-                String s = rh.sendGetRequestParam(Config.URL_GET_USER_EVENT,uEmail);
+                String s = rh.sendGetRequestParam(Config.URL_GET_USER_EVENT,get_uEmail);
                 return s;
             }
         }
@@ -407,36 +413,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /*public void refresh() {
-        bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
-        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,bluetooth.mac,true);//顯示的方式
-        listView1.setAdapter(adapter);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,bluetooth.mac,false);//顯示的方式
-                listView1.setAdapter(adapter);
-            }
-        }, 3000);
-//        bluetooth.getStartSearch(this, new Long(5000));
-    }
-
-        public void refresh() {
-            bluetooth.bluetoothFunction = "myItemDistance";
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    bluetooth.getStartSearch(getBaseContext(), new Long(360000));
-                }
-            }, 10000);
-            adapter=new rowdata(this,bName_list,bluetooth.myDeviceDistance,bluetooth.mac,bPic_list);//顯示的方式
-            listView1.setAdapter(adapter);
-        }*/
 
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
-        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
-        listView1.setAdapter(adapter);
+        getBeacon();
+        getUserEvent();
+//        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
+//        listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -446,7 +429,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }, 3000);
     }
 
-    public void checkItem() {
-
-    }
 }

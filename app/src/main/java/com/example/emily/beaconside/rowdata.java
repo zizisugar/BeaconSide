@@ -85,6 +85,7 @@ public class rowdata extends BaseAdapter {
             }
         }
         //根據value_bPic array來顯示圖片
+//        Toast.makeText(context,"distance"+value_deviceDsc,Toast.LENGTH_SHORT).show();
         String bPic = value_bPic.get(position);
         int resID = context.getResources().getIdentifier(bPic, "drawable","com.example.emily.beaconside");
         holder.beaconImage.setImageResource(resID);
