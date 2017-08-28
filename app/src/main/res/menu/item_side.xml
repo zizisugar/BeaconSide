@@ -9,6 +9,7 @@
         android:id="@+id/menu_delete"
         android:icon="@drawable/trash"
         android:title="刪除" />
+
     <!--&lt;!&ndash; menu group &ndash;&gt;-->
     <!--<group android:id="@+id/group_delete">-->
         <!--<item android:id="@+id/menu_archive"-->

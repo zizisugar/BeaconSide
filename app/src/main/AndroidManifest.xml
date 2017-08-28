@@ -50,6 +50,7 @@
         <activity
             android:name=".Login"
             android:exported="true">
+            android:theme="@style/AppTheme.NoActionBar"
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -75,6 +76,8 @@
             android:smallScreens="true"
             android:xlargeScreens="true" />
         <uses-sdk tools:overrideLibrary="com.facebook"/>
+        <activity android:name=".item_plus_content_rowdata"></activity>
+
     </application>
 
 </manifest>

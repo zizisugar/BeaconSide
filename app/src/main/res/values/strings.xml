@@ -18,7 +18,6 @@
     <string name="login">Sign in</string>
     <string name="forgiveAccount">Forgot email?</string>
     <string name="addMemeber">Create account</string>
-
     <string name="title_activity_add_new">AddNewActivity</string>
     <string name="title_activity_add_new_beacon">addNewBeacon</string>
     <string name="facebook_app_id">2002693203308136</string>

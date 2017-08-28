@@ -1,6 +1,6 @@
 package com.example.emily.beaconside;
 
-import android.app.AlertDialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,11 +11,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
-import android.view.ContextMenu;
+
+import android.support.v7.app.AlertDialog;
 import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -35,12 +34,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PopupMenu.OnMenuItemClickListener {
+
+
+    int listItemPositionForPopupMenu;
 
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         //listview
+
         mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
 
@@ -371,7 +375,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_name) {
-
             refresh();
             return true;
         }

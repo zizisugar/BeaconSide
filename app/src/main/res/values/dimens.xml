@@ -1,6 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="fab_margin">16dp</dimen>
-
     <!--new item-->
     <dimen name="tags_text">12dp</dimen>
     <dimen name="tags_height">35dp</dimen>
@@ -13,4 +12,8 @@
     <!--notification dialog-->
     <dimen name="reminder_title">20dp</dimen>
     <dimen name="reminder_text">18dp</dimen>
+
+    <!--item plus content rowdata-->
+    <dimen name="list_text">18dp</dimen>
 </resources>
+
