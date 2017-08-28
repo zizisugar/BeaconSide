@@ -19,4 +19,7 @@
     <color name="notification_title">#FF000000</color>
     <color name="notification_content">#FF414141</color>
 
+    <!--notification dialog-->
+
+
 </resources>

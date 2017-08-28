@@ -1,20 +1,13 @@
 package com.example.emily.beaconside;
 
-import android.annotation.TargetApi;
-import android.app.ActionBar;
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.view.LayoutInflater;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,21 +17,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,PopupMenu.OnMenuItemClickListener{
+
+
+    int listItemPositionForPopupMenu;
 
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
@@ -56,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
+
+
 
         mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
@@ -129,16 +120,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.item_side, popup.getMenu());
-
         popup.show();
+        showMenu(v,popup);
     }
 
-    public void showMenu(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
 
+
+    public void showMenu(View v, PopupMenu popup) {
+
+//        PopupMenu popup = new PopupMenu(this, v);
         // This activity implements OnMenuItemClickListener
         popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.item_side);
+//        popup.inflate(R.menu.item_side);
         popup.show();
     }
 
@@ -146,8 +139,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit:
+                Toast.makeText(MainActivity.this, "Enter another page", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.menu_delete:
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setTitle("Delete this Item");
+                alert.setMessage("Do you want to delete "+"ItemName"+"?");
+
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        //Your action here
+                    }
+                });
+
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+                alert.show();
+
                 return true;
             default:
                 return true;
@@ -155,28 +168,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.item_side, menu);
 
-    }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.menu_edit:
-//                editNote(info.id);
-                return true;
-            case R.id.menu_delete:
-//                deleteNote(info.id);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
     /* Item setting end */
 
 
@@ -196,7 +188,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_name) {
-
+            Toast.makeText(MainActivity.this, "This is my Toast message!",
+                    Toast.LENGTH_LONG).show();
             return true;
         }
 

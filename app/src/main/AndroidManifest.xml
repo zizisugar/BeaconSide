@@ -15,7 +15,7 @@
         <activity
             android:name=".MainActivity"
             android:label="My beacon"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".sign_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,9 @@
         <activity
             android:name=".SearchDevice"
             android:label="Search Device" />
-        <activity android:name=".AutoResizeTextView"></activity>
+        <activity android:name=".AutoResizeTextView" />
+        <activity android:name=".add_rowdata" />
+        <activity android:name=".item_plus_content_rowdata"></activity>
     </application>
 
 </manifest>

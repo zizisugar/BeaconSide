@@ -7,16 +7,16 @@
     android:orientation="vertical"
     android:weightSum="1">
 
+
+
     <!--item ifo-->
-    <android.support.constraint.ConstraintLayout
+    p<android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="177dp"
         android:orientation="vertical"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_gravity="center">
-
-
         <!--src-->
         <ImageButton
             android:id="@+id/device_pic"
@@ -132,6 +132,8 @@
             android:paddingTop="10dp">
 
 
+
+
                 <!--Event title-->
                 <TextView
                 android:id="@+id/event"
@@ -197,7 +199,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:layout_marginRight="8dp"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintHorizontal_bias="0.235"
+                    app:layout_constraintHorizontal_bias="0.037"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -299,7 +301,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:layout_marginRight="8dp"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintHorizontal_bias="0.107"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
