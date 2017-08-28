@@ -66,6 +66,39 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         btn_friends.setOnClickListener(this);
         accessToken = AccessToken.getCurrentAccessToken();
 
+        if(accessToken!=null){
+
+            GraphRequest request = GraphRequest.newMeRequest(
+                    accessToken,
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        //當RESPONSE回來的時候
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            Toast.makeText(Login.this,"Get Token",Toast.LENGTH_SHORT).show();
+                            //讀出姓名、ID、網頁連結
+                            try {
+                                Log.e("Already Log in", "Already Log in");
+                                Toast.makeText(Login.this,"Already Log in",Toast.LENGTH_SHORT).show();
+                                uId=(String) object.get("id");
+                                uName=(String) object.get("name");
+                                uEmail=(String) object.get("email");
+                                /**換頁到Main**/
+                                Intent intent = new Intent();
+                                intent.setClass(Login.this,MainActivity.class);
+                                //傳遞變數
+                                intent.putExtra("uEmail",uEmail);
+                                startActivity(intent);
+                                finish();
+                                /******/
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.e("Failed","Failed");
+                                Toast.makeText(Login.this,"Failed",Toast.LENGTH_SHORT).show();
+                            }
+                        }});
+        }
+
+
 /**
  *         FB登入按鈕，要求使用者權限，能要求的有email、friends、profile
  *         未做 : 登入時將資料寫進資料庫
@@ -163,7 +196,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-                Toast.makeText(Login.this,s,Toast.LENGTH_LONG).show();
+                Toast.makeText(Login.this,s,Toast.LENGTH_SHORT).show();
             }
 
             @Override
