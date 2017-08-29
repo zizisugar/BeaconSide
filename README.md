@@ -14,4 +14,4 @@ bluetooth.BTinit(getBaseContext()); // 開始執行藍牙，參數放目前頁�
 2. ```bluetooth.bluetoothFunction = "searchItem";```
 該功能會搜尋指定的藍牙裝置(更改currentItem的值)，指定方式為給出該藍牙裝置的MAC地址，會得到距離的資訊，結果透過currentDistance或currentRssi來存取。
 3. ```bluetooth.bluetoothFunction = "myItemDistance";```
-會先掃描周圍所有裝置，並檢查使用者擁有的beacon有沒有在周圍，如果有的話則更新listView上裝置的距離資訊
+會先掃描周圍所有裝置，並檢查使用者擁有的beacon有沒有在周圍，如果有的話則更新listView上裝置的距離資訊"# my_beacon" 
