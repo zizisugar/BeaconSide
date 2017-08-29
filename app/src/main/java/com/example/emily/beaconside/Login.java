@@ -74,10 +74,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         public void onCompleted(
                                 JSONObject object,
                                 GraphResponse response) {
-                            Toast.makeText(Login.this,"Get Token",Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(Login.this,"Get Token",Toast.LENGTH_SHORT).show();
                             //讀出姓名、ID、網頁連結
                             try {
-                                Toast.makeText(Login.this,"Already Log in",Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(Login.this,"Already Log in",Toast.LENGTH_SHORT).show();
                                 uId=(String) object.get("id");
                                 uName=(String) object.get("name");
                                 uEmail=(String) object.get("email");
@@ -92,7 +92,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Log.e("Failed","Failed");
-                                Toast.makeText(Login.this,"Failed",Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(Login.this,"Failed",Toast.LENGTH_SHORT).show();
                             }
                             // Application code
                         }

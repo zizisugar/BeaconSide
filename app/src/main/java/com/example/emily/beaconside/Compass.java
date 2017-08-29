@@ -224,4 +224,12 @@ public class Compass extends AppCompatActivity implements SurfaceHolder.Callback
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent backPressedIntent = new Intent();
+        backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
+        startActivity(backPressedIntent );
+        finish();
+    }
+
 }
