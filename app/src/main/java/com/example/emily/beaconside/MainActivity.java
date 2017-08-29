@@ -72,8 +72,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_side_bar);
         // 取得從Login頁面傳來的用戶的FB帳號
         Intent intent = this.getIntent();
-        uEmail = intent.getStringExtra("uEmail");
-        get_uEmail = "\""+intent.getStringExtra("uEmail")+"\"";
+        uEmail = Login.uEmail;
+//        if(!intent.getStringExtra("uEmail").equals(""))
+//            uEmail = intent.getStringExtra("uEmail");
+        get_uEmail = "\""+uEmail+"\"";
 //        Toast.makeText(this, uEmail, Toast.LENGTH_SHORT).show();
         // 初始化藍牙
         bluetooth.BTinit(this);
@@ -153,7 +155,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 side_new.setText("+ New classification");
             }
         });
-//        refresh();
+        getBeacon();
+        getUserEvent();
     }
 
     @Override
@@ -161,7 +164,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         uEmail = Login.uEmail;
         get_uEmail = "\""+uEmail+"\"";
-        refresh();
+//        refresh();
+        getBeacon();
+        getUserEvent();
     }
     //取得用戶擁有的beacon
     private void getBeacon(){
@@ -224,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            bluetooth.getStartMyItemDistance(macAddress_list);
             //上面的資料讀取完  才設置listview
 //            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
-            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
+            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式
             listView1.setAdapter(adapter);
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
@@ -326,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit:
-                Toast.makeText(MainActivity.this, "Enter another page", Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this, "Enter another page", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.menu_delete:
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -421,8 +426,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
         getBeacon();
         getUserEvent();
-//        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
-//        listView1.setAdapter(adapter);
+        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
+        listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {

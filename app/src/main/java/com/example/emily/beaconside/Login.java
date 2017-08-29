@@ -67,17 +67,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         accessToken = AccessToken.getCurrentAccessToken();
 
         if(accessToken!=null){
-
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
                     new GraphRequest.GraphJSONObjectCallback() {
-                        //當RESPONSE回來的時候
                         @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
+                        public void onCompleted(
+                                JSONObject object,
+                                GraphResponse response) {
                             Toast.makeText(Login.this,"Get Token",Toast.LENGTH_SHORT).show();
                             //讀出姓名、ID、網頁連結
                             try {
-                                Log.e("Already Log in", "Already Log in");
                                 Toast.makeText(Login.this,"Already Log in",Toast.LENGTH_SHORT).show();
                                 uId=(String) object.get("id");
                                 uName=(String) object.get("name");
@@ -95,7 +94,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 Log.e("Failed","Failed");
                                 Toast.makeText(Login.this,"Failed",Toast.LENGTH_SHORT).show();
                             }
-                        }});
+                            // Application code
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,link,email");
+            request.setParameters(parameters);
+            request.executeAsync();
+
+
         }
 
 
@@ -195,8 +202,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                loading.dismiss();
-                Toast.makeText(Login.this,s,Toast.LENGTH_SHORT).show();
+//                loading.dismiss();
+//                Toast.makeText(Login.this,s,Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -252,8 +259,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                loading.dismiss();
-                Toast.makeText(Login.this,s,Toast.LENGTH_LONG).show();
+//                loading.dismiss();
+//                Toast.makeText(Login.this,s,Toast.LENGTH_LONG).show();
             }
 
             @Override

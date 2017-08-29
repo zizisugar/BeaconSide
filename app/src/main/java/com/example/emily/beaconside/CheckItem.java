@@ -3,6 +3,7 @@ package com.example.emily.beaconside;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -79,7 +80,7 @@ public class CheckItem extends AppCompatActivity {
 
     }
 
-    public void onBackPressed() {
+    public void onBackPressed(View view) {
         Intent backPressedIntent = new Intent();
         backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
         startActivity(backPressedIntent );
