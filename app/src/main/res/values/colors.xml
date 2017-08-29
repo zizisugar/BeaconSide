@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4083ff</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+
+    <color name="colorAccent">#f58167</color>
+    <color name="colorGreen">#39c89e</color>
+    <color name="colorDark">#2A3033</color>
+    <color name="colorMedium">#5C5C5C</color>
+    <color name="colorLight">#8a8a8a</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#FF000000</color>
+
+    <color name="nav_header_b">#FFFFFFFF</color>
+    <color name="nav_header_t">#FF000000</color>
+
+    <!--new item-->
+    <color name="title">#FF000000</color>
+    <color name="alarm_text">#FF494949</color>
+    <color name="notification_title">#FF000000</color>
+    <color name="notification_content">#FF414141</color>
+
+    <!--notification dialog-->
+
+</resources>

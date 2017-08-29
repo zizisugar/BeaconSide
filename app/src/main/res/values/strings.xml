@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">BeaconSide</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="vertical_ellipsis">&#8942;</string>
+
+    <string name="descr_overflow_button">test</string>
+
+    <!--Log in page-->
+    <string name="fb_login">FB</string>
+    <string name="google_login">Google</string>
+    <string name="account_input">Name</string>
+    <string name="pwd_input"></string>
+    <string name="login">Sign in</string>
+    <string name="forgiveAccount">Forgot email?</string>
+    <string name="addMemeber">Create account</string>
+    <string name="title_activity_add_new">AddNewActivity</string>
+    <string name="title_activity_add_new_beacon">addNewBeacon</string>
+    <string name="facebook_app_id">1412054392241141</string>
+    <string name="fb_login_protocol_scheme">fb1412054392241141</string>
+
+</resources>

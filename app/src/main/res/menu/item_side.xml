@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/edit"
+        android:title="編輯" />
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/trash"
+        android:title="刪除" />
+
+    <!--&lt;!&ndash; menu group &ndash;&gt;-->
+    <!--<group android:id="@+id/group_delete">-->
+        <!--<item android:id="@+id/menu_archive"-->
+            <!--android:title="menu_archive" />-->
+        <!--<item android:id="@+id/menu_delete"-->
+            <!--android:title="menu_delete" />-->
+    <!--</group>-->
+</menu>

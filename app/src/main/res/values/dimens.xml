@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--new item-->
+    <dimen name="tags_text">12dp</dimen>
+    <dimen name="tags_height">35dp</dimen>
+    <dimen name="titleText">20dp</dimen>
+    <dimen name="alarm_text">17dp</dimen>
+    <dimen name="alarm_input">15dp</dimen>
+    <dimen name="notification_title">18dp</dimen>
+    <dimen name="notification_content">16dp</dimen>
+
+    <!--notification dialog-->
+    <dimen name="reminder_title">20dp</dimen>
+    <dimen name="reminder_text">18dp</dimen>
+
+    <!--item plus content rowdata-->
+    <dimen name="list_text">18dp</dimen>
+</resources>
+
