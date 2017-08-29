@@ -62,7 +62,7 @@
         </activity>
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider2002693203308136"
+            android:authorities="com.facebook.app.FacebookContentProvider1412054392241141"
             android:exported="true" />
 
         <supports-screens

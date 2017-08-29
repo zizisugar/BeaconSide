@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     android:background="@color/white">
+
     <TextView
         android:id="@+id/editText2"
         android:layout_width="match_parent"
@@ -12,9 +13,11 @@
         android:inputType="textPersonName"
         android:text="Already Bring"
         android:textAlignment="center"
-        android:textColor="@color/colorGreen" />
+        android:textColor="@color/colorGreen"
+        android:textSize="20sp" />
 
     <ListView
+        android:id="@+id/already"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="50dp" />
@@ -28,7 +31,8 @@
         android:inputType="textPersonName"
         android:text="Forget Bring"
         android:textAlignment="center"
-        android:textColor="@color/colorAccent" />
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/editText4"
@@ -42,7 +46,22 @@
         android:textSize="12sp" />
 
     <ListView
+        android:id="@+id/forget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="50dp" />
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_round_blue"
+        android:onClick="onBackPressed"
+        android:text="Confirm"
+        android:textColor="@color/white" />
 </LinearLayout>

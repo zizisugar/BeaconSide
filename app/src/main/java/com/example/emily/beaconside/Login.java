@@ -189,7 +189,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
+//                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
             }
 
             @Override
@@ -246,7 +246,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
+//                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
             }
 
             @Override

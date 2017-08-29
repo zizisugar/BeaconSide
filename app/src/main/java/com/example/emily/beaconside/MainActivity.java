@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = this.getIntent();
         uEmail = intent.getStringExtra("uEmail");
         get_uEmail = "\""+intent.getStringExtra("uEmail")+"\"";
-        Toast.makeText(this, uEmail, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, uEmail, Toast.LENGTH_SHORT).show();
         // 初始化藍牙
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
@@ -436,6 +436,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent();
         intent.setClass(MainActivity.this,CheckItem.class);
         intent.putExtra("macAddress",macAddress_list);
+        intent.putExtra("bPic_list",bPic_list);
+        intent.putExtra("bName_list",bName_list);
+        intent.putExtra("bStatus_list", bluetooth.myDeviceDistance);
         startActivity(intent);
         finish();
     }
