@@ -193,10 +193,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 side_new.setOnClickListener(new Button.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent();
-//                        intent.setClass(MainActivity.this,NewGroup.class);
-//                        startActivity(intent);
-                        Toast.makeText(MainActivity.this,"I'm Clicked ",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"new group Clicked ",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this,NewGroup.class);
+                        startActivity(intent);
                     }
 
                 });
@@ -215,6 +215,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(MainActivity.this,"new event Clicked ",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this,NewEvent.class);
+                        startActivity(intent);
                     }
 
                 });
