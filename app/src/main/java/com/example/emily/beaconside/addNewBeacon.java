@@ -18,18 +18,7 @@ package com.example.emily.beaconside;
         import android.support.v7.widget.Toolbar;
         import android.text.method.KeyListener;
         import android.view.View;
-        import android.widget.AdapterView;
-        import android.widget.Button;
-        import android.widget.CheckedTextView;
-        import android.widget.CompoundButton;
-        import android.widget.EditText;
-        import android.widget.ImageButton;
-        import android.widget.ImageView;
-        import android.widget.ListView;
-        import android.widget.SimpleAdapter;
-        import android.widget.Switch;
-        import android.widget.TextView;
-        import android.widget.Toast;
+        import android.widget.*;
 
         import org.json.JSONArray;
         import org.json.JSONException;
@@ -148,7 +137,7 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         add_event = (ImageButton)findViewById(R.id.add_event);
         add_group = (ImageButton)findViewById(R.id.add_group);
         add_notification = (ImageButton)findViewById(R.id.add_notification);
-        listView_eventScroll = (ListView) findViewById(R.id.listview_eventScroll);
+        //listView_eventScroll = (ListView) findViewById(R.id.listview_eventScroll);
         buttonSubmit= (Button) findViewById(R.id.buttonSubmit);
         //設定button onclick的動作
         buttonSubmit.setOnClickListener(this);
@@ -196,17 +185,23 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO Auto-generated method stub
-
-                                //eventIdSelect_array = new int[event_select.length];
-
+                                ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String, String>>();
+                                HashMap<String,String> event = new HashMap<>();
                                 for (int i = 0; i < event_select.length; i++) {
                                     if (event_select[i]) { //如果選擇的是true(被勾選)
                                         eventIdSelect.append(Integer.toString(eventId_array[i])).append(",");
                                         //連接stringbuffer eventIdSelect(這是一段傳給Php的stringbuffer)
+
+ //                                       event.put("event_name",eventName_array[i]);
+   //                                     list.add(event);
                                     }
                                 }
-                                Toast.makeText(addNewBeacon.this,"123", Toast.LENGTH_LONG).show();
+                                /*android.widget.ListAdapter adapter = new SimpleAdapter(
+                                        addNewBeacon.this, list, R.layout.beacon_round_item,
+                                        new String[]{"event_name"},
+                                        new int[]{R.id.event_name});
 
+                                listView_eventScroll.setAdapter(adapter);*/
 
                             }
                         })
@@ -282,6 +277,7 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
                                         //連接stringbuffer eventIdSelect(這是一段傳給Php的stringbuffer)                                    }
                                     }
                                 }
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
