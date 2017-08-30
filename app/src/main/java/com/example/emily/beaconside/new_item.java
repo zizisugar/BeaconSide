@@ -7,7 +7,6 @@ import android.content.Intent;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
@@ -67,11 +65,8 @@ public class new_item extends AppCompatActivity implements OnDateSetListener, Ti
 
 
         plus_event = (ImageButton)findViewById(R.id.plus_event);
-        plus_group = (ImageButton)findViewById(R.id.plus_group);
-        plus_notification = (ImageButton)findViewById(R.id.plus_notification);
-
-
-
+        plus_group = (ImageButton)findViewById(R.id.add_group);
+        plus_notification = (ImageButton)findViewById(R.id.add_notification);
 
         /* 新增Event */
         plus_event.setOnClickListener( new View.OnClickListener() {

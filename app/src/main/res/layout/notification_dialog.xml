@@ -47,36 +47,9 @@
 
             <!--test-->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/datetext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="請設定日期" />
-
-                <Button
-                    android:id="@+id/buttonDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Date"
-                    android:onClick="setDate"/>
-
-                <TextView
-                    android:id="@+id/timetext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="請設定時間"
-                    />
-
-                <Button
-                    android:id="@+id/buttonTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tiem"
-                    android:onClick="setTime"/>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,8 +105,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:weightSum="3">
 
         <Button

@@ -31,7 +31,6 @@ import android.widget.AdapterView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 
@@ -40,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
+
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PopupMenu.OnMenuItemClickListener {
@@ -69,6 +69,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<String> bPic_list = new ArrayList<String>();//我的beacon 圖片 list
     ArrayList<String> cName_list = new ArrayList<String>();//我的event名稱list
     ArrayList<String> distance= new ArrayList<String>();
+
+    int[] eventId_array;//儲存event id
+    String[] eventName_array;//儲存event name
+    int[] groupId_array;//儲存group id
+    String[] groupName_array;//儲存group name
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // 側邊欄使用者名稱
+        // 設置側邊欄使用者名稱
         userName = (TextView) findViewById(R.id.name);
         userName.setText("Hi! "+uName);
 
@@ -116,10 +121,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
 
-                //點選右下角加號進入SearchDevice
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this,SearchDevice.class);
-                startActivity(intent);
+                //按下加號換頁到SearchDevice
+                Intent toSearchDevice = new Intent();
+                toSearchDevice.setClass(MainActivity.this,SearchDevice.class);
+                toSearchDevice.putExtra("uEmail",uEmail);
+                toSearchDevice.putExtra("eventId_array",eventId_array);
+                toSearchDevice.putExtra("eventName_array",eventName_array);
+                toSearchDevice.putExtra("groupName_array",groupName_array);
+                toSearchDevice.putExtra("groupId_array",groupId_array);
+                startActivity(toSearchDevice);
             }
         });
 
@@ -254,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //上面的資料讀取完  才設置listview
 //            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
             adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
+//            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
             listView1.setAdapter(adapter);
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
@@ -317,12 +328,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             jsonObject = new JSONObject(JSON_STRING);//放入JSON_STRING 即在getBeacno()中得到的json
             JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);//轉換為array
 
+            eventName_array = new String[result.length()];
+            eventId_array = new int[result.length()];
+
             for (int i = 0; i < result.length(); i++) {//從頭到尾跑一次array
                 JSONObject jo = result.getJSONObject(i);
+
+                int cId = Integer.parseInt(jo.getString("cId"));//取得event id , 由string轉為cId
                 String cName = jo.getString("cName");//取得event名稱
+
                 //Toast.makeText(MainActivity.this, cName, Toast.LENGTH_LONG).show();
-                //event存成一條array
-                cName_list.add(cName);
+
+                eventId_array[i] = cId;
+                eventName_array[i] = cName;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -330,6 +348,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void getUserGroup(){
+        class GetBeacon extends AsyncTask<Void,Void,String> {
+            ProgressDialog loading;
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(MainActivity.this,"Fetching...","Wait...",false,false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                JSON_STRING = s;
+                //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
+                //將取得的json轉換為array list, 顯示在畫面上
+                showUserGroup();
+
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+                String s = rh.sendGetRequestParam(Config.URL_GET_USER_GROUP,get_uEmail);
+                return s;
+            }
+        }
+        GetBeacon ge = new GetBeacon();
+        ge.execute();
+    }
+
+    private void showUserGroup() {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(JSON_STRING);//放入JSON_STRING 即在getBeacno()中得到的json
+            JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);//轉換為array
+
+            groupName_array = new String[result.length()];
+            groupId_array = new int[result.length()];
+
+            for (int i = 0; i < result.length(); i++) {//從頭到尾跑一次array
+                JSONObject jo = result.getJSONObject(i);
+
+                int gId = Integer.parseInt(jo.getString("gId"));//取得event id , 由string轉為cId
+                String gName = jo.getString("gName");//取得event名稱
+
+                groupId_array[i] = gId;
+                groupName_array[i] = gName;
+
+                //Toast.makeText(MainActivity.this, gName, Toast.LENGTH_LONG).show();
+
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /* Item setting */
     public void showPopup(View v) {

@@ -1,5 +1,6 @@
 package com.example.emily.beaconside;
 
+
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Sensor;
@@ -96,6 +97,7 @@ public class Compass extends AppCompatActivity implements SurfaceHolder.Callback
 //            }
 //        });
 //    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -231,5 +233,4 @@ public class Compass extends AppCompatActivity implements SurfaceHolder.Callback
         startActivity(backPressedIntent );
         finish();
     }
-
 }

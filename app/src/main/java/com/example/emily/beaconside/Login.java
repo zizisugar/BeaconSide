@@ -102,8 +102,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             parameters.putString("fields", "id,name,link,email");
             request.setParameters(parameters);
             request.executeAsync();
-
-
         }
 
 
@@ -171,6 +169,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
     }
+
 /**
      *  分享到user塗鴉牆，需另外要求權限，未使用dialog方塊
      */
@@ -203,6 +202,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             protected void onPreExecute() {
                 super.onPreExecute();
 //                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
+                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
             }
 
             @Override
@@ -210,6 +210,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 super.onPostExecute(s);
 //                loading.dismiss();
 //                Toast.makeText(Login.this,s,Toast.LENGTH_SHORT).show();
+
             }
 
             @Override

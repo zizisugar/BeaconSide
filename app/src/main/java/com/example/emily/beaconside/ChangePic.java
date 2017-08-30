@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ChangePic extends AppCompatActivity {
-
+    public static final String FLAG = "BACK_STRING";
 
     private GridView gridView;
     private int[] image = {
@@ -50,17 +50,19 @@ public class ChangePic extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(ChangePic.this, "你選擇了" + imgText[position], Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
+
+                /*Intent intent = new Intent();
                 intent.setClass(ChangePic.this,MainActivity.class);
                 intent.putExtra("sayHi",imgText[position]);//試著傳值
                 finish();
+                startActivity(intent);*/
 
-
-				/*
-				 * 這邊是你要帶過去的資料
-				 */
-
-                startActivity(intent);
+                Intent intent = new Intent();
+                Bundle b = new Bundle();
+                b.putString(FLAG, imgText[position]);
+                intent.putExtras(b);
+                ChangePic.this.setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }
