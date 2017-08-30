@@ -60,7 +60,7 @@ public class Compass extends AppCompatActivity implements SurfaceHolder.Callback
         /* bluetooth */
         bluetooth.BTinit(this);
         bluetooth.getStartSearchItem(address); // 指定要搜尋的藍牙裝置地址
-
+//        Toast.makeText(getBaseContext(), "開始搜尋"+address, Toast.LENGTH_SHORT).show();
         /* view component */
         image = (ImageView) findViewById(R.id.imageViewCompass);
         itemName = (TextView) findViewById(R.id.itemName);
@@ -124,49 +124,49 @@ public class Compass extends AppCompatActivity implements SurfaceHolder.Callback
         float degree = Math.round(event.values[0]);
         double d = bluetooth.getDistance();
         int resID;
-        itemDistance.setText(bluetooth.getDistance() + " cm");
-        itemDegree.setText(degree + " degree");
+        if(bluetooth.getDistance()<100000){ // 如果有收到藍牙裝置訊號的話
+            itemDistance.setText(bluetooth.getDistance() + " cm");
+            itemDegree.setText(degree + " degree");
 
-        // 判斷遠近來更改顯示圖片
-        if(d < 50) {
-            resID =  this.getResources().getIdentifier("close", "drawable","com.example.emily.beaconside");
-        }
-        else if(d > 50 && d < 200) {
-            resID = this.getResources().getIdentifier("mid", "drawable","com.example.emily.beaconside");
-        }
-        else {
-            resID = this.getResources().getIdentifier("far", "drawable","com.example.emily.beaconside");
-        }
-        image.setImageResource(resID);
+            // 判斷遠近來更改顯示圖片
+            if(d < 50) {
+                resID =  this.getResources().getIdentifier("close", "drawable","com.example.emily.beaconside");
+            }
+            else if(d > 50 && d < 200) {
+                resID = this.getResources().getIdentifier("mid", "drawable","com.example.emily.beaconside");
+            }
+            else {
+                resID = this.getResources().getIdentifier("far", "drawable","com.example.emily.beaconside");
+            }
+            image.setImageResource(resID);
 
         /* direction */
-        if( maxRSSI < Math.abs(bluetooth.getRssi())){
-            maxRSSI = (float)Math.abs(bluetooth.getRssi());
-            turntoTarget = -degree;//N:0, E:+
+            if( maxRSSI < Math.abs(bluetooth.getRssi())){
+                maxRSSI = (float)Math.abs(bluetooth.getRssi());
+                turntoTarget = -degree;//N:0, E:+
+            }
+
+            // create a rotation animation (reverse turn degree degrees)
+            RotateAnimation ra = new RotateAnimation(
+                    currentDegree+turntoTarget,
+                    -degree,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f);
+
+            // how long the animation will take place
+            ra.setDuration(210);
+
+            // set the animation after the end of the reservation status
+            ra.setFillAfter(true);
+
+            // Start the animation
+            image.startAnimation(ra);
+            currentDegree = -degree;
         }
-
-//        if (degree <=(turntoTarget+15) && degree>=(turntoTarget-15)){
-//            image.setVisibility(View.VISIBLE);
-//        }
-//        else
-//            image.setVisibility(View.INVISIBLE);
-        // create a rotation animation (reverse turn degree degrees)
-        RotateAnimation ra = new RotateAnimation(
-                currentDegree+turntoTarget,
-                -degree,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f);
-
-        // how long the animation will take place
-        ra.setDuration(210);
-
-        // set the animation after the end of the reservation status
-        ra.setFillAfter(true);
-
-        // Start the animation
-        image.startAnimation(ra);
-        currentDegree = -degree;
+        else{
+            itemDistance.setText("Searching signal...");
+        }
     }
 
     @Override

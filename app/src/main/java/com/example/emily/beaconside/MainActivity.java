@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PopupMenu.OnMenuItemClickListener {
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView chooseGroup,chooseClass;
     ListView listView1;
     rowdata adapter;
+    TextView userName;
 
     BluetoothMethod bluetooth = new BluetoothMethod();
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //寫死目前的用戶
     public static String uEmail;
     public static String get_uEmail;
+    public static String uName;
     private String JSON_STRING; //用來接收php檔傳回的json
 
     ArrayList<String> bName_list = new ArrayList<String>();//我的beacon名稱list
@@ -73,10 +77,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 取得從Login頁面傳來的用戶的FB帳號
         Intent intent = this.getIntent();
         uEmail = Login.uEmail;
+        uName = intent.getStringExtra("uName");
 //        if(!intent.getStringExtra("uEmail").equals(""))
 //            uEmail = intent.getStringExtra("uEmail");
         get_uEmail = "\""+uEmail+"\"";
-//        Toast.makeText(this, uEmail, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
         // 初始化藍牙
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
@@ -101,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        // 側邊欄使用者名稱
+        userName = (TextView) findViewById(R.id.name);
+        userName.setText("Hi! "+uName);
 
         /* 右下角plus button */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -142,6 +149,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 chooseClass.setVisibility(View.GONE);
 
                 side_new.setText("+ New group");
+                side_new.setOnClickListener(new Button.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+//                        Intent intent = new Intent();
+//                        intent.setClass(MainActivity.this,NewGroup.class);
+//                        startActivity(intent);
+                        Toast.makeText(MainActivity.this,"I'm Clicked ",Toast.LENGTH_SHORT).show();
+                    }
+
+                });
             }
         });
         side_class_bt.setOnClickListener(new View.OnClickListener() {//class
@@ -152,7 +169,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 chooseClass.setVisibility(View.VISIBLE);
                 chooseGroup.setVisibility(View.GONE);
 
-                side_new.setText("+ New classification");
+                side_new.setText("+ New Event");
+                side_new.setOnClickListener(new Button.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this,"new event Clicked ",Toast.LENGTH_SHORT).show();
+                    }
+
+                });
             }
         });
         getBeacon();
@@ -229,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            bluetooth.getStartMyItemDistance(macAddress_list);
             //上面的資料讀取完  才設置listview
 //            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
-            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式
+            adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
             listView1.setAdapter(adapter);
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
@@ -424,10 +448,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
-        getBeacon();
-        getUserEvent();
-//        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
-//        listView1.setAdapter(adapter);
+//        getBeacon();
+//        getUserEvent();
+        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
+        listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -445,6 +469,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra("bName_list",bName_list);
         intent.putExtra("bStatus_list", bluetooth.myDeviceDistance);
         startActivity(intent);
-        finish();
+//        finish();
     }
 }

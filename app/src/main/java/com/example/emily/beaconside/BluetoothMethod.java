@@ -35,7 +35,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     public ArrayList<String> mac = new ArrayList<String>(); // 使用者擁有裝置的地址，從資料庫獲取
     public ArrayList<String> myDeviceDistance = new ArrayList<>(); // 使用者擁有的所有裝置的目前距離
     public double currentRssi = 0;  // 目前指定要搜尋的特定藍牙裝置之訊號強度
-    public double currentDistance=0;    // 目前指定要搜尋的特定藍牙裝置之距離
+    public double currentDistance=100000;    // 目前指定要搜尋的特定藍牙裝置之距離
     public String bluetoothFunction = ""; // 目前要使用的藍牙功能
     public String currentItem = "D0:39:72:DE:DC:3A";    // 目前指定要搜尋的特定藍牙裝置
 

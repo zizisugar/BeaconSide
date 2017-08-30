@@ -77,7 +77,7 @@
             android:xlargeScreens="true" />
         <uses-sdk tools:overrideLibrary="com.facebook"/>
         <activity android:name=".item_plus_content_rowdata"></activity>
-
+        <activity android:name=".NewGroup"></activity>
     </application>
 
 </manifest>

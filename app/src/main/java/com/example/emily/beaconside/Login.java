@@ -86,6 +86,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 intent.setClass(Login.this,MainActivity.class);
                                 //傳遞變數
                                 intent.putExtra("uEmail",uEmail);
+                                intent.putExtra("uName",uName);
                                 startActivity(intent);
                                 finish();
                                 /******/
@@ -164,7 +165,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-
+    @Override
+    protected void onResume(){
+        super.onResume();
+        callbackManager = CallbackManager.Factory.create();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+    }
 /**
      *  分享到user塗鴉牆，需另外要求權限，未使用dialog方塊
      */

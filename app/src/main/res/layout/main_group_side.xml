@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:text="Family"
-        android:textAlignment="viewStart" />
+        android:textAlignment="viewStart"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/button2"
@@ -19,7 +20,8 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:text="Friends"
-        android:textAlignment="viewStart" />
+        android:textAlignment="viewStart"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/button"
@@ -27,6 +29,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:text="Cowoker"
-        android:textAlignment="viewStart" />
+        android:textAlignment="viewStart"
+        android:textSize="18sp" />
 
 </LinearLayout>
