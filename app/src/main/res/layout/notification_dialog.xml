@@ -85,7 +85,7 @@
                         android:layout_height="wrap_content"
                         android:text="請設定時間"
                         />
-                    <Button
+                   <Button
                         android:id="@+id/buttonTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -15,6 +15,7 @@ package com.example.emily.beaconside;
         import android.support.design.widget.Snackbar;
         import android.support.v7.app.AlertDialog;
         import android.support.v7.app.AppCompatActivity;
+        import android.support.v7.widget.RecyclerView;
         import android.support.v7.widget.Toolbar;
         import android.text.method.KeyListener;
         import android.view.View;
@@ -63,10 +64,12 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
     int[] groupId_array;
     private boolean[]  event_select;//紀錄哪些event被選
     private boolean[]  group_select;//紀錄哪些group被選
-    //int[] eventIdSelect_array;
-    //int[] groupIdSelect_array;
     StringBuffer eventIdSelect = new StringBuffer();
     StringBuffer groupIdSelect = new StringBuffer();
+
+    private RecyclerView horizontal_recycler_view;
+    private ArrayList<String> horizontalList;
+    //private HorizontalAdapter horizontalAdapter;
 
 
     boolean switchMode = false;//紀錄switch是開或關
@@ -129,6 +132,7 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         alarmSwitch = (Switch) findViewById(R.id.switchAlarm);
         editTextMile = (EditText) findViewById(R.id.editTextMile);
         device_pic = (ImageView) findViewById(R.id.device_pic);
+        horizontal_recycler_view= (RecyclerView) findViewById(R.id.horizontal_recycler_view);//event左右滑動的內容
         editTextMile.setText("0", TextView.BufferType.EDITABLE);
         buttonChangePic = (ImageButton) findViewById(R.id.buttonChangePic);
         buttonChangePic.setOnClickListener(this);
@@ -137,7 +141,6 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         add_event = (ImageButton)findViewById(R.id.add_event);
         add_group = (ImageButton)findViewById(R.id.add_group);
         add_notification = (ImageButton)findViewById(R.id.add_notification);
-        //listView_eventScroll = (ListView) findViewById(R.id.listview_eventScroll);
         buttonSubmit= (Button) findViewById(R.id.buttonSubmit);
         //設定button onclick的動作
         buttonSubmit.setOnClickListener(this);
@@ -185,23 +188,24 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO Auto-generated method stub
-                                ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String, String>>();
-                                HashMap<String,String> event = new HashMap<>();
+
+                                horizontalList=new ArrayList<>();
+
                                 for (int i = 0; i < event_select.length; i++) {
                                     if (event_select[i]) { //如果選擇的是true(被勾選)
                                         eventIdSelect.append(Integer.toString(eventId_array[i])).append(",");
                                         //連接stringbuffer eventIdSelect(這是一段傳給Php的stringbuffer)
 
- //                                       event.put("event_name",eventName_array[i]);
-   //                                     list.add(event);
+                                        horizontalList.add(eventName_array[i]);
                                     }
                                 }
-                                /*android.widget.ListAdapter adapter = new SimpleAdapter(
-                                        addNewBeacon.this, list, R.layout.beacon_round_item,
-                                        new String[]{"event_name"},
-                                        new int[]{R.id.event_name});
+                                /*horizontalAdapter=new HorizontalAdapter(horizontalList);
+                                ConstraintLayoutManager horizontalLayoutManagaer
+                                        = new ConstraintLayoutManager(MainActivity.this, ConstraintLayoutManager.HORIZONTAL, false);
+                                horizontal_recycler_view.setLayoutManager(horizontalLayoutManagaer);
 
-                                listView_eventScroll.setAdapter(adapter);*/
+                                vertical_recycler_view.setAdapter(verticalAdapter);
+                                horizontal_recycler_view.setAdapter(horizontalAdapter);*/
 
                             }
                         })

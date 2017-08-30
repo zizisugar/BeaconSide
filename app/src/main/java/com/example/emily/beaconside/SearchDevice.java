@@ -26,7 +26,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     private ifrog mifrog;
     ArrayList<String> Names = new ArrayList<String>();
     ArrayList<String> Address = new ArrayList<String>();
-
     String[] groupName_array;
     int[] groupId_array;
     String[] eventName_array;
@@ -48,7 +47,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_device);
-
         //接收從MainActivity傳遞來的cName_array
         Bundle extras = getIntent().getExtras();
         uEmail = extras.getString("uEmail");
@@ -56,8 +54,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         eventId_array = extras.getIntArray("eventId_array");
         groupName_array = extras.getStringArray("groupName_array");
         groupId_array = extras.getIntArray("groupId_array");
-
-
 
         /* DeviceList */
         listView1=(ListView) findViewById(R.id.beaconList);   //取得listView1
@@ -176,7 +172,6 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
                 intent.putExtra("groupId_array",groupId_array);
                 startActivity(intent);
                 finish();
-
                 /******/
 
             }

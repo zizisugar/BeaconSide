@@ -68,9 +68,6 @@ public class new_item extends AppCompatActivity implements OnDateSetListener, Ti
         plus_group = (ImageButton)findViewById(R.id.add_group);
         plus_notification = (ImageButton)findViewById(R.id.add_notification);
 
-
-
-
         /* 新增Event */
         plus_event.setOnClickListener( new View.OnClickListener() {
             @Override

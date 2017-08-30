@@ -44,7 +44,4 @@ public class Main2Activity extends AppCompatActivity {
         textViewMac.setText(macAddress);
 
     }
-
-
-
 }
