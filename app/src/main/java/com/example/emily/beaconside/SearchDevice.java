@@ -26,7 +26,11 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     private ifrog mifrog;
     ArrayList<String> Names = new ArrayList<String>();
     ArrayList<String> Address = new ArrayList<String>();
-
+    String[] groupName_array;
+    int[] groupId_array;
+    String[] eventName_array;
+    int[] eventId_array;
+    String uEmail;
     // loading spinner
     private ProgressBar spinner;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -43,11 +47,22 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_device);
+        //接收從MainActivity傳遞來的cName_array
+        Bundle extras = getIntent().getExtras();
+        uEmail = extras.getString("uEmail");
+        eventName_array = extras.getStringArray("eventName_array");
+        eventId_array = extras.getIntArray("eventId_array");
+        groupName_array = extras.getStringArray("groupName_array");
+        groupId_array = extras.getIntArray("groupId_array");
+
         /* DeviceList */
         listView1=(ListView) findViewById(R.id.beaconList);   //取得listView1
         /* bluetooth */
         spinner = (ProgressBar)findViewById(R.id.progressBar1);
         BTinit();
+
+        //Intent i = getIntent();
+        //cName_list = i.getStringArrayListExtra("cName_list");
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -139,8 +154,26 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() { //選項按下反應
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = testValues[position];      //哪一個列表
-                Toast.makeText(SearchDevice.this, item + " selected", Toast.LENGTH_LONG).show(); //顯示訊號
+
+                String bName = testValues[position];//取得選擇beacon的名字
+                String macAddress = testValues2[position];//取得選擇beacon的macAddress
+                Toast.makeText(SearchDevice.this, bName + " selected", Toast.LENGTH_LONG).show(); //顯示訊號
+
+                /**換頁到addNewBeacon**/
+                Intent intent = new Intent();
+                intent.setClass(SearchDevice.this,addNewBeacon.class);
+                //傳遞變數
+                intent.putExtra("uEmail",uEmail);
+                intent.putExtra("bName",bName);
+                intent.putExtra("macAddress",macAddress);
+                intent.putExtra("eventName_array",eventName_array);
+                intent.putExtra("eventId_array",eventId_array);
+                intent.putExtra("groupName_array",groupName_array);
+                intent.putExtra("groupId_array",groupId_array);
+                startActivity(intent);
+                finish();
+                /******/
+
             }
         });
     }

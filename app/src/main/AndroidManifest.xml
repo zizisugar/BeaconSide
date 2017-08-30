@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.emily.beaconside">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,10 +21,61 @@
             android:name=".MainActivity"
             android:label="My beacon"
             android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!--<activity android:name=".rowdata" />-->
+        <activity android:name=".new_item" android:label="Add item" ></activity>
+        <activity android:name=".SearchDevice" android:label="Search Device" ></activity>
+        <activity android:name=".Compass" android:label="Compass" ></activity>
+        <!--<activity android:name=".AutoResizeTextView"></activity>-->
+        <activity android:name=".EditActivity" />
+        <activity android:name=".CheckItem"></activity>
+        <activity android:name=".Main2Activity" />
+        <activity
+            android:name=".addNewBeacon"
+            android:label="@string/title_activity_add_new_beacon"
+            android:theme="@style/AppTheme"></activity>
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1412054392241141"
+            android:exported="true" />
+
+        <supports-screens
+            android:anyDensity="true"
+            android:compatibleWidthLimitDp="350"
+            android:largeScreens="true"
+            android:largestWidthLimitDp="720"
+            android:normalScreens="true"
+            android:requiresSmallestWidthDp="350"
+            android:resizeable="true"
+            android:smallScreens="true"
+            android:xlargeScreens="true" />
+        <uses-sdk tools:overrideLibrary="com.facebook"/>
+        <activity android:name=".Friends"></activity>
+        <activity
+            android:name=".Login"
+            android:exported="true">
+            android:theme="@style/AppTheme.NoActionBar"
+
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<data android:scheme="@string/fb_login_protocol_scheme" />-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity android:name=".sign_in">
             <!--<intent-filter>-->
@@ -37,6 +93,7 @@
         <activity android:name=".AutoResizeTextView" />
         <activity android:name=".add_rowdata" />
         <activity android:name=".item_plus_content_rowdata"></activity>
+        <activity android:name=".NewGroup"></activity>
     </application>
 
 </manifest>

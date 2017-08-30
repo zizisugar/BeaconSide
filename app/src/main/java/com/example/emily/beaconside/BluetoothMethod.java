@@ -12,19 +12,14 @@ import com.powenko.ifroglab_bt_lib.*;
 
 import java.util.ArrayList;
 
-import static android.app.Activity.RESULT_CANCELED;
-
-
 public class BluetoothMethod implements ifrog.ifrogCallBack{
 
-
-    public boolean myStatusBT=true, firstOpenBT=true;
+    public boolean myStatusBT=true, firstOpenBT=true; boolean isSearching;
     /* 運用library */
     private ifrog mifrog;
-    public ArrayList<String> Names = new ArrayList<String>();
-    public ArrayList<String> Address = new ArrayList<String>();
-    public ArrayList<Double> Distance = new ArrayList<Double>();
-    public ArrayList<String> Information = new ArrayList<String>();
+    public ArrayList<String> Names = new ArrayList<String>();   // 周圍所有藍牙裝置的名稱
+    public ArrayList<String> Address = new ArrayList<String>(); // 周圍所有藍牙裝置的地址
+    public ArrayList<Double> Distance = new ArrayList<Double>();    // 周圍所有藍牙裝置的距離
 
     /* 調整distance */
     private double count = 0;
@@ -33,25 +28,18 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 
     /* 藍芽 */
     public final int REQUEST_ENABLE_BT = 18;
-    private boolean firstOpen = true;
-
+//    private boolean firstOpen = true;
+    /* 呼叫藍牙方法的Activity */
     Context mContext;
+    /* public 藍牙資訊 */
+    public ArrayList<String> mac = new ArrayList<String>(); // 使用者擁有裝置的地址，從資料庫獲取
+    public ArrayList<String> myDeviceDistance = new ArrayList<>(); // 使用者擁有的所有裝置的目前距離
+    public double currentRssi = 0;  // 目前指定要搜尋的特定藍牙裝置之訊號強度
+    public double currentDistance=100000;    // 目前指定要搜尋的特定藍牙裝置之距離
+    public String bluetoothFunction = ""; // 目前要使用的藍牙功能
+    public String currentItem = "D0:39:72:DE:DC:3A";    // 目前指定要搜尋的特定藍牙裝置
 
-////    /*經過了dialog卻還是沒開啟 關掉check*/
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-////        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode==REQUEST_ENABLE_BT && resultCode==RESULT_CANCELED){
-//            myStatusBT = false;
-//            Toast.makeText(this,"BT is off",  Toast.LENGTH_SHORT).show();
-//        }
-//        else{
-//            myStatusBT = true;
-//            Toast.makeText(this,"BT is on",  Toast.LENGTH_SHORT).show();
-//        }
-//        getStartSearch(this);
-//    }
-
-    public void getStartSearch(Context context){
+    public void getStartSearch(Context context, Long time){
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(firstOpenBT || !myStatusBT){
             if (!mBluetoothAdapter.isEnabled()) {//要求開啟藍芽的視窗
@@ -59,11 +47,11 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 ((Activity)context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
             }else{
-                mifrog.scanLeDevice(myStatusBT,3600000);//true
+                mifrog.scanLeDevice(myStatusBT,time);//true
             }
             firstOpenBT = false;
         }else{
-            mifrog.scanLeDevice(myStatusBT,3600000);//true
+            mifrog.scanLeDevice(myStatusBT,time);//true
         }
 
     }
@@ -85,7 +73,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
             ((Activity)context).finish();
             return;
         }
-        getStartSearch(mContext);
+        getStartSearch(mContext,new Long(360000));
     }
 
 
@@ -97,7 +85,6 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
         /*   d = 10^((abs(RSSI) - A) / (10 * n))  */
         double result = 0;
 
-        //if(count>15){
         if(count>15){
             tempdis = distanceTotal/count;
             count = 0;
@@ -126,9 +113,71 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 
     @Override
     public void BTSearchFindDevice(BluetoothDevice device, int rssi, byte[] scanRecord) {
+        switch (bluetoothFunction) {
+            case "searchItem":  // 搜尋特定MAC地址的藍牙裝置的rssi及距離資訊，會儲存到public變數中
+                searchItem(device,currentItem,rssi);
+                break;
+            case "searchDevice":    // 掃描周圍所有藍牙裝置，將裝置名稱、地址、距離儲存到public的ArrayList中
+                searchDevice(device,rssi);
+                break;
+            case "myItemDistance":  // 掃描周圍所有藍牙裝置，檢查使用者的beacon是否有在周圍，如果有的話則顯示距離資訊
+                searchDevice(device,rssi);
+                myItemDistance(mac);
+                break;
+            default:
+                searchDevice(device,rssi); // 預設為掃描周圍所有藍牙裝置
+                break;
+        }
 
+    }
+
+    @Override
+    public void BTSearchFindDevicestatus(boolean arg0) {//arg0:true/false，代表有沒有在找
+        if(arg0==false){
+            Toast.makeText(mContext,"Stop Search", Toast.LENGTH_SHORT).show();
+            isSearching = false;
+        }else{
+            Toast.makeText(mContext,"Start Search",  Toast.LENGTH_SHORT).show();
+            isSearching = true;
+        }
+    }
+
+    public void myItemDistance(ArrayList<String> mac) {
+        int i,j;
+
+        String d="Out of Range";
+        for (i=0; i<mac.size(); i++) {
+            for(j=0;j<Address.size();j++){
+                if(mac.get(i).equals(Address.get(j))){
+                    d = String.valueOf(Distance.get(j));
+                    break;
+                }
+                else
+                    d = "Out of Range";
+            }
+            if(myDeviceDistance.size() < mac.size()){
+                myDeviceDistance.add(d);
+            }
+            else{
+                myDeviceDistance.set(i,d);
+            }
+
+        }
+//                Toast.makeText(mContext,"myDevice: "+mac, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,"myDistance: "+myDeviceDistance, Toast.LENGTH_SHORT).show();
+    }
+
+    public void searchItem(BluetoothDevice device,String item,int rssi) {
+//        Toast.makeText(mContext,item +" || "+device.getAddress(), Toast.LENGTH_SHORT).show();
+        if(item.equals(device.getAddress())) {
+            currentRssi = rssi;
+            currentDistance = calculateDistance(rssi);
+//            Toast.makeText(mContext,item +"is "+currentDistance+"cm away", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void searchDevice(BluetoothDevice device,int rssi){
         String t_address= device.getAddress();//有找到裝置的話先抓Address
-
         int index=0;
         boolean t_NewDevice=true;
         for(int i=0;i<Address.size();i++){
@@ -144,39 +193,39 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
             if(t_NewDevice==true){//如果是新的device
                 Address.add(t_address);
                 //null can appear
-                Names.add(device.getName());//+" RSSI="+Integer.toString(rssi)+" d="+calculateDistance(rssi)+"cm"+" myD ="+Float.toString(turntoTarget));//抓名字然後放進列表
+                Names.add(device.getName());
                 Distance.add(calculateDistance(rssi));
-                Information.add(
-                        "Device : "+device.getName()+
-                                "\nAddress : "+t_address+
-                                "\nRssi : "+Integer.toString(rssi)+
-                                "\nDistance : "+Double.toString(calculateDistance(rssi))
-                );
-//                testValues = Names.toArray(new String[Names.size()]);
-//                testValues2 =Address.toArray(new String[Address.size()]);
-//                testValues3 = Information.toArray(new String[Information.size()]);
+                Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
             }else{//如果不是新的device
-                Names.set(index,device.getName());//+" RSSI="+Integer.toString(rssi)+" d="+calculateDistance(rssi)+"cm"+" myD ="+Float.toString(turntoTarget));//更改device名字，RSSI:藍芽4.0裡面可以知道訊號強度
+                Names.set(index,device.getName());
                 Distance.set(index,calculateDistance(rssi));
-                Information.add(
-                        "Device : "+device.getName()+
-                                "\nAddress : "+t_address+
-                                "\nRssi : "+Integer.toString(rssi)+
-                                "\nDistance : "+Double.toString(calculateDistance(rssi))+"cm"
-                );
-//                testValues = Names.toArray(new String[Names.size()]);//放進array
-//                testValues3 = Information.toArray(new String[Information.size()]);
             }
         }
     }
+    public void getStartSearchItem(String item) {
+        bluetoothFunction="searchItem";
+        currentItem = item;
+        getStartSearch(mContext, new Long(3600000));
+    }
 
-    @Override
-    public void BTSearchFindDevicestatus(boolean arg0) {//arg0:true/false，代表有沒有在找
-        if(arg0==false){
-            Toast.makeText(mContext,"Stop Search", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(mContext,"Start Search",  Toast.LENGTH_SHORT).show();
-        }
+    public void getStartMyItemDistance(ArrayList<String> address) {
+        bluetoothFunction="myItemDistance";
+        mac = address;
+        if(!isSearching) // 如果現在還沒開始搜尋
+            getStartSearch(mContext, new Long(100000));
+    }
+
+    public void getStartSearchDevice() {
+        bluetoothFunction="searchDevice";
+        getStartSearch(mContext, new Long(3600000));
+    }
+
+    public double getDistance() {
+        return currentDistance;
+    }
+
+    public double getRssi() {
+        return currentRssi;
     }
 
 }
