@@ -21,10 +21,11 @@
             android:name=".MainActivity"
             android:label="My beacon"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!--<activity android:name=".rowdata" />-->
@@ -45,20 +46,6 @@
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name=".Friends"></activity>
-        <activity
-            android:name=".Login"
-            android:exported="true">
-            android:theme="@style/AppTheme.NoActionBar"
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/fb_login_protocol_scheme" />
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider1412054392241141"
@@ -75,6 +62,36 @@
             android:smallScreens="true"
             android:xlargeScreens="true" />
         <uses-sdk tools:overrideLibrary="com.facebook"/>
+        <activity android:name=".Friends"></activity>
+        <activity
+            android:name=".Login"
+            android:exported="true">
+            android:theme="@style/AppTheme.NoActionBar"
+
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<data android:scheme="@string/fb_login_protocol_scheme" />-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".sign_in">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".rowdata" />
+        <activity
+            android:name=".new_item"
+            android:label="Add item" />
+        <activity
+            android:name=".SearchDevice"
+            android:label="Search Device" />
+        <activity android:name=".AutoResizeTextView" />
+        <activity android:name=".add_rowdata" />
         <activity android:name=".item_plus_content_rowdata"></activity>
         <activity android:name=".NewGroup"></activity>
         <activity android:name=".ChangePic"></activity>
