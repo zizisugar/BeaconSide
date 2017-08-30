@@ -157,7 +157,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
 
                 String bName = testValues[position];//取得選擇beacon的名字
                 String macAddress = testValues2[position];//取得選擇beacon的macAddress
-                Toast.makeText(SearchDevice.this, bName + " selected", Toast.LENGTH_LONG).show(); //顯示訊號
+
 
                 /**換頁到addNewBeacon**/
                 Intent intent = new Intent();
@@ -170,6 +170,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
                 intent.putExtra("eventId_array",eventId_array);
                 intent.putExtra("groupName_array",groupName_array);
                 intent.putExtra("groupId_array",groupId_array);
+                Toast.makeText(SearchDevice.this, bName + " selected\n" + uEmail+"\n"+macAddress+"\n"+eventName_array+"\n"+eventId_array+"\n"+groupName_array+"\n"+groupId_array, Toast.LENGTH_LONG).show(); //顯示訊號
                 startActivity(intent);
                 finish();
                 /******/
