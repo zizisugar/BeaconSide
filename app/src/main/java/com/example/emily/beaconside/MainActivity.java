@@ -4,20 +4,22 @@ package com.example.emily.beaconside;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.PopupMenu;
 import android.view.ContextMenu;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,14 +33,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.AdapterView;
-
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-
-
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,13 +54,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
     View side_class_ls,side_group_ls;
-    ImageView chooseGroup,chooseClass;
+    ImageView chooseGroup,chooseClass,userPicture;
     ListView listView1;
     rowdata adapter;
     ArrayAdapter<String> adapterPress;
-//    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
-//    String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
-//    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
     TextView userName;
 
 
@@ -70,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static String uEmail;
     public static String get_uEmail;
     public static String uName;
+    public static String uId;
     private String JSON_STRING; //用來接收php檔傳回的json
 
     ArrayList<String> bName_list = new ArrayList<String>();//我的beacon名稱list
@@ -98,10 +97,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 取得從Login頁面傳來的用戶的FB帳號
         Intent intent = this.getIntent();
 
-//        uEmail = Login.uEmail;
-        uEmail = "jennifer1024@livemail.tw";
-        uName = intent.getStringExtra("uName");
-        uName = "Cuties";
+        uEmail = Login.uEmail;
+        uName = Login.uName;
+        uId = Login.uId;
+//        uEmail = "jennifer1024@livemail.tw";
+//        uName = intent.getStringExtra("uName");
+//        uName = "Cuties";
+
+//        uId = intent.getStringExtra("uId");
 //        if(!intent.getStringExtra("uEmail").equals(""))
 //            uEmail = intent.getStringExtra("uEmail");
         get_uEmail = "\""+uEmail+"\"";
@@ -144,6 +147,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 設置側邊欄使用者名稱
         userName = (TextView) findViewById(R.id.name);
         userName.setText("Hi! "+uName);
+        userPicture = (ImageView)findViewById(R.id.userPicture) ;
+        String url ="https://graph.facebook.com/"+uId+"/picture?type=large";
+        new AsyncTask<String, Void, Bitmap>()
+        {
+            @Override
+            protected Bitmap doInBackground(String... params)
+            {
+                String url = params[0];
+                return getBitmapFromURL(url);
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap result)
+            {
+                Bitmap bmp = toRoundBitmap(result);
+                userPicture.setImageBitmap (bmp);
+                super.onPostExecute(result);
+            }
+        }.execute(url);
+
 
 
         /* 右下角plus button */
@@ -393,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(MainActivity.this,"Fetching...","Wait...",false,false);
+//                loading = ProgressDialog.show(MainActivity.this,"Fetching...","Wait...",false,false);
             }
 
             @Override
@@ -586,4 +609,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
 //        finish();
     }
+
+
+    // 從URL下載圖片
+    public static Bitmap getBitmapFromURL(String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            return bitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static Bitmap toRoundBitmap(Bitmap bitmap) {
+        //圆形图片宽高
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        //正方形的边长
+        int r = 0;
+        //取最短边做边长
+        if(width > height) {
+            r = height;
+        } else {
+            r = width;
+        }
+        //构建一个bitmap
+        Bitmap backgroundBmp = Bitmap.createBitmap(width,
+                height, Bitmap.Config.ARGB_8888);
+        //new一个Canvas，在backgroundBmp上画图
+        Canvas canvas = new Canvas(backgroundBmp);
+        Paint paint = new Paint();
+        //设置边缘光滑，去掉锯齿
+        paint.setAntiAlias(true);
+        //宽高相等，即正方形
+        RectF rect = new RectF(0, 0, r, r);
+        //通过制定的rect画一个圆角矩形，当圆角X轴方向的半径等于Y轴方向的半径时，
+        //且都等于r/2时，画出来的圆角矩形就是圆形
+        canvas.drawRoundRect(rect, r/2, r/2, paint);
+        //设置当两个图形相交时的模式，SRC_IN为取SRC图形相交的部分，多余的将被去掉
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        //canvas将bitmap画在backgroundBmp上
+        canvas.drawBitmap(bitmap, null, rect, paint);
+        //返回已经绘画好的backgroundBmp
+        return backgroundBmp;
+    }
 }
+
