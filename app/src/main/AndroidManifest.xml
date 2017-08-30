@@ -25,7 +25,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
+
         </activity>
 
         <!--<activity android:name=".rowdata" />-->
@@ -94,6 +96,8 @@
         <activity android:name=".add_rowdata" />
         <activity android:name=".item_plus_content_rowdata"></activity>
         <activity android:name=".NewGroup"></activity>
+
+
     </application>
 
 </manifest>
