@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.PopupMenu;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
 import android.view.MenuInflater;
@@ -17,17 +19,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,PopupMenu.OnMenuItemClickListener{
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{//, PopupMenu.OnMenuItemClickListener{
 
 
     int listItemPositionForPopupMenu;
+
 
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
@@ -35,18 +41,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView chooseGroup,chooseClass;
     ListView listView1;
     rowdata adapter;
+    ArrayAdapter<String> adapterPress;
     String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
     String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
     String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
 
     BluetoothMethod bluetooth = new BluetoothMethod();
 
+
+    /* long press */
+    MergeAdapter mergeAdapter;
+    /* end lon */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
 
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
@@ -54,8 +67,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter=new rowdata(this,testValues,testValues2,address);//顯示的方式
         listView1.setAdapter(adapter);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+         /* long press to edit/delete */
+        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, testValues);
+        mergeAdapter = new MergeAdapter();
+        mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));
+        mergeAdapter.addAdapter(adapter);
+        mergeAdapter.addAdapter(new ListTitleAdapter(this,adapterPress));
+        mergeAdapter.addAdapter(adapterPress);//
+
+//        listView1.setAdapter(mergeAdapter);
+
+
+        registerForContextMenu(listView1);
+        /* end long */
 
 
         /* plus button */
@@ -79,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         //some id
-        side_new = (Button)findViewById(R.id.side_new);
+         side_new = (Button)findViewById(R.id.side_new);
         side_group_bt = (Button)findViewById(R.id.side_group_bt);
         side_class_bt = (Button)findViewById(R.id.side_class_bt);
         side_class_ls = (View)findViewById(R.id.side_class_ls);
@@ -116,59 +140,82 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     /* Item setting */
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.item_side, popup.getMenu());
-        popup.show();
-        showMenu(v,popup);
-    }
-
-
-
-    public void showMenu(View v, PopupMenu popup) {
-
+//    public void showPopup(View v) {
 //        PopupMenu popup = new PopupMenu(this, v);
-        // This activity implements OnMenuItemClickListener
-        popup.setOnMenuItemClickListener(this);
-//        popup.inflate(R.menu.item_side);
-        popup.show();
-    }
-
+//        MenuInflater inflater = popup.getMenuInflater();
+//        inflater.inflate(R.menu.item_side, popup.getMenu());
+//        popup.show();
+//        showMenu(v,popup);
+//    }
+//
+//
+//
+//    public void showMenu(View v, PopupMenu popup) {
+//
+////        PopupMenu popup = new PopupMenu(this, v);
+//        // This activity implements OnMenuItemClickListener
+//        popup.setOnMenuItemClickListener(this);
+////        popup.inflate(R.menu.item_side);
+//        popup.show();
+//    }
+//
+//    @Override
+//    public boolean onMenuItemClick(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.menu_edit:
+//                Toast.makeText(MainActivity.this, "Enter another page", Toast.LENGTH_LONG).show();
+//                return true;
+//            case R.id.menu_delete:
+//                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+//                alert.setTitle("Delete this Item");
+//                alert.setMessage("Do you want to delete "+"ItemName"+"?");
+//
+//                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//
+//                        //Your action here
+//                    }
+//                });
+//
+//                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//
+//                    }
+//                });
+//
+//                alert.show();
+//
+//                return true;
+//            default:
+//                return true;
+//        }
+//    }
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_edit:
-                Toast.makeText(MainActivity.this, "Enter another page", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.menu_delete:
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                alert.setTitle("Delete this Item");
-                alert.setMessage("Do you want to delete "+"ItemName"+"?");
-
-                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        //Your action here
-                    }
-                });
-
-                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                    }
-                });
-
-                alert.show();
-
-                return true;
-            default:
-                return true;
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.listView1) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle(testValues[info.position]);
+            /*長按著的選項*/
+            String[] menuItems = new String[]{"Edit","Delete"};
+            for (int i = 0; i<menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
         }
     }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        String[] menuItems   = new String[]{"Edit","Delete"};
+        String menuItemName = menuItems[menuItemIndex];
+        String listItemName = testValues[info.position];
+//        TextView text = (TextView)findViewById(R.id.footer);
+//        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
 
-
-
+        Toast.makeText(MainActivity.this, String.format("Selected %s for item %s", menuItemName, listItemName), Toast.LENGTH_LONG).show();
+        return true;
+    }
     /* Item setting end */
 
 

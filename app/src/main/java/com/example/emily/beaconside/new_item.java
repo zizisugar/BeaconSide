@@ -52,8 +52,8 @@ public class new_item extends AppCompatActivity implements OnDateSetListener, Ti
     Button add_notification_check;
     Button buttonTime,buttonDate;
     item_plus_content_rowdata adapter;
-    ArrayList<String> text_listName;
-
+//    ArrayList<String> text_listName;
+    String text_listName="nothing";
     /* 設定ist Name 由此 */
     String[] value_event= new String[]{	"School","Dating","Daily"};
     String[] value_group= new String[]{	"Friend","Family","Coworker"};
@@ -83,7 +83,8 @@ public class new_item extends AppCompatActivity implements OnDateSetListener, Ti
                 dialog.setContentView(inflatedView);
 
                 adapter=new item_plus_content_rowdata(new_item.this,value_event);//顯示的方式
-                text_listName = adapter.getSelectedString();//text of list
+//                text_listName = adapter.getSelectedString();//text of list
+                text_listName = "wooolalla";
                 dialog_list=(ListView) inflatedView.findViewById(R.id.dialog_list);
                 add_check = (Button) inflatedView.findViewById(R.id.add_check);
                 add_check.setText("Add Event");
@@ -112,7 +113,7 @@ public class new_item extends AppCompatActivity implements OnDateSetListener, Ti
                 dialog.setContentView(inflatedView);
 
                 adapter=new item_plus_content_rowdata(new_item.this,value_group);//顯示的方式
-                text_listName = adapter.getSelectedString();//text of list
+//                text_listName = adapter.getSelectedString();//text of list
                 dialog_list=(ListView) inflatedView.findViewById(R.id.dialog_list);
                 add_check = (Button) inflatedView.findViewById(R.id.add_check);
                 add_check.setText("Add Group");
