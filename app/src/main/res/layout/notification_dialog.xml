@@ -26,15 +26,14 @@
 
                 <TextView
                     android:id="@+id/textView5"
-                    android:layout_width="match_parent"
+                    android:layout_width="122dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
                     android:text="Reminder :"
                     android:textColor="@color/notification_title"
                     android:textSize="@dimen/reminder_title"/>
 
                 <EditText
-                    android:id="@+id/editText5"
+                    android:id="@+id/notification_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -51,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
@@ -60,19 +59,65 @@
                         android:id="@+id/datetitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="請設定日期" />
-                    <Button
-                        android:id="@+id/buttonDate"
-                        android:layout_width="wrap_content"
+                        android:text="The Date : "
+                        android:textSize="@dimen/notification_title"
+                        android:textColor="@color/notification_title"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:text="Date"
-                        android:onClick="setDate"/>
-                    <TextView
-                        android:id="@+id/datetext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="" />
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+
+                        <Button
+                            android:id="@+id/buttonDatefrom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="0.5"
+                            android:background="@drawable/button_border"
+                            android:text="start" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                        <TextView
+                            android:id="@+id/text1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:text="~" />
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                        <Button
+                            android:id="@+id/buttonDateto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="3dp"
+                            android:text="end"
+                            android:background="@drawable/button_border"
+                            android:clickable="false"/>
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
 
                 </LinearLayout>
                 <LinearLayout
@@ -83,20 +128,64 @@
                         android:id="@+id/timetitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="請設定時間"
+                        android:text="The Time : "
+                        android:textSize="@dimen/notification_title"
+                        android:textColor="@color/notification_title"
                         />
-                   <Button
-                        android:id="@+id/buttonTime"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Time"
-                        android:onClick="setTime"/>
-                    <TextView
-                        android:id="@+id/timetext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        />
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                        <Button
+                            android:id="@+id/buttonTimefrom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="3dp"
+                            android:text="start"
+                            android:background="@drawable/button_border"
+                            />
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                        <TextView
+                            android:id="@+id/text2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:text="~" />
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                        <Button
+                            android:id="@+id/buttonTimeto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="3dp"
+                            android:text="end"
+                            android:background="@drawable/button_border"
+                            android:clickable="false"/>
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

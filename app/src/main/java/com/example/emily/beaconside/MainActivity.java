@@ -101,10 +101,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         // 取得從Login頁面傳來的用戶的FB帳號
         Intent intent = this.getIntent();
-//        uEmail = Login.uEmail;
-        uEmail = "jennifer1024@livemail.tw";
+
+        uEmail = Login.uEmail;
         uName = intent.getStringExtra("uName");
-        uName = "Cuties";
 //        if(!intent.getStringExtra("uEmail").equals(""))
 //            uEmail = intent.getStringExtra("uEmail");
         get_uEmail = "\""+uEmail+"\"";
@@ -225,17 +224,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         getBeacon();
         getUserEvent();
+        getUserGroup();
     }
 
     @Override
     public void onResume(){
         super.onResume();
-//        uEmail = Login.uEmail;
-        uEmail = "jennifer1024@livemail.tw";
+        uEmail = Login.uEmail;
         get_uEmail = "\""+uEmail+"\"";
-//        refresh();
-        getBeacon();
-        getUserEvent();
+        uName = Login.uName;
+        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
+        refresh();
     }
     //取得用戶擁有的beacon
     private void getBeacon(){
@@ -562,7 +561,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
 //        getBeacon();
-//        getUserEvent();
+        getUserEvent();
+        getUserGroup();
         adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
         listView1.setAdapter(adapter);
         Handler handler = new Handler();

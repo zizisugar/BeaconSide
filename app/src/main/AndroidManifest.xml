@@ -20,18 +20,17 @@
         <activity
             android:name=".MainActivity"
             android:label="My beacon"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
 
-            </intent-filter>
+            <!--</intent-filter>-->
 
         </activity>
 
         <!--<activity android:name=".rowdata" />-->
-        <activity android:name=".new_item" android:label="Add item" ></activity>
         <activity android:name=".SearchDevice" android:label="Search Device" ></activity>
         <activity android:name=".Compass" android:label="Compass" ></activity>
         <!--<activity android:name=".AutoResizeTextView"></activity>-->
@@ -40,8 +39,16 @@
         <activity android:name=".Main2Activity" />
         <activity
             android:name=".addNewBeacon"
-            android:label="@string/title_activity_add_new_beacon"
-            android:theme="@style/AppTheme"></activity>
+            android:label="New item"
+            android:theme="@style/AppTheme">
+
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
+
+            <!--</intent-filter>-->
+
+        </activity>
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity"
@@ -70,14 +77,14 @@
             android:exported="true">
             android:theme="@style/AppTheme.NoActionBar"
 
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.VIEW" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
-                <!--<data android:scheme="@string/fb_login_protocol_scheme" />-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".sign_in">
             <!--<intent-filter>-->
@@ -86,17 +93,11 @@
             <!--</intent-filter>-->
         </activity>
         <activity android:name=".rowdata" />
-        <activity
-            android:name=".new_item"
-            android:label="Add item" />
-        <activity
-            android:name=".SearchDevice"
-            android:label="Search Device" />
         <activity android:name=".AutoResizeTextView" />
         <activity android:name=".add_rowdata" />
         <activity android:name=".item_plus_content_rowdata"></activity>
         <activity android:name=".NewGroup"></activity>
-
+        <activity android:name=".ChangePic"></activity>
 
     </application>
 
