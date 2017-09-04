@@ -267,10 +267,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
         bluetooth.BTinit(this);
 //        bluetooth.getStartSearchDevice();
-        bluetooth.getStartMyItemDistance(macAddress_list);
         getBeacon();
         getUserEvent();
         getUserGroup();
+        bluetooth.getStartMyItemDistance(macAddress_list);
     }
     //取得用戶擁有的beacon
     private void getBeacon(){
