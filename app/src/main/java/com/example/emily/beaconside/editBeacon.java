@@ -765,10 +765,10 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
             updateBeacon();
             //執行更新beacon
             /* 切回到原本的畫面 */
-            /*Intent intent = new Intent();
+            Intent intent = new Intent();
             intent.setClass(editBeacon.this, MainActivity.class);
             startActivity(intent);
-            finish();*/
+            finish();
 
             return true;
         }

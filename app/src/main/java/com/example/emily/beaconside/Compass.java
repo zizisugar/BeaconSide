@@ -65,7 +65,7 @@ public class Compass extends AppCompatActivity implements SurfaceHolder.Callback
         /* view component */
         image = (ImageView) findViewById(R.id.imageViewCompass);
         itemName = (TextView) findViewById(R.id.itemName);
-        itemName.setText(name);
+        itemName.setText("\""+name+"\"");
         itemDistance = (TextView) findViewById(R.id.itemDistance);
         itemDegree = (TextView) findViewById(R.id.itemDegree);
         /* camera */
