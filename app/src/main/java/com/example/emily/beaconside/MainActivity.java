@@ -45,6 +45,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import static java.lang.Integer.parseInt;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -71,11 +73,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static String uId;
     private String JSON_STRING; //用來接收php檔傳回的json
 
-    ArrayList<String> bName_list = new ArrayList<String>();//我的beacon名稱list
+    public static ArrayList<String> bName_list = new ArrayList<String>();//我的beacon名稱list
     ArrayList<String> macAddress_list = new ArrayList<String>();//我的beacon mac list
     ArrayList<String> bPic_list = new ArrayList<String>();//我的beacon 圖片 list
     ArrayList<String> cName_list = new ArrayList<String>();//我的event名稱list
     ArrayList<String> distance= new ArrayList<String>();
+    ArrayList<Integer> bAlert_list = new ArrayList<>();
 
     int[] eventId_array;//儲存event id
     String[] eventName_array;//儲存event name
@@ -111,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        get_uEmail = "jennifer1024@livemail.tw";
 //        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
         // 初始化藍牙
-        bluetooth.BTinit(this);
-        bluetooth.getStartSearchDevice();
+//        bluetooth.BTinit(this);
+//        bluetooth.getStartSearchDevice();
         // 設置SwipeView重整
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_main);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -183,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 toSearchDevice.putExtra("eventName_array",eventName_array);
                 toSearchDevice.putExtra("groupName_array",groupName_array);
                 toSearchDevice.putExtra("groupId_array",groupId_array);
+                bluetooth.bluetoothStop();
                 startActivity(toSearchDevice);
             }
         });
@@ -219,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(MainActivity.this,"new group Clicked ",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent();
                         intent.setClass(MainActivity.this,NewGroup.class);
+                        bluetooth.bluetoothStop();
                         startActivity(intent);
                     }
 
@@ -240,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(MainActivity.this,"new event Clicked ",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent();
                         intent.setClass(MainActivity.this,NewEvent.class);
+                        bluetooth.bluetoothStop();
                         startActivity(intent);
                     }
 
@@ -259,7 +265,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         get_uEmail = "\""+uEmail+"\"";
         uName = Login.uName;
         Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
-        refresh();
+        bluetooth.BTinit(this);
+        bluetooth.getStartSearchDevice();
+        getBeacon();
+        getUserEvent();
+        getUserGroup();
     }
     //取得用戶擁有的beacon
     private void getBeacon(){
@@ -304,29 +314,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bName_list = new ArrayList<>();
             macAddress_list = new ArrayList<>();
             bPic_list = new ArrayList<>();
+            bAlert_list = new ArrayList<>();
 
             for(int i = 0; i<result.length(); i++){//從頭到尾跑一次array
                 JSONObject jo = result.getJSONObject(i);
                 String macAddress = jo.getString("macAddress");//取得macAddress
                 String bName = jo.getString("bName");//取得beacon name
                 String bPic = jo.getString("bPic");//取得beacon name
+                String bAlert = jo.getString("alertMiles");//取得beacon的alertMile
+                String isAlert = jo.getString("isAlert");
 
                 //bName,macAddress各自單獨存成一個array
                 bName_list.add(bName);
                 macAddress_list.add(macAddress);
                 bPic_list.add(bPic);
-
+                if(isAlert.equals("1")) {
+                    bAlert_list.add(parseInt(bAlert));
+//                    Toast.makeText(MainActivity.this, bName + " alert is" + parseInt(bAlert), Toast.LENGTH_SHORT).show(); //顯示訊號
+                }
+                else
+                    bAlert_list.add(100000);
 //                distance.add("out of range");//distance先寫死
             }
-//            bluetooth.mac = macAddress_list;
-//            bluetooth.getStartMyItemDistance(macAddress_list);
             //上面的資料讀取完  才設置listview
 //            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
             adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
 //            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
             mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));
             mergeAdapter.addAdapter(adapter);
-//            listView1.setAdapter(mergeAdapter);
             listView1.setAdapter(adapter);
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
@@ -343,9 +358,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     bundle.putString("itemName", itemName);
                     bundle.putString("itemAddress", itemAddress);
                     intent.putExtras(bundle);
+                    bluetooth.bluetoothStop();
                     startActivity(intent);
                 }
             } );
+            bluetooth.Alert = bAlert_list;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -396,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             for (int i = 0; i < result.length(); i++) {//從頭到尾跑一次array
                 JSONObject jo = result.getJSONObject(i);
 
-                int cId = Integer.parseInt(jo.getString("cId"));//取得event id , 由string轉為cId
+                int cId = parseInt(jo.getString("cId"));//取得event id , 由string轉為cId
                 String cName = jo.getString("cName");//取得event名稱
 
                 //Toast.makeText(MainActivity.this, cName, Toast.LENGTH_LONG).show();
@@ -422,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                loading.dismiss();
+//                loading.dismiss();
                 JSON_STRING = s;
                 //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
                 //將取得的json轉換為array list, 顯示在畫面上
@@ -453,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             for (int i = 0; i < result.length(); i++) {//從頭到尾跑一次array
                 JSONObject jo = result.getJSONObject(i);
 
-                int gId = Integer.parseInt(jo.getString("gId"));//取得event id , 由string轉為cId
+                int gId = parseInt(jo.getString("gId"));//取得event id , 由string轉為cId
                 String gName = jo.getString("gName");//取得event名稱
 
                 groupId_array[i] = gId;
@@ -606,6 +623,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra("bPic_list",bPic_list);
         intent.putExtra("bName_list",bName_list);
         intent.putExtra("bStatus_list", bluetooth.myDeviceDistance);
+        bluetooth.bluetoothStop();
         startActivity(intent);
 //        finish();
     }

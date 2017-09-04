@@ -96,6 +96,7 @@
         <activity android:name=".NewGroup"></activity>
         <activity android:name=".NewEvent"></activity>
         <activity android:name=".ChangePic"></activity>
+        <activity android:name=".AlertDistance"></activity>
     </application>
 
 </manifest>

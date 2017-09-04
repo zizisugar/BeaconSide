@@ -12,6 +12,10 @@ import com.powenko.ifroglab_bt_lib.*;
 
 import java.util.ArrayList;
 
+import static com.example.emily.beaconside.MainActivity.bName_list;
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
+
 public class BluetoothMethod implements ifrog.ifrogCallBack{
 
     public boolean myStatusBT=true, firstOpenBT=true; boolean isSearching;
@@ -20,7 +24,9 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     public ArrayList<String> Names = new ArrayList<String>();   // 周圍所有藍牙裝置的名稱
     public ArrayList<String> Address = new ArrayList<String>(); // 周圍所有藍牙裝置的地址
     public ArrayList<Double> Distance = new ArrayList<Double>();    // 周圍所有藍牙裝置的距離
-
+    public ArrayList<Integer> Alert = new ArrayList<Integer>();
+    // 警告的視窗跳過了沒，避免一直重複跳出視窗
+    boolean isAlert = false;
     /* 調整distance */
     private double count = 0;
     private double distanceTotal = 0;
@@ -113,19 +119,26 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
 
     @Override
     public void BTSearchFindDevice(BluetoothDevice device, int rssi, byte[] scanRecord) {
+//        Toast.makeText(mContext,"我還在搜尋", Toast.LENGTH_SHORT).show();
         switch (bluetoothFunction) {
             case "searchItem":  // 搜尋特定MAC地址的藍牙裝置的rssi及距離資訊，會儲存到public變數中
                 searchItem(device,currentItem,rssi);
+
                 break;
             case "searchDevice":    // 掃描周圍所有藍牙裝置，將裝置名稱、地址、距離儲存到public的ArrayList中
                 searchDevice(device,rssi);
+                myItemDistance(mac);
+                myItemAlert();
                 break;
             case "myItemDistance":  // 掃描周圍所有藍牙裝置，檢查使用者的beacon是否有在周圍，如果有的話則顯示距離資訊
                 searchDevice(device,rssi);
                 myItemDistance(mac);
+                myItemAlert();
                 break;
             default:
-                searchDevice(device,rssi); // 預設為掃描周圍所有藍牙裝置
+                searchDevice(device,rssi);
+                myItemDistance(mac);
+                myItemAlert();
                 break;
         }
 
@@ -161,10 +174,35 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
             else{
                 myDeviceDistance.set(i,d);
             }
-
         }
 //                Toast.makeText(mContext,"myDevice: "+mac, Toast.LENGTH_SHORT).show();
 //                Toast.makeText(mContext,"myDistance: "+myDeviceDistance, Toast.LENGTH_SHORT).show();
+    }
+
+    public void myItemAlert() {
+        for(int i=0; i<myDeviceDistance.size(); i++) {
+//            Toast.makeText(mContext,"my Distance: "+myDeviceDistance.get(i), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext,"my alert Distance: "+Alert.get(i), Toast.LENGTH_SHORT).show();
+            double myDistance;
+            if(tryParse(myDeviceDistance.get(i))!= -1) {  // 避免字串轉double發生錯誤，如果myDeviceDistance為字串則會回傳-1
+                myDistance = parseDouble(myDeviceDistance.get(i));
+                myDistance = myDistance / 100;// 換算成公尺
+            }
+            else
+                myDistance = -1;
+
+            if(myDistance > Alert.get(i) && !isAlert) {
+//                Toast.makeText(mContext,mac.get(i)+" is out of "+Alert.get(i)+"m\nnow is "+myDistance+"m", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(mContext,AlertDistance.class);
+                intent.putExtra("bName",bName_list.get(i));
+                intent.putExtra("bAlertDistance",Alert.get(i));
+                mContext.startActivity(intent);
+                ((Activity)mContext).finish();
+                bluetoothStop();
+                isAlert = true;
+            }
+        }
     }
 
     public void searchItem(BluetoothDevice device,String item,int rssi) {
@@ -201,23 +239,28 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 Distance.set(index,calculateDistance(rssi));
             }
         }
+
+
     }
+
     public void getStartSearchItem(String item) {
         bluetoothFunction="searchItem";
         currentItem = item;
-        getStartSearch(mContext, new Long(3600000));
+        if(!isSearching) // 如果現在還沒開始搜尋
+            getStartSearch(mContext, new Long(3600000));
     }
 
     public void getStartMyItemDistance(ArrayList<String> address) {
         bluetoothFunction="myItemDistance";
         mac = address;
         if(!isSearching) // 如果現在還沒開始搜尋
-            getStartSearch(mContext, new Long(100000));
+            getStartSearch(mContext, new Long(3600000));
     }
 
     public void getStartSearchDevice() {
         bluetoothFunction="searchDevice";
-        getStartSearch(mContext, new Long(3600000));
+        if(!isSearching) // 如果現在還沒開始搜尋
+            getStartSearch(mContext, new Long(3600000));
     }
 
     public double getDistance() {
@@ -228,4 +271,11 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
         return currentRssi;
     }
 
+    public static double tryParse(String text) {
+        try {
+            return Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 }
