@@ -71,9 +71,10 @@ public class item_plus_content_rowdata extends BaseAdapter{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    selectedStrings.add(buttonView.getText().toString());
+//                    selectedStrings.add(buttonView.getText().toString());
+                    selectedStrings.add("hihi".toString());
                 }else{
-                    selectedStrings.remove(buttonView.getText().toString());
+//                    selectedStrings.remove(buttonView.getText().toString());
                 }
 
             }

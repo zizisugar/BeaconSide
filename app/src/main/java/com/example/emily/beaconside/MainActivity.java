@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.PopupMenu;
+import android.view.ContextMenu;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.app.ProgressDialog;
@@ -13,7 +16,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
-
 import android.support.v7.app.AlertDialog;
 import android.view.MenuInflater;
 import android.view.View;
@@ -24,11 +26,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView;
-import android.widget.PopupMenu;
+
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -41,11 +45,10 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PopupMenu.OnMenuItemClickListener {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     int listItemPositionForPopupMenu;
+
 
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
@@ -53,13 +56,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView chooseGroup,chooseClass;
     ListView listView1;
     rowdata adapter;
+    ArrayAdapter<String> adapterPress;
+    //    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
+//    String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
+//    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
     TextView userName;
+
 
     BluetoothMethod bluetooth = new BluetoothMethod();
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     //寫死目前的用戶
-    public static String uEmail = "sandy@gmail.com";
+    public static String uEmail;
     public static String get_uEmail;
     public static String uName;
     private String JSON_STRING; //用來接收php檔傳回的json
@@ -75,18 +83,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int[] groupId_array;//儲存group id
     String[] groupName_array;//儲存group name
 
+
+    /* long press */
+    MergeAdapter mergeAdapter;
+    /* end lon */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         // 取得從Login頁面傳來的用戶的FB帳號
-        /*Intent intent = this.getIntent();
-        uEmail = Login.uEmail;
-        uName = intent.getStringExtra("uName");*/
+        Intent intent = this.getIntent();
+
+//        uEmail = Login.uEmail;
+        uEmail = "sandy@gmail.com";
+        uName = intent.getStringExtra("uName");
+        uName = "Cuties";
 //        if(!intent.getStringExtra("uEmail").equals(""))
 //            uEmail = intent.getStringExtra("uEmail");
         get_uEmail = "\""+uEmail+"\"";
-     Toast.makeText(this, uEmail, Toast.LENGTH_SHORT).show();
+//        get_uEmail = "jennifer1024@livemail.tw";
+//        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
         // 初始化藍牙
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
@@ -109,11 +129,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mContext = this;
         listView1=(ListView) findViewById(R.id.listView1);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        /* list view function */
+        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, bName_list);
+        mergeAdapter = new MergeAdapter();
+
+        mergeAdapter.addAdapter(new ListTitleAdapter(this,adapterPress));
+        mergeAdapter.addAdapter(adapterPress);//
+
+//        listView1.setAdapter(mergeAdapter);
+
+
+        registerForContextMenu(listView1);
+
         // 設置側邊欄使用者名稱
         userName = (TextView) findViewById(R.id.name);
         userName.setText("Hi! "+uName);
+
 
         /* 右下角plus button */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -162,10 +193,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 side_new.setOnClickListener(new Button.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent();
-//                        intent.setClass(MainActivity.this,NewGroup.class);
-//                        startActivity(intent);
-                        Toast.makeText(MainActivity.this,"I'm Clicked ",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"new group Clicked ",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this,NewGroup.class);
+                        startActivity(intent);
                     }
 
                 });
@@ -184,6 +215,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(MainActivity.this,"new event Clicked ",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this,NewEvent.class);
+                        startActivity(intent);
                     }
 
                 });
@@ -197,12 +231,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onResume(){
         super.onResume();
-        //uEmail = Login.uEmail;
-        //get_uEmail = "\""+uEmail+"\"";
-//        refresh();
-        getBeacon();
-        getUserEvent();
-        getUserGroup();
+//        uEmail = Login.uEmail;
+        uEmail = "sandy@gmail.com";
+        get_uEmail = "\""+uEmail+"\"";
+        //uName = Login.uName;
+        //Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
+        refresh();
     }
     //取得用戶擁有的beacon
     private void getBeacon(){
@@ -267,6 +301,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
             adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
 //            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
+            mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));
+            mergeAdapter.addAdapter(adapter);
+//            listView1.setAdapter(mergeAdapter);
             listView1.setAdapter(adapter);
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
@@ -409,60 +446,96 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void deleteBeacon(final String macAddress){
+        class DeleteEmployee extends AsyncTask<Void,Void,String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(MainActivity.this, "Updating...", "Wait...", false, false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+                String s = rh.sendGetRequestParam(Config.URL_DELETE_BEACON, macAddress);
+                return s;
+            }
+        }
+
+        DeleteEmployee de = new DeleteEmployee();
+        de.execute();
+    }
+
     /* Item setting */
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.item_side, popup.getMenu());
-        popup.show();
-        showMenu(v,popup);
-    }
-
-
-
-    public void showMenu(View v, PopupMenu popup) {
-
-//        PopupMenu popup = new PopupMenu(this, v);
-        // This activity implements OnMenuItemClickListener
-        popup.setOnMenuItemClickListener(this);
-//        popup.inflate(R.menu.item_side);
-        popup.show();
-    }
-
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_edit:
-//                Toast.makeText(MainActivity.this, "Enter another page", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.menu_delete:
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.listView1) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle(bName_list.get(info.position));
+            /*長按著的選項*/
+            String[] menuItems = new String[]{"Edit","Delete"};
+            for (int i = 0; i<menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
+        }
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        String[] menuItems   = new String[]{"Edit","Delete"};
+        String menuItemName = menuItems[menuItemIndex];
+        String listItemName = bName_list.get(info.position);
+        final String listItemMac = macAddress_list.get(info.position);
+//        TextView text = (TextView)findViewById(R.id.footer);
+//        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
+
+        switch (menuItemName){
+            case "Edit":
+                //進入編輯頁面
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this,editBeacon.class);
+                intent.putExtra("macAddress",listItemMac);
+                intent.putExtra("bName",listItemName);
+                intent.putExtra("uEmail",uEmail);
+                intent.putExtra("eventId_array",eventId_array);
+                intent.putExtra("eventName_array",eventName_array);
+                intent.putExtra("groupName_array",groupName_array);
+                intent.putExtra("groupId_array",groupId_array);
+                startActivity(intent);
+                break;
+            case "Delete":
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setTitle("Delete this Item");
-                alert.setMessage("Do you want to delete "+"ItemName"+"?");
+                alert.setMessage("Do you want to delete "+listItemName+" ?");
 
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-
-                        //Your action here
+                        deleteBeacon(listItemMac);
                     }
                 });
 
                 alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-
                     }
                 });
 
                 alert.show();
-
-                return true;
-            default:
-                return true;
+                break;
         }
+//        Toast.makeText(MainActivity.this, String.format("Selected %s for item %s", menuItemName, listItemName), Toast.LENGTH_LONG).show();
+        return true;
     }
-
-
-
     /* Item setting end */
 
 
@@ -527,7 +600,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
 //        getBeacon();
-//        getUserEvent();
+        getUserEvent();
+        getUserGroup();
         adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
         listView1.setAdapter(adapter);
         Handler handler = new Handler();

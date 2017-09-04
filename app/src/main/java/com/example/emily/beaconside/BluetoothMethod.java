@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.powenko.ifroglab_bt_lib.*;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 public class BluetoothMethod implements ifrog.ifrogCallBack{
@@ -196,6 +198,14 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 Names.add(device.getName());
                 Distance.add(calculateDistance(rssi));
                 Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
+
+                //檢查新的device有沒有notification
+                /*try {
+                    CheckIfThere(t_address);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+
             }else{//如果不是新的device
                 Names.set(index,device.getName());
                 Distance.set(index,calculateDistance(rssi));

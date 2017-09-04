@@ -69,8 +69,6 @@ public class rowdata extends BaseAdapter {
             holder.beaconDistance = (TextView) convertView
                     .findViewById(R.id.beaconDistance);
             holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
-            holder.item_setting = (ImageButton) convertView.findViewById(R.id.item_setting);
-            holder.item_setting.setFocusable(false);
             holder.beaconAddress = (TextView) convertView.findViewById(R.id.beaconAddress);
             holder.spinner = (ProgressBar) convertView.findViewById(R.id.progressBar);
 

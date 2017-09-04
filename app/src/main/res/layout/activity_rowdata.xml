@@ -85,53 +85,13 @@
                         android:textColor="@color/colorLight"
                         android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/beaconNearby"
-                        style="@style/content"
-                        android:layout_width="fill_parent"
-                        android:layout_height="30dp"
-                        android:textColor="@color/colorLight"
-                        android:visibility="gone" />
-
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="9"
-                    android:orientation="vertical"
-                    android:weightSum="1">
 
-                    <!--<android.support.design.widget.AppBarLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-
-                    <!--<android.support.v7.widget.Toolbar-->
-                    <!--android:id="@+id/toolbar"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="?attr/actionBarSize"-->
-                    <!--android:background="?attr/colorPrimary"-->
-                    <!--app:popupTheme="@styl
-                e/AppTheme.PopupOverlay" />-->
-
-                    <!--</android.support.design.widget.AppBarLayout>-->
-
-                    <ImageButton
-                        android:id="@+id/item_setting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/background_light"
-                        android:contentDescription="@string/descr_overflow_button"
-                        android:onClick="showPopup"
-                        android:src="@drawable/ic_action_more_vert" />
-
-                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
-

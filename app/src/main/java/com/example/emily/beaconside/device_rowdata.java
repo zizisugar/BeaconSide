@@ -43,6 +43,9 @@ public class device_rowdata extends BaseAdapter {
         return position;
     }
 
+
+
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;//緩存
@@ -70,9 +73,15 @@ public class device_rowdata extends BaseAdapter {
         return convertView;
     }
 
+    public String getName(){
+        ViewHolder holder = new ViewHolder();;//緩存
+        return holder.beaconName.getText().toString();
+    }
+
     static class ViewHolder {//緩存用。一種設計方法，就是設計個靜態類，緩存一下，省得Listview更新的時候，還要重新操作。
         ImageView beaconImage;
         TextView beaconName;
         TextView beaconAddress;
     }
+
 }

@@ -49,8 +49,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private Button btn_search;
 
     public static String uEmail;
-    private String uId ;
-    private String uName ;
+    public static String uId ;
+    public static String uName ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 intent.putExtra("uEmail",uEmail);
                                 intent.putExtra("uName",uName);
                                 startActivity(intent);
-                                finish();
+//                                finish();
                                 /******/
                             } catch (JSONException e) {
                                 e.printStackTrace();
