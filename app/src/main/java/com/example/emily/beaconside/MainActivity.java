@@ -1,10 +1,13 @@
 package com.example.emily.beaconside;
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.view.ContextMenu;
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = this.getIntent();
 
 //        uEmail = Login.uEmail;
-        uEmail = "sandy@gmail.com";
+        uEmail = "jennifer1024@livemail.tw";
         uName = intent.getStringExtra("uName");
         uName = "Cuties";
 //        if(!intent.getStringExtra("uEmail").equals(""))
@@ -232,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onResume(){
         super.onResume();
 //        uEmail = Login.uEmail;
-        uEmail = "sandy@gmail.com";
+        uEmail = "jennifer1024@livemail.tw";
         get_uEmail = "\""+uEmail+"\"";
         //uName = Login.uName;
         //Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
@@ -611,6 +614,104 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 listView1.setAdapter(adapter);
             }
         }, 3000);
+        for(int x = 0 ; x < bluetooth.myDeviceDistance.size() ; x++){
+            if(!(bluetooth.myDeviceDistance.get(x).equals("Out of Range"))){
+                //如果這個beacon的距離不是out of range(表示有搜尋到)
+                //就傳給getNotice這顆beacon的mac
+                getNotice(bName_list.get(x),macAddress_list.get(x));
+                //Toast.makeText(getBaseContext(), "不是out of range", Toast.LENGTH_SHORT).show();
+
+            }else{
+                //Toast.makeText(getBaseContext(), "是out of range", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+
+    //從資料庫取得指定beacon的notice
+    private void getNotice(final String bName,final String macAddress){
+
+        class GetNotice extends AsyncTask<Void,Void,String>{
+
+            ProgressDialog loading;
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                //loading = ProgressDialog.show(MainActivity.this,"Fetching Data","Wait...",false,false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                //loading.dismiss();
+
+
+                //將php返回的json->object->array
+                try {
+                    //jsonObject,jsonArray都是全域　方便給checkIfThere使用
+                    JSONObject jsonObjectNotice = new JSONObject(s);
+                    JSONArray jsonArrayNotice = jsonObjectNotice.getJSONArray(Config.TAG_JSON_ARRAY);
+
+                    //如果返回的notice json不為空的 就推播
+                    if (jsonArrayNotice.length() != 0) {
+                        //Toast.makeText(getBaseContext(),"這個s是"+jsonArrayNotice, Toast.LENGTH_SHORT).show();
+
+                        for (int j = 0; j < jsonArrayNotice.length(); j++) { //跑迴圈從result json第一個開始到最後一個
+                            JSONObject joo = jsonArrayNotice.getJSONObject(j);
+                            String notice_macAddress = joo.getString("macAddress"); //取得json的"macAddress"
+                            String nStartTime = joo.getString("nStartTime");
+                            String nEndTime = joo.getString("nEndTime");
+                            String nContent = joo.getString("nContent");
+                            broadcastNotice(bName, nContent);
+                        }
+
+                    } else {
+                        //Toast.makeText(getBaseContext(), "這個beacon沒有notice喔", Toast.LENGTH_SHORT).show();
+
+                    }
+                    //TAG_JSON_ARRAY是"result" php回傳json的最外圍array名稱
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+                String s = rh.sendGetRequestParam(Config.URL_GET_NOTICE,macAddress);
+                //Toast.makeText(getBaseContext(),s, Toast.LENGTH_SHORT).show();
+                return s;
+            }
+        }
+        GetNotice gj = new GetNotice();
+        gj.execute();
+    }
+
+    //推播
+    public void broadcastNotice(String title, String content) {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.compass)
+                        .setContentTitle(title)
+                        .setContentText(content)
+                        .setDefaults(Notification.DEFAULT_VIBRATE);
+        // Creates an explicit intent for an Activity in your app
+        builder.setDefaults(0);
+
+        // 取得NotificationManager物件
+        NotificationManager manager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // 建立通知物件
+        Notification notification = builder.build();
+
+        //編號先寫死
+        int notificationId = 001;
+
+        // 使用設定的通知編號為編號發出通知
+        manager.notify(notificationId, notification);
+
     }
 
     public void checkItem(View view) {
