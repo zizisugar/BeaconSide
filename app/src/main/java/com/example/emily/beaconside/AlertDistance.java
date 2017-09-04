@@ -1,8 +1,10 @@
 package com.example.emily.beaconside;
 
+import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,6 +26,7 @@ public class AlertDistance extends AppCompatActivity {
     TextView alert_bName;
     TextView alert_bAlert;
     MediaPlayer mediaPlayer;
+    Vibrator myVibrator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +40,12 @@ public class AlertDistance extends AppCompatActivity {
         alert_bName = (TextView) findViewById(R.id.alert_bName);
         alert_bAlert = (TextView) findViewById(R.id.alert_bAlert);
         alert_bName.setText("\""+bName+"\"");
-        alert_bAlert.setText(bAlert);
+        alert_bAlert.setText(bAlert+"m");
         Toast.makeText(this, "alert: "+bAlert, Toast.LENGTH_SHORT).show();
         mediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
         mediaPlayer.start();
-
+        myVibrator = (Vibrator) getApplication().getSystemService(Service.VIBRATOR_SERVICE);
+        myVibrator.vibrate(10000);
     }
 
     @Override
@@ -56,6 +60,7 @@ public class AlertDistance extends AppCompatActivity {
         Intent backPressedIntent = new Intent();
         backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
         startActivity(backPressedIntent );
+        myVibrator.cancel();
         mediaPlayer.pause();
         mediaPlayer.reset();
         finish();
@@ -65,6 +70,7 @@ public class AlertDistance extends AppCompatActivity {
         Intent backPressedIntent = new Intent();
         backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
         startActivity(backPressedIntent );
+        myVibrator.cancel();
         mediaPlayer.pause();
         mediaPlayer.reset();
         finish();

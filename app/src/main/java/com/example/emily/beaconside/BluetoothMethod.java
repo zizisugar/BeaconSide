@@ -196,7 +196,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 Intent intent = new Intent();
                 intent.setClass(mContext,AlertDistance.class);
                 intent.putExtra("bName",bName_list.get(i));
-                intent.putExtra("bAlertDistance",Alert.get(i));
+                intent.putExtra("bAlertDistance",Alert.get(i).toString());
                 mContext.startActivity(intent);
                 ((Activity)mContext).finish();
                 bluetoothStop();

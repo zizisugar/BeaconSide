@@ -266,7 +266,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uName = Login.uName;
         Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
         bluetooth.BTinit(this);
-        bluetooth.getStartSearchDevice();
+//        bluetooth.getStartSearchDevice();
+        bluetooth.getStartMyItemDistance(macAddress_list);
         getBeacon();
         getUserEvent();
         getUserGroup();
