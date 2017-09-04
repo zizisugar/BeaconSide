@@ -19,16 +19,17 @@ public class ChangePic extends AppCompatActivity {
 
     private GridView gridView;
     private int[] image = {
-            R.drawable.book,R.drawable.camera,R.drawable.coffee,R.drawable.coins,R.drawable.folder,R.drawable.folder_2,
-            R.drawable.headphones,R.drawable.headphones2,R.drawable.key,R.drawable.laptop,R.drawable.lipstick,R.drawable.money_bag,R.drawable.pencil,
-            R.drawable.phone,R.drawable.rucksack,R.drawable.shopping_bag,R.drawable.smartphone,R.drawable.ticket,R.drawable.trainers,
-            R.drawable.umbrella,R.drawable.wallet,R.drawable.watch,R.drawable.water
+            R.drawable.book, R.drawable.camera, R.drawable.coffee, R.drawable.coins, R.drawable.folder, R.drawable.folder_2,
+            R.drawable.headphones, R.drawable.headphones2, R.drawable.key, R.drawable.laptop, R.drawable.lipstick, R.drawable.money_bag, R.drawable.pencil,
+            R.drawable.phone, R.drawable.rucksack, R.drawable.shopping_bag, R.drawable.smartphone, R.drawable.ticket, R.drawable.trainers,
+            R.drawable.umbrella, R.drawable.wallet, R.drawable.watch, R.drawable.water
     };
     private String[] imgText = {
-            "book","camera","coffee","coins","folder","folder_2","headphones","headphones2","key",
-            "laptop","lipstick","money_bag","pencil","phone","rucksack","shopping_bag","smartphone"
-            ,"ticket","trainers","umbrella","wallet","watch","water"
+            "book", "camera", "coffee", "coins", "folder", "folder_2", "headphones", "headphones2", "key",
+            "laptop", "lipstick", "money_bag", "pencil", "phone", "rucksack", "shopping_bag", "smartphone"
+            , "ticket", "trainers", "umbrella", "wallet", "watch", "water"
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +44,10 @@ public class ChangePic extends AppCompatActivity {
         SimpleAdapter adapter = new SimpleAdapter(this,
                 items, R.layout.grid_item, new String[]{"image", "text"},
                 new int[]{R.id.image, R.id.text});
-        gridView = (GridView)findViewById(R.id.main_page_gridview);
+        gridView = (GridView) findViewById(R.id.main_page_gridview);
         gridView.setNumColumns(3);
         gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(ChangePic.this, "你選擇了" + imgText[position], Toast.LENGTH_SHORT).show();

@@ -260,8 +260,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onResume(){
         super.onResume();
-//        uEmail = Login.uEmail;
-        uEmail = "jennifer1024@livemail.tw";
+        uEmail = Login.uEmail;
+//        uEmail = "sandy@gmail.com";
         get_uEmail = "\""+uEmail+"\"";
         uName = Login.uName;
         Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
@@ -487,6 +487,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void deleteBeacon(final String macAddress){
+        class DeleteEmployee extends AsyncTask<Void,Void,String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(MainActivity.this, "Updating...", "Wait...", false, false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+                getBeacon();
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+                String s = rh.sendGetRequestParam(Config.URL_DELETE_BEACON, macAddress);
+                return s;
+            }
+        }
+
+        DeleteEmployee de = new DeleteEmployee();
+        de.execute();
+    }
+
     /* Item setting */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -508,33 +538,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String[] menuItems   = new String[]{"Edit","Delete"};
         String menuItemName = menuItems[menuItemIndex];
         String listItemName = bName_list.get(info.position);
+        final String listItemMac = macAddress_list.get(info.position);
 //        TextView text = (TextView)findViewById(R.id.footer);
 //        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
 
         switch (menuItemName){
             case "Edit":
-                //do somethin
-                Toast.makeText(MainActivity.this, "Enter another page", Toast.LENGTH_LONG).show();
+                //進入編輯頁面
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this,editBeacon.class);
+                intent.putExtra("macAddress",listItemMac);
+                intent.putExtra("bName",listItemName);
+                intent.putExtra("uEmail",uEmail);
+                intent.putExtra("eventId_array",eventId_array);
+                intent.putExtra("eventName_array",eventName_array);
+                intent.putExtra("groupName_array",groupName_array);
+                intent.putExtra("groupId_array",groupId_array);
+                startActivity(intent);
                 break;
             case "Delete":
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setTitle("Delete this Item");
-                alert.setMessage("Do you want to delete "+"ItemName"+"?");
+                alert.setMessage("Do you want to delete "+listItemName+" ?");
 
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(MainActivity.this, "SONG LA", Toast.LENGTH_LONG).show();
-                        //Your action here
+                        deleteBeacon(listItemMac);
                     }
                 });
 
                 alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(MainActivity.this, "OK FINE", Toast.LENGTH_LONG).show();
                     }
                 });
 
                 alert.show();
+
                 break;
         }
 //        Toast.makeText(MainActivity.this, String.format("Selected %s for item %s", menuItemName, listItemName), Toast.LENGTH_LONG).show();
@@ -628,7 +667,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
 //        finish();
     }
-
 
     // 從URL下載圖片
     public static Bitmap getBitmapFromURL(String imageUrl) {
