@@ -56,6 +56,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     // 放資料庫所有已被註冊的beacon資料
     private ArrayList<String> user_list;
     boolean isRegistered = false;   // User是否已經註冊資料庫
+    Button login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -67,7 +68,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         btn_friends.setOnClickListener(this);
         accessToken = AccessToken.getCurrentAccessToken();
         getUserEvent(); // 取得資料庫裡所有User的Email，存在user_list裡面
-
+        login = (Button) findViewById(R.id.login);
+//        if(accessToken==null) {
+//            Toast.makeText(Login.this,"accessToken is null",Toast.LENGTH_SHORT).show();
+//            LoginManager.getInstance().logOut();
+//        }
         //  沒有按登入按鈕的狀況下直接判斷已有的FB登入資料
 //        if(accessToken!=null){
 //            GraphRequest request = GraphRequest.newMeRequest(
@@ -119,11 +124,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
  *         FB登入按鈕，要求使用者權限，能要求的有email、friends、profile
  *         未做 : 登入時將資料寫進資料庫
  */
+
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         LoginManager.getInstance().logInWithReadPermissions(
                 Login.this,
                 Arrays.asList("email,user_friends"));
-        //  按了登入按鈕之後
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -135,6 +140,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             //當RESPONSE回來的時候
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
+                                Toast.makeText(Login.this,"login button clicked",Toast.LENGTH_SHORT).show();
                                 //讀出姓名、ID、網頁連結
                                 try {
                                     uId=(String) object.get("id");
@@ -150,17 +156,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                         addUser();
                                         Toast.makeText(Login.this,uEmail+"成功註冊",Toast.LENGTH_SHORT).show();
                                     }
-                                    else {
-                                        /**換頁到Main**/
-                                        Intent intent = new Intent();
-                                        intent.setClass(Login.this, MainActivity.class);
-                                        //傳遞變數
-                                        intent.putExtra("uEmail", uEmail);
-                                        intent.putExtra("uName", uName);
-                                        startActivity(intent);
-                                        finish();
-                                        /******/
-                                    }
+//                                    else {
+//                                        /**換頁到Main**/
+//                                        Intent intent = new Intent();
+//                                        intent.setClass(Login.this, MainActivity.class);
+//                                        //傳遞變數
+//                                        intent.putExtra("uEmail", uEmail);
+//                                        intent.putExtra("uName", uName);
+//                                        startActivity(intent);
+//                                        finish();
+//                                        /******/
+//                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -174,10 +180,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             }
             @Override
             public void onCancel() {
-
+                Toast.makeText(Login.this,uEmail+"取消",Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onError(FacebookException error) {
+                Toast.makeText(Login.this,uEmail+"錯誤",Toast.LENGTH_SHORT).show();
             }
         });
 /**
@@ -191,6 +198,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onResume();
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
+        if(accessToken==null) {
+            Toast.makeText(Login.this,"accessToken is null",Toast.LENGTH_SHORT).show();
+            LoginManager.getInstance().logOut();
+            login.setText("Sign in");
+        }
         if(accessToken!=null){
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
@@ -206,15 +218,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 uId=(String) object.get("id");
                                 uName=(String) object.get("name");
                                 uEmail=(String) object.get("email");
-                                /**換頁到Main**/
-                                Intent intent = new Intent();
-                                intent.setClass(Login.this,MainActivity.class);
-                                //傳遞變數
-                                intent.putExtra("uEmail",uEmail);
-                                intent.putExtra("uName",uName);
-                                startActivity(intent);
-//                                finish();
-                                /******/
+                                login.setText("以"+uName+"的身份繼續使用");
+                                login.setOnClickListener(new View.OnClickListener(){
+                                    public void onClick(View v){
+                                        /**換頁到Main**/
+                                        Intent intent = new Intent();
+                                        intent.setClass(Login.this,MainActivity.class);
+                                        //傳遞變數
+                                        intent.putExtra("uEmail",uEmail);
+                                        intent.putExtra("uName",uName);
+                                        startActivity(intent);
+        //                                finish();
+                                        /******/
+                                    }
+                                });
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Log.e("Failed","Failed");
