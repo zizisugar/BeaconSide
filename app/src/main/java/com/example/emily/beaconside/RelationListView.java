@@ -1,22 +1,24 @@
 package com.example.emily.beaconside;
 
-/**
- * Created by Emily on 2017/9/4.
- */
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ListView;
-public class twoListView extends ListView {
-    private twoListView mListView;
 
-    public twoListView(Context context, AttributeSet attrs) {
+/**
+ * Created by Emily on 2017/9/5.
+ */
+
+        import android.widget.ListView;
+
+public class RelationListView extends ListView {
+    private RelationListView mListView;
+
+    public RelationListView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public twoListView(Context context, AttributeSet attrs, int defStyle) {
+    public RelationListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -26,7 +28,7 @@ public class twoListView extends ListView {
         int width = 0;
         int height = getMeasuredHeight();
 
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 
         if(widthMode == MeasureSpec.EXACTLY) {
@@ -42,10 +44,9 @@ public class twoListView extends ListView {
         setMeasuredDimension(width, height);
     }
 
-    public void setRelatedListView(twoListView listView) {
+    public void setRelatedListView(RelationListView listView) {
         mListView = listView;
     }
-
     public void onTouch(MotionEvent ev) {
         super.onTouchEvent(ev);
     }

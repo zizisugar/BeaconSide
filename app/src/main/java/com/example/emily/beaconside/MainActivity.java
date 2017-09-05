@@ -1,24 +1,18 @@
 package com.example.emily.beaconside;
 
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.PopupMenu;
 import android.view.ContextMenu;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -32,7 +26,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.AdapterView;
 
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +36,8 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -58,7 +51,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ListView listView1;
     rowdata adapter;
     ArrayAdapter<String> adapterPress;
-//    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
+    ArrayAdapter<String> adapter_sideList_group;
+//    ArrayAdapter<String> adapter_sideList_event1;
+//    ArrayAdapter<String> adapter_sideList_event2;
+    ListView group_list;
+    //    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
 //    String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
 //    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
     TextView userName;
@@ -83,6 +80,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String[] eventName_array;//儲存event name
     int[] groupId_array;//儲存group id
     String[] groupName_array;//儲存group name
+    ArrayList<String> groupName_list;
+//    ArrayList<String> eventName_list1;
+//    ArrayList<String> eventName_list2;
+
+    /* class main side */
+//    private RelationListView event_list1;
+//    private RelationListView event_list2;
+
+//    private String[] mData1 = new String[] { "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1" };
+//    private String[] mData2 = new String[] { "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2" };
 
 
     /* long press */
@@ -132,11 +149,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listView1=(ListView) findViewById(R.id.listView1);
 
         /* list view function */
-        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, bName_list);
         mergeAdapter = new MergeAdapter();
 
+        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, bName_list);
         mergeAdapter.addAdapter(new ListTitleAdapter(this,adapterPress));
         mergeAdapter.addAdapter(adapterPress);//
+
+
+
+
+
 
 //        listView1.setAdapter(mergeAdapter);
 
@@ -182,6 +204,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         side_group_ls = (View)findViewById(R.id.side_group_ls);
         chooseGroup = (ImageView)findViewById(R.id.chooseGroup);
         chooseClass = (ImageView)findViewById(R.id.chooseClass);
+        group_list = (ListView)findViewById(R.id.group_list);
+//        event_list1 = (RelationListView) findViewById(R.id.event_list1);
+//        event_list2 = (RelationListView) findViewById(R.id.event_list2);
+//        event_list1.setAdapter(new ArrayAdapter<String>(this,
+//                R.layout.main_side_class_rowdata, mData1));
+//        event_list2.setAdapter(new ArrayAdapter<String>(this,
+//                R.layout.main_side_class_rowdata, mData2));
+//        event_list1.setAdapter(new ArrayAdapter<String>(this,
+//                android.R.layout.simple_list_item_1, mData1));
+//        event_list2.setAdapter(new ArrayAdapter<String>(this,
+//                android.R.layout.simple_list_item_1, mData2));
+//        event_list1.setRelatedListView(event_list2);
+//        event_list2.setRelatedListView(event_list1);
 
         side_group_bt.setOnClickListener(new View.OnClickListener() {//group
             @Override
@@ -225,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getBeacon();
         getUserEvent();
         getUserGroup();
+        listView1.setAdapter(mergeAdapter);
     }
 
     @Override
@@ -302,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));
             mergeAdapter.addAdapter(adapter);
 //            listView1.setAdapter(mergeAdapter);
-            listView1.setAdapter(adapter);
+//            listView1.setAdapter(adapter);
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -373,15 +409,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 int cId = Integer.parseInt(jo.getString("cId"));//取得event id , 由string轉為cId
                 String cName = jo.getString("cName");//取得event名稱
-
-                //Toast.makeText(MainActivity.this, cName, Toast.LENGTH_LONG).show();
-
+//                Toast.makeText(this, cName.toString(), Toast.LENGTH_LONG).show();
                 eventId_array[i] = cId;
                 eventName_array[i] = cName;
+
+//                if(i%2!=0){//left
+//                    eventName_list1.add(cName);
+//                }else{
+//                    eventName_list2.add(cName);
+//                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+//        Toast.makeText(MainActivity.this, "start"+groupName_list+"end", Toast.LENGTH_LONG).show();
+//        adapter_sideList_event1 = new ArrayAdapter<String>(this, R.layout.main_side_class_rowdata,eventName_list1);
+//        adapter_sideList_event2 = new ArrayAdapter<String>(this, R.layout.main_side_class_rowdata,eventName_list2);
+//        event_list1.setAdapter(adapter_sideList_event1);
+//        event_list2.setAdapter(adapter_sideList_event2);
 
     }
 
@@ -399,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 super.onPostExecute(s);
                 loading.dismiss();
                 JSON_STRING = s;
-                //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
                 //將取得的json轉換為array list, 顯示在畫面上
                 showUserGroup();
 
@@ -424,24 +470,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             groupName_array = new String[result.length()];
             groupId_array = new int[result.length()];
-
             for (int i = 0; i < result.length(); i++) {//從頭到尾跑一次array
                 JSONObject jo = result.getJSONObject(i);
 
                 int gId = Integer.parseInt(jo.getString("gId"));//取得event id , 由string轉為cId
                 String gName = jo.getString("gName");//取得event名稱
-
+//                Toast.makeText(this, gName.toString(), Toast.LENGTH_LONG).show();
                 groupId_array[i] = gId;
                 groupName_array[i] = gName;
-
-                //Toast.makeText(MainActivity.this, gName, Toast.LENGTH_LONG).show();
-
 
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+
+        groupName_list= new ArrayList<>(Arrays.asList(groupName_array));//array to arraylist
+//        Toast.makeText(MainActivity.this, "start"+groupName_list+"end", Toast.LENGTH_LONG).show();
+        adapter_sideList_group = new ArrayAdapter<String>(this, R.layout.main_side_group_rowdata,groupName_list);
+        group_list.setAdapter(adapter_sideList_group);
     }
 
     /* Item setting */
