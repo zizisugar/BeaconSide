@@ -252,9 +252,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
             }
         });
-        getBeacon();
-        getUserEvent();
-        getUserGroup();
+//        getBeacon();
+//        getUserEvent();
+//        getUserGroup();
     }
 
     @Override
@@ -264,9 +264,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        uEmail = "sandy@gmail.com";
         get_uEmail = "\""+uEmail+"\"";
         uName = Login.uName;
-        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
         bluetooth.BTinit(this);
-//        bluetooth.getStartSearchDevice();
+        bluetooth.getStartSearchDevice();
         getBeacon();
         getUserEvent();
         getUserGroup();
@@ -555,6 +555,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("groupName_array",groupName_array);
                 intent.putExtra("groupId_array",groupId_array);
                 startActivity(intent);
+                finish();
                 break;
             case "Delete":
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
