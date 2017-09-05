@@ -5,17 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="#fff">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <TextView
+                android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="新增物品"
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
     <!--item ifo-->
-
-    <!--<Button-->
-        <!--android:id="@+id/buttonSubmit"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="新增" />-->
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
@@ -27,8 +44,8 @@
         <!--src-->
         <ImageView
             android:id="@+id/device_pic"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
@@ -195,7 +212,7 @@
 
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="39dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -204,14 +221,26 @@
                     android:layout_marginEnd="8dp"
                     android:id="@+id/constraintLayout2">
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/horizontal_recycler_view"
-                        android:background="#fff"
+                    <LinearLayout
                         android:layout_width="309dp"
                         android:layout_height="48dp"
-                        tools:layout_editor_absoluteY="8dp"
-                        tools:layout_editor_absoluteX="8dp" />
+                        android:orientation="vertical"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
+                        android:paddingLeft="20dp"
+                        android:weightSum="1">
 
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/horizontal_recycler_view_event"
+                            android:layout_width="304dp"
+                            android:layout_height="38dp"
+                            android:background="#fff"
+                            android:layout_weight="0.80"
+                            android:layout_marginTop="15dp"/>
+
+                    </LinearLayout>
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.constraint.ConstraintLayout>
@@ -289,31 +318,31 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintHorizontal_bias="0.511"
+                    app:layout_constraintHorizontal_bias="1.0"
                     android:id="@+id/constraintLayout"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp">
 
-                    <Button
-                        android:id="@+id/groupBT"
-                        android:layout_width="95dp"
+                    <LinearLayout
+                        android:layout_width="309dp"
                         android:layout_height="48dp"
-                        android:background="@android:drawable/toast_frame"
-                        android:text="friend"
-                        android:textSize="@dimen/tags_text"
-                        android:textColor="#ffff"
-                        android:layout_marginLeft="8dp"
+                        android:orientation="vertical"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        android:layout_marginRight="8dp"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginBottom="8dp"
-                        app:layout_constraintVertical_bias="0.0"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
+                        android:paddingLeft="20dp"
+                        android:weightSum="1">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/horizontal_recycler_view_group"
+                            android:layout_width="304dp"
+                            android:layout_height="38dp"
+                            android:background="#fff"
+                            android:layout_weight="0.80"
+                            android:layout_marginTop="15dp"/>
+
+                    </LinearLayout>
 
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
@@ -512,26 +541,6 @@
 
                 <!--Notification content-->
 
-
-
-                <!--<LinearLayout-->
-                    <!--android:layout_width="284dp"-->
-                    <!--android:layout_height="101dp"-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:layout_marginRight="8dp"-->
-                    <!--app:layout_constraintRight_toRightOf="parent"-->
-                    <!--android:layout_marginLeft="8dp"-->
-                    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                    <!--android:layout_marginTop="8dp"-->
-                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                    <!--android:layout_marginBottom="8dp"-->
-                    <!--app:layout_constraintVertical_bias="0.662"-->
-                    <!--app:layout_constraintTop_toTopOf="@+id/add_notification"-->
-                    <!--app:layout_constraintHorizontal_bias="0.619"-->
-                    <!--android:layout_marginStart="8dp"-->
-                    <!--android:layout_marginEnd="8dp">-->
-
-
                     <Button
                         android:id="@+id/notification_content_button"
                         android:layout_width="284dp"
@@ -558,58 +567,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         />
-                    <!--<ImageView-->
-                        <!--android:id="@+id/imageView"-->
-                        <!--android:layout_width="7dp"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--app:srcCompat="@color/colorGreen" />-->
 
-                    <!--<android.support.constraint.ConstraintLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent">-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/textView4"-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_height="23dp"-->
-                            <!--android:layout_margin="8dp"-->
-                            <!--android:text="Read the MIS"-->
-                            <!--android:textSize="@dimen/notification_title"-->
-                            <!--android:textColor="@color/notification_title"-->
-                            <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                            <!--app:layout_constraintTop_toTopOf="parent"-->
-                            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--app:layout_constraintRight_toRightOf="parent"-->
-                            <!--app:layout_constraintHorizontal_bias="0.0"-->
-                            <!--app:layout_constraintVertical_bias="0.0"-->
-                            <!--android:layout_marginTop="8dp"-->
-                            <!--android:layout_marginLeft="8dp"-->
-                            <!--android:layout_marginRight="8dp"-->
-                            <!--android:layout_marginBottom="8dp"-->
-                            <!--android:layout_marginStart="8dp"-->
-                            <!--android:layout_marginEnd="8dp" />-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/textView3"-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_height="51dp"-->
-                            <!--android:layout_margin="8dp"-->
-                            <!--android:text="2017/7/10 AM 09:30 ~ PM 12:00"-->
-                            <!--android:textSize="@dimen/notification_content"-->
-                            <!--android:textColor="@color/notification_content"-->
-                            <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--app:layout_constraintRight_toRightOf="parent"-->
-                            <!--app:layout_constraintVertical_bias="1.0"-->
-                            <!--app:layout_constraintHorizontal_bias="1.0"-->
-                            <!--android:layout_marginLeft="8dp"-->
-                            <!--android:layout_marginRight="8dp"-->
-                            <!--android:layout_marginBottom="8dp"-->
-                            <!--app:layout_constraintTop_toBottomOf="@+id/textView4"-->
-                            <!--android:layout_marginStart="8dp"-->
-                            <!--android:layout_marginEnd="8dp" />-->
-                    <!--</android.support.constraint.ConstraintLayout>-->
-                <!--</LinearLayout>-->
 
             </android.support.constraint.ConstraintLayout>
 

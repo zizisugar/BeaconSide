@@ -44,8 +44,9 @@ public class CheckItem extends AppCompatActivity {
         bPic_list = intent.getStringArrayListExtra("bPic_list");
         bName_list = intent.getStringArrayListExtra("bName_list");
         bStatus_list = intent.getStringArrayListExtra("bStatus_list");
-        bluetooth.BTinit(this);
-        bluetooth.getStartMyItemDistance(check_list);
+//        bluetooth.bluetoothStop();
+//        bluetooth.BTinit(this);
+//        bluetooth.getStartMyItemDistance(check_list);
         already_list=(ListView) findViewById(R.id.already);
         forget_list=(ListView) findViewById(R.id.forget);
     }

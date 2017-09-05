@@ -37,6 +37,7 @@ import com.facebook.share.ShareApi;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 
+import static java.lang.Integer.parseInt;
 
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -51,21 +52,146 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public static String uEmail;
     public static String uId ;
     public static String uName ;
-
+    private String JSON_STRING;
+    // 放資料庫所有已被註冊的beacon資料
+    private ArrayList<String> user_list;
+    boolean isRegistered = false;   // User是否已經註冊資料庫
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-
-
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         btn_friends = (Button) findViewById(R.id.btn_friends);
         btn_friends.setOnClickListener(this);
         accessToken = AccessToken.getCurrentAccessToken();
+        getUserEvent(); // 取得資料庫裡所有User的Email，存在user_list裡面
 
+        //  沒有按登入按鈕的狀況下直接判斷已有的FB登入資料
+//        if(accessToken!=null){
+//            GraphRequest request = GraphRequest.newMeRequest(
+//                    accessToken,
+//                    new GraphRequest.GraphJSONObjectCallback() {
+//                        @Override
+//                        public void onCompleted(
+//                                JSONObject object,
+//                                GraphResponse response) {
+////                            Toast.makeText(Login.this,"Get Token",Toast.LENGTH_SHORT).show();
+//                            //讀出姓名、ID、網頁連結
+//                            try {
+//                                uId=(String) object.get("id");
+//                                uName=(String) object.get("name");
+//                                uEmail=(String) object.get("email");
+//                                for(String email : user_list){
+//                                    if(uEmail.equals(email))
+//                                        isRegistered = true;
+//                                }
+//                                if(!isRegistered) {
+//                                    addUser();
+//                                }
+//                                Toast.makeText(Login.this,"Already Log in",Toast.LENGTH_SHORT).show();
+//                                /**換頁到Main**/
+//                                Intent intent = new Intent();
+//                                intent.setClass(Login.this,MainActivity.class);
+//                                //傳遞變數
+//                                intent.putExtra("uEmail",uEmail);
+//                                intent.putExtra("uName",uName);
+//                                startActivity(intent);
+////                                finish();
+//                                /******/
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                                Log.e("Failed","Failed");
+////                                Toast.makeText(Login.this,"Failed",Toast.LENGTH_SHORT).show();
+//                            }
+//                            // Application code
+//                        }
+//                    });
+//            Bundle parameters = new Bundle();
+//            parameters.putString("fields", "id,name,link,email");
+//            request.setParameters(parameters);
+//            request.executeAsync();
+//        }
+
+
+/**
+ *         FB登入按鈕，要求使用者權限，能要求的有email、friends、profile
+ *         未做 : 登入時將資料寫進資料庫
+ */
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        LoginManager.getInstance().logInWithReadPermissions(
+                Login.this,
+                Arrays.asList("email,user_friends"));
+        //  按了登入按鈕之後
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Toast.makeText(Login.this,"I'm clicked",Toast.LENGTH_SHORT).show();
+                accessToken = loginResult.getAccessToken();
+                GraphRequest request = GraphRequest.newMeRequest(
+                        accessToken,
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            //當RESPONSE回來的時候
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                //讀出姓名、ID、網頁連結
+                                try {
+                                    uId=(String) object.get("id");
+                                    uName=(String) object.get("name");
+                                    uEmail=(String) object.get("email");
+
+                                    for(String email : user_list){
+                                        Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
+                                        if(uEmail.equals(email)) {
+                                            isRegistered = true;
+                                        }
+                                    }
+                                    if(!isRegistered) {
+                                        addUser();
+                                        Toast.makeText(Login.this,uEmail+"成功註冊",Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        /**換頁到Main**/
+                                        Intent intent = new Intent();
+                                        intent.setClass(Login.this, MainActivity.class);
+                                        //傳遞變數
+                                        intent.putExtra("uEmail", uEmail);
+                                        intent.putExtra("uName", uName);
+                                        startActivity(intent);
+                                        finish();
+                                        /******/
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }});
+                //包入你想要得到的資料，送出 request
+                Bundle parameters = new Bundle();
+                parameters.putString("fields" , "id,name,link,email");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+            }
+            @Override
+            public void onCancel() {
+
+            }
+            @Override
+            public void onError(FacebookException error) {
+            }
+        });
+/**
+ *   HTTP Request取得資料
+ */
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        callbackManager = CallbackManager.Factory.create();
+        FacebookSdk.sdkInitialize(getApplicationContext());
         if(accessToken!=null){
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
@@ -103,72 +229,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             request.setParameters(parameters);
             request.executeAsync();
         }
-
-
-/**
- *         FB登入按鈕，要求使用者權限，能要求的有email、friends、profile
- *         未做 : 登入時將資料寫進資料庫
- */
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        LoginManager.getInstance().logInWithReadPermissions(
-                Login.this,
-                Arrays.asList("email,user_friends"));
-
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                accessToken = loginResult.getAccessToken();
-                GraphRequest request = GraphRequest.newMeRequest(
-                        accessToken,
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            //當RESPONSE回來的時候
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                //讀出姓名、ID、網頁連結
-                                try {
-                                    uId=(String) object.get("id");
-                                    uName=(String) object.get("name");
-                                    uEmail=(String) object.get("email");
-                                    addUser();
-                                    /**換頁到Main**/
-                                    Intent intent = new Intent();
-                                    intent.setClass(Login.this,MainActivity.class);
-                                    //傳遞變數
-                                    intent.putExtra("uEmail",uEmail);
-                                    intent.putExtra("uName",uName);
-                                    startActivity(intent);
-                                    finish();
-                                    /******/
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }});
-                //包入你想要得到的資料，送出 request
-                Bundle parameters = new Bundle();
-                parameters.putString("fields" , "id,name,link,email");
-                request.setParameters(parameters);
-                request.executeAsync();
-
-            }
-            @Override
-            public void onCancel() {
-
-            }
-            @Override
-            public void onError(FacebookException error) {
-            }
-        });
-/**
- *   HTTP Request取得資料
- */
-
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        callbackManager = CallbackManager.Factory.create();
-        FacebookSdk.sdkInitialize(getApplicationContext());
     }
 
 /**
@@ -198,12 +258,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private void search(){
         class Search extends AsyncTask<Void,Void,String> {
 
-            ProgressDialog loading;
+//            ProgressDialog loading;
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
 //                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
-                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
+//                loading = ProgressDialog.show(Login.this,"Adding...","Wait...",false,false);
             }
 
             @Override
@@ -288,6 +348,52 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         AddUser ae = new AddUser();
         ae.execute();
     }
+
+    private void getUserEvent(){
+        class GetBeacon extends AsyncTask<Void,Void,String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                JSON_STRING = s;
+                //將取得的json轉換為array list, 顯示在畫面上
+                showUserEvent();
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                RequestHandler rh = new RequestHandler();
+                String s = rh.sendGetRequest(Config.URL_GET_USER_DATABASE);
+                return s;
+            }
+        }
+        GetBeacon ge = new GetBeacon();
+        ge.execute();
+    }
+
+    private void showUserEvent() {
+        JSONObject jsonObject = null;
+
+        try {
+            jsonObject = new JSONObject(JSON_STRING);//放入JSON_STRING 即在getBeacno()中得到的json
+            JSONArray result = jsonObject.getJSONArray(Config.TAG_JSON_ARRAY);//轉換為array
+            user_list = new ArrayList<>();
+
+            for(int i = 0; i<result.length(); i++){//從頭到尾跑一次array
+                JSONObject jo = result.getJSONObject(i);
+                String email = jo.getString("uEmail");//取得macAddress
+                user_list.add(email);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private  void friendsList(){
 //        List = (ListView) findViewById(R.id.list);
 //        if(accessToken!=null) {
