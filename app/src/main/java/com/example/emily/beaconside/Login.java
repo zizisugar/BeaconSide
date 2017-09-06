@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -43,7 +44,7 @@ import static java.lang.Integer.parseInt;
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     CallbackManager callbackManager;
-//    AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
     private Button btn_add;
     private Button btn_friends;
@@ -57,82 +58,32 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private ArrayList<String> user_list;
     boolean isRegistered = false;   // User是否已經註冊資料庫
     Button login;
+    Button btn_facebook;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         btn_friends = (Button) findViewById(R.id.btn_friends);
         btn_friends.setOnClickListener(this);
+        btn_facebook = (Button) findViewById(R.id.btn_facebook);
         accessToken = AccessToken.getCurrentAccessToken();
         getUserEvent(); // 取得資料庫裡所有User的Email，存在user_list裡面
         login = (Button) findViewById(R.id.login);
-//        if(accessToken==null) {
-//            Toast.makeText(Login.this,"accessToken is null",Toast.LENGTH_SHORT).show();
-//            LoginManager.getInstance().logOut();
-//        }
-        //  沒有按登入按鈕的狀況下直接判斷已有的FB登入資料
-//        if(accessToken!=null){
-//            GraphRequest request = GraphRequest.newMeRequest(
-//                    accessToken,
-//                    new GraphRequest.GraphJSONObjectCallback() {
-//                        @Override
-//                        public void onCompleted(
-//                                JSONObject object,
-//                                GraphResponse response) {
-////                            Toast.makeText(Login.this,"Get Token",Toast.LENGTH_SHORT).show();
-//                            //讀出姓名、ID、網頁連結
-//                            try {
-//                                uId=(String) object.get("id");
-//                                uName=(String) object.get("name");
-//                                uEmail=(String) object.get("email");
-//                                for(String email : user_list){
-//                                    if(uEmail.equals(email))
-//                                        isRegistered = true;
-//                                }
-//                                if(!isRegistered) {
-//                                    addUser();
-//                                }
-//                                Toast.makeText(Login.this,"Already Log in",Toast.LENGTH_SHORT).show();
-//                                /**換頁到Main**/
-//                                Intent intent = new Intent();
-//                                intent.setClass(Login.this,MainActivity.class);
-//                                //傳遞變數
-//                                intent.putExtra("uEmail",uEmail);
-//                                intent.putExtra("uName",uName);
-//                                startActivity(intent);
-////                                finish();
-//                                /******/
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                                Log.e("Failed","Failed");
-////                                Toast.makeText(Login.this,"Failed",Toast.LENGTH_SHORT).show();
-//                            }
-//                            // Application code
-//                        }
-//                    });
-//            Bundle parameters = new Bundle();
-//            parameters.putString("fields", "id,name,link,email");
-//            request.setParameters(parameters);
-//            request.executeAsync();
-//        }
-
-
 /**
  *         FB登入按鈕，要求使用者權限，能要求的有email、friends、profile
  *         未做 : 登入時將資料寫進資料庫
  */
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        LoginManager.getInstance().logInWithReadPermissions(
-                Login.this,
-                Arrays.asList("email,user_friends"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(Login.this,"I'm clicked",Toast.LENGTH_SHORT).show();
+                accessTokenTracker.startTracking();
                 accessToken = loginResult.getAccessToken();
                 GraphRequest request = GraphRequest.newMeRequest(
                         accessToken,
@@ -156,17 +107,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                         addUser();
                                         Toast.makeText(Login.this,uEmail+"成功註冊",Toast.LENGTH_SHORT).show();
                                     }
-//                                    else {
-//                                        /**換頁到Main**/
-//                                        Intent intent = new Intent();
-//                                        intent.setClass(Login.this, MainActivity.class);
-//                                        //傳遞變數
-//                                        intent.putExtra("uEmail", uEmail);
-//                                        intent.putExtra("uName", uName);
-//                                        startActivity(intent);
-//                                        finish();
-//                                        /******/
-//                                    }
+                                    else {
+                                        login.setVisibility(View.VISIBLE);
+                                        login.setOnClickListener(new View.OnClickListener() {
+                                            public void onClick(View v) {
+                                            /**換頁到Main**/
+                                            Intent intent = new Intent();
+                                            intent.setClass(Login.this, MainActivity.class);
+                                            //傳遞變數
+                                            intent.putExtra("uEmail", uEmail);
+                                            intent.putExtra("uName", uName);
+                                            startActivity(intent);
+                                            //                                finish();
+                                            /******/
+                                            }
+                                        });
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -187,6 +143,34 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(Login.this,uEmail+"錯誤",Toast.LENGTH_SHORT).show();
             }
         });
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
+                                                       AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    accessToken = null;
+                    Toast.makeText(Login.this,"accesstoken: null",Toast.LENGTH_SHORT).show();
+                    final ProgressDialog loading = ProgressDialog.show(Login.this,"Log out...","Wait...",false,false);
+                    new Thread(new Runnable(){
+                        @Override
+                        public void run() {
+                            try{
+                                Thread.sleep(2000);
+                            }
+                            catch(Exception e){
+                                e.printStackTrace();
+                            }
+                            finally{
+                                loading.dismiss();
+                            }
+                        }
+                    }).start();
+                    login.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        };
 /**
  *   HTTP Request取得資料
  */
@@ -198,11 +182,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onResume();
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
-        if(accessToken==null) {
-            Toast.makeText(Login.this,"accessToken is null",Toast.LENGTH_SHORT).show();
-            LoginManager.getInstance().logOut();
-            login.setText("Sign in");
-        }
+        accessToken = AccessToken.getCurrentAccessToken();
         if(accessToken!=null){
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
@@ -219,6 +199,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 uName=(String) object.get("name");
                                 uEmail=(String) object.get("email");
                                 login.setText("以"+uName+"的身份繼續使用");
+                                login.setVisibility(View.VISIBLE);
                                 login.setOnClickListener(new View.OnClickListener(){
                                     public void onClick(View v){
                                         /**換頁到Main**/
@@ -472,5 +453,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         if(v == btn_search){
             search();
         }
-    }}
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        accessTokenTracker.stopTracking();
+    }
+}
+
+
 //
