@@ -6,13 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
-
+    tools:openDrawer="start"
+    android:clickable="false">
     <!--他就是用<include>去嵌入一個xml檔，這裡放的是你的主畫面-->
+
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="visible" />
 
     <!--這段就是嵌入menu的程式碼-->
     <LinearLayout
@@ -20,13 +22,16 @@
         android:orientation="horizontal"
         android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"><!--start:relative, left:absolute-->
+        android:layout_gravity="start"
+        android:clickable="true"><!--start:relative, left:absolute-->
 
         <include
             layout="@layout/main_side"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:visibility="visible" />
+
     </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

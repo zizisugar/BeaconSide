@@ -119,6 +119,7 @@
         android:onClick="signInBT"
         android:text="Sign In"
         android:textColor="@android:color/background_light"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

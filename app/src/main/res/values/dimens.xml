@@ -12,6 +12,8 @@
     <!--notification dialog-->
     <dimen name="reminder_title">20dp</dimen>
     <dimen name="reminder_text">18dp</dimen>
+    <!--notification content-->
+    <dimen name="notification_notes">15dp</dimen>
 
     <!--item plus content rowdata-->
     <dimen name="list_text">18dp</dimen>

@@ -94,15 +94,20 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
     /* time */
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
-    public int noti_year,noti_month,noti_day;
-    public int noti_hourOfDay,noti_minute;
     /* time end */
 
-    Button buttonTime,buttonDate;
-    Button buttonAddnotice;
-    TextView datetext;
-    TextView timetext;
+    Button buttonTimeto,buttonDateto;
+    Button buttonTimefrom,buttonDatefrom;
     Button add_notification_check;
+    Button notification_content_button;
+    EditText notification_content;
+    boolean edit=false;
+    int dateFlag = 0;//0:not setting, 1:start/from, 2:end/to
+    int timeFlag = 0;//0:not setting, 1:start/from, 2:end/to
+    int dateFromYear, dateFromMonth, dateFromDay;
+    int dateToYear, dateToMonth, dateToDay;
+    int timeFromHour, timeFromMin;
+    int timeToHour, timeToMin;
 
     private ListView listView_eventScroll;
 
@@ -149,6 +154,48 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         add_event = (ImageButton)findViewById(R.id.add_event);
         add_group = (ImageButton)findViewById(R.id.add_group);
         add_notification = (ImageButton)findViewById(R.id.add_notification);
+        notification_content_button = (Button) findViewById(R.id.notification_content_button);
+        notification_content_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                /*進入編輯狀態，所以要傳入原本的值*/
+                edit=true;
+                notification_click_claim();
+
+
+            }
+        });
+        notification_content_button.setOnLongClickListener(new View.OnLongClickListener() {//長按就刪除
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub
+                AlertDialog.Builder alert = new AlertDialog.Builder(addNewBeacon.this);
+                alert.setTitle("Delete this notification");
+                alert.setMessage("Do you want to delete "+"ItemName"+"?");
+
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(addNewBeacon.this, "SONG LA", Toast.LENGTH_LONG).show();
+                        notification_content_button.setVisibility(View.GONE);
+                        //Your action here
+                    }
+                });
+
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(addNewBeacon.this, "OK FINE", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                alert.show();
+                return true;
+            }
+        });
+
+
+//        listView_eventScroll = (ListView) findViewById(R.id.listview_eventScroll);
+//        buttonSubmit= (Button) findViewById(R.id.buttonSubmit);
+        //設定button onclick的動作
+//        buttonSubmit.setOnClickListener(this);
 
         //switch開或關的動作  在function onCheckedChanged
         if (alarmSwitch != null) {
@@ -327,55 +374,7 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         add_notification.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(addNewBeacon.this);
-                final Calendar calendar = Calendar.getInstance();
-                final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),false);
-                final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
-                // first dialog
-                dialog.setContentView(R.layout.notification_dialog);
-
-
-                //second dialog
-                DatePickerDialog dpd = (DatePickerDialog) getSupportFragmentManager().findFragmentByTag(DATEPICKER_TAG);
-                if (dpd != null) {
-                    dpd.setOnDateSetListener(addNewBeacon.this);
-                }
-                TimePickerDialog tpd = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag(TIMEPICKER_TAG);
-                if (tpd != null) {
-                    tpd.setOnTimeSetListener(addNewBeacon.this);
-                }
-                buttonDate = (Button) dialog.findViewById(R.id.buttonDate);
-                buttonTime = (Button) dialog.findViewById(R.id.buttonTime);
-                buttonDate.setOnClickListener(new Button.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        datePickerDialog.setYearRange(1985, 2028);
-                        datePickerDialog.show(getSupportFragmentManager(), DATEPICKER_TAG);
-                    }
-                });
-                buttonTime.setOnClickListener(new Button.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        timePickerDialog.show(getSupportFragmentManager(), TIMEPICKER_TAG);
-                    }
-                });
-
-
-
-                //set first dialog
-                datetext = (TextView) dialog.findViewById(R.id.datetext);
-                timetext = (TextView) dialog.findViewById(R.id.timetext);
-                add_notification_check = (Button) dialog.findViewById(R.id.add_notification_check);
-                add_notification_check.setOnClickListener(new Button.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(addNewBeacon.this, "Add Notification successfully", Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                    }
-                });
-
-                dialog.show();
-
+                notification_click_claim();
             }
         });
 
@@ -385,23 +384,166 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
     /* time */
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+        boolean y = false;
+        switch (dateFlag){
+            case 0://nothing happen
+                break;
+            case 1://click start/from button
+                dateFromYear = year; dateFromMonth = month+1; dateFromDay = day;
+                dateToYear = year; dateToMonth = month+1; dateToDay = day+1;/*還有一個防呆機制沒有做，就是+1的時候可能換月*/
+                buttonDatefrom.setText(dateFromYear + "-" + dateFromMonth + "-" + dateFromDay);//I don't know why month will less one so I add it
+                buttonDateto.setText(dateToYear + "-" + dateToMonth + "-" + dateToDay);
+                break;
+            case 2://click end/to button
+                if(year >= dateFromYear)
+                    if((month+1) >= dateFromMonth)
+                        if(day>=dateFromDay)
+                            y=true;
+                if(y){//avoid stupid
+                    dateToYear = year; dateToMonth = month+1; dateToDay = day;
+                    buttonDateto.setText(dateToYear + "-" + dateToMonth + "-" + dateToDay);
+                }
+                break;
+        }
         /* 透過這些值放入DB */
-        noti_year = year;
-        noti_month = month;
-        noti_day = day;
-        datetext.setText(year + "-" + month + "-" + day);
-//        Toast.makeText(new_item.this, "new date:" + year + "-" + month + "-" + day, Toast.LENGTH_LONG).show();
+        //dateFromYear + "-" + dateFromMonth + "-" + dateFromDay
+        //dateToYear + "-" + dateToMonth + "-" + dateToDay
+
+//        Toast.makeText(addNewBeacon.this, "new date:" + year + "-" + month + "-" + day, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+        boolean y = false;
+        switch (timeFlag){
+            case 0://nothing happen
+                break;
+            case 1://click start/from button
+                timeFromHour = hourOfDay; timeFromMin = minute;
+                timeToHour = hourOfDay+1; timeToMin = minute;/*還有一個防呆機制沒有做，就是+1的時候可能換日*/
+                buttonTimefrom.setText(timeFromHour + ":" + timeFromMin);
+                buttonTimeto.setText(timeToHour + ":" + timeToMin);
+                break;
+            case 2://click end/to button
+                if(hourOfDay >= timeFromHour)
+                    if(minute>=timeFromMin)
+                        y=true;
+                if(y){
+                    timeToHour = hourOfDay; timeToMin = minute;
+                    buttonTimeto.setText(timeToHour + ":" + timeToMin);
+                }
+                break;
+        }
         /* 透過這些值放入DB */
-        noti_hourOfDay = hourOfDay;
-        noti_minute = minute;
-        timetext.setText(hourOfDay + ":" + minute);
-//        Toast.makeText(new_item.this, "new time:" + hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
+        //timeFromHour + ":" + timeFromMin
+        //timeToHour + ":" + timeToMin
+
+//        Toast.makeText(addNewBeacon.this, "new time:" + hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
     }
     /* time end */
+
+
+    /*notification click*/
+    public void notification_click_claim(){
+        final Dialog dialog = new Dialog(addNewBeacon.this);
+        final Calendar calendar = Calendar.getInstance();
+        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),false);
+        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
+        // first dialog
+        dialog.setContentView(R.layout.notification_dialog);
+        buttonDateto = (Button) dialog.findViewById(R.id.buttonDateto);
+        buttonTimeto = (Button) dialog.findViewById(R.id.buttonTimeto);
+        buttonDatefrom = (Button) dialog.findViewById(R.id.buttonDatefrom);
+        buttonTimefrom = (Button) dialog.findViewById(R.id.buttonTimefrom);
+        add_notification_check = (Button) dialog.findViewById(R.id.add_notification_check);
+        notification_content = (EditText) dialog.findViewById(R.id.notification_content);
+
+        //second dialog
+        DatePickerDialog dpd = (DatePickerDialog) getSupportFragmentManager().findFragmentByTag(DATEPICKER_TAG);
+        if (dpd != null) {
+            dpd.setOnDateSetListener(addNewBeacon.this);
+        }
+        TimePickerDialog tpd = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag(TIMEPICKER_TAG);
+        if (tpd != null) {
+            tpd.setOnTimeSetListener(addNewBeacon.this);
+        }
+
+
+//                buttonDateto.setClickable(false);
+//                buttonDateto.setClickable(false);
+        if(edit){
+            //抓資料庫裡的data去設定這些的值
+            //timeFromHour + ":" + timeFromMin
+            //timeToHour + ":" + timeToMin
+            //dateFromYear + "-" + dateFromMonth + "-" + dateFromDay
+            //dateToYear + "-" + dateToMonth + "-" + dateToDay
+            //notification_content
+            add_notification_check.setText("Check");//原本是"Add notifiaction"
+            edit = false;//此次編輯結束
+        }
+
+
+        buttonDatefrom.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerDialog.setYearRange(1985, 2028);
+                datePickerDialog.show(getSupportFragmentManager(), DATEPICKER_TAG);
+                dateFlag = 1;
+//                        buttonDateto.setClickable(true);
+            }
+        });
+        buttonDateto.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerDialog.setYearRange(1985, 2028);
+                datePickerDialog.show(getSupportFragmentManager(), DATEPICKER_TAG);
+                dateFlag = 2;
+
+            }
+        });
+        buttonTimefrom.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timePickerDialog.show(getSupportFragmentManager(), TIMEPICKER_TAG);
+//                        buttonTimeto.setClickable(true);
+                timeFlag = 1;
+            }
+        });
+        buttonTimeto.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timePickerDialog.show(getSupportFragmentManager(), TIMEPICKER_TAG);
+                timeFlag = 2;
+            }
+        });
+
+
+
+
+        //set first dialog
+
+        add_notification_check.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String content = notification_content.getText().toString();
+                if(dateFlag!=0 && timeFlag!=0 && content!=null){
+                    notification_content_button.setText(content+"\n\n"+
+                            dateFromYear+"/"+dateFromMonth+"/"+dateFromDay+" ~ "+dateToYear+"/"+dateToMonth+"/"+dateToDay+"\n"+
+                            timeFromHour+":"+timeFromMin+" ~ "+timeToHour+":"+timeToMin);
+
+                }
+//                        Toast.makeText(addNewBeacon.this, "Add Notification successfully", Toast.LENGTH_LONG).show();
+//                Toast.makeText(addNewBeacon.this, "this:"+notification_content.getText().toString(), Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+
+
+
+        dialog.show();
+
+    }
+
 
     //新增程序
     private void addBeacon(){
@@ -553,6 +695,45 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+//    /* cancel : go back button */
+//    @Override
+//    public boolean onSupportNavigateUp(){
+//        finish();
+//        return true;
+//    }
+//
+//    /* check button*/
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.new_item_save, menu);
+//        return true;
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_new_item_check) {
+//
+//            addBeacon();
+//
+//            Intent intent = new Intent();
+//            intent.setClass(addNewBeacon.this, MainActivity.class);
+//            startActivity(intent);
+//            finish();
+//            /* 切回到原本的畫面 */
+//            startActivity(new Intent(addNewBeacon.this, MainActivity.class));//same as following two
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//    /* check end */
 
 
 

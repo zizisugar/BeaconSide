@@ -35,6 +35,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airbnb.lottie.LottieAnimationView;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -43,10 +46,8 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
+import java.util.Arrays;
 import static java.lang.Integer.parseInt;
-
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -60,8 +61,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ListView listView1;
     rowdata adapter;
     ArrayAdapter<String> adapterPress;
-    TextView userName;
+    ArrayAdapter<String> adapter_sideList_group;
+    main_side_event_rowdata adapter_sideList_event1;
+    main_side_event_rowdata adapter_sideList_event2;
+    ListView group_list;
+    //    String[] testValues= new String[]{	"Wallet","Key","Camera","Laptop"};
+//    String[] testValues2= new String[]{	"Out of Range","Out of Range","Out of Range","Out of Range"};
+//    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
 
+    TextView userName;
 
     BluetoothMethod bluetooth = new BluetoothMethod();
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -84,6 +92,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String[] eventName_array;//儲存event name
     int[] groupId_array;//儲存group id
     String[] groupName_array;//儲存group name
+    ArrayList<String> groupName_list;
+    ArrayList<String> eventName_list1 = new ArrayList<String>();
+    ArrayList<String> eventName_list2 = new ArrayList<String>();
+
+    /* class main side */
+    private RelationListView event_list1;
+    private RelationListView event_list2;
+
+//    private String[] mData1 = new String[] { "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1", "listView1", "listView1", "listView1",
+//            "listView1", "listView1" };
+//    private String[] mData2 = new String[] { "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
+//            "ListView2", "ListView2", "ListView2", "ListView2" };
 
 
     /* long press */
@@ -98,13 +126,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // 取得從Login頁面傳來的用戶的FB帳號
-        Intent intent = this.getIntent();
+//        Intent intent = this.getIntent();
 
         uEmail = Login.uEmail;
         uName = Login.uName;
         uId = Login.uId;
 //        uEmail = "jennifer1024@livemail.tw";
 //        uName = intent.getStringExtra("uName");
+//        uId = "10211681925182086";
 //        uName = "Cuties";
 
 //        uId = intent.getStringExtra("uId");
@@ -136,11 +165,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listView1=(ListView) findViewById(R.id.listView1);
 
         /* list view function */
-        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, bName_list);
         mergeAdapter = new MergeAdapter();
 
+        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, bName_list);
         mergeAdapter.addAdapter(new ListTitleAdapter(this,adapterPress));
         mergeAdapter.addAdapter(adapterPress);//
+
 
 //        listView1.setAdapter(mergeAdapter);
 
@@ -207,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         side_group_ls = (View)findViewById(R.id.side_group_ls);
         chooseGroup = (ImageView)findViewById(R.id.chooseGroup);
         chooseClass = (ImageView)findViewById(R.id.chooseClass);
+        group_list = (ListView)findViewById(R.id.group_list);
+        event_list1 = (RelationListView) findViewById(R.id.event_list1);
+        event_list2 = (RelationListView) findViewById(R.id.event_list2);
+        event_list1.setRelatedListView(event_list2);
+        event_list2.setRelatedListView(event_list1);
 
         side_group_bt.setOnClickListener(new View.OnClickListener() {//group
             @Override
@@ -252,18 +287,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
             }
         });
-//        getBeacon();
-//        getUserEvent();
-//        getUserGroup();
+        getBeacon();
+        getUserEvent();
+        getUserGroup();
+        listView1.setAdapter(mergeAdapter);
+
     }
 
     @Override
     public void onResume(){
         super.onResume();
         uEmail = Login.uEmail;
-//        uEmail = "sandy@gmail.com";
+//        uEmail = "jennifer1024@livemail.tw";
+
         get_uEmail = "\""+uEmail+"\"";
-        uName = Login.uName;
+//        uName = Login.uName;
 //        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
@@ -271,6 +309,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getUserEvent();
         getUserGroup();
         bluetooth.getStartMyItemDistance(macAddress_list);
+        refresh();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refresh();
+            }
+        }, 3000);
+//        animationView.setVisibility(View.INVISIBLE);
     }
     //取得用戶擁有的beacon
     private void getBeacon(){
@@ -338,12 +384,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                distance.add("out of range");//distance先寫死
             }
             //上面的資料讀取完  才設置listview
-//            adapter=new rowdata(this,bName_list,distance,macAddress_list,bPic_list,false);//顯示的方式
             adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
-//            adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
             mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));
             mergeAdapter.addAdapter(adapter);
-            listView1.setAdapter(adapter);
+//            listView1.setAdapter(adapter);/*如果你在merge，請把這句刪掉，這句不要用*/
             listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -416,15 +460,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 int cId = parseInt(jo.getString("cId"));//取得event id , 由string轉為cId
                 String cName = jo.getString("cName");//取得event名稱
-
-                //Toast.makeText(MainActivity.this, cName, Toast.LENGTH_LONG).show();
-
+//                Toast.makeText(this, cName.toString()+" i="+i, Toast.LENGTH_LONG).show();
                 eventId_array[i] = cId;
                 eventName_array[i] = cName;
+
+                if(i==0) //left
+                    eventName_list1.add(cName);
+                else
+                    if(i%2==0) //left
+                        eventName_list1.add(cName);
+                    else //right
+                        eventName_list2.add(cName);
+
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+//        Toast.makeText(MainActivity.this, "start"+eventName_list1, Toast.LENGTH_LONG).show();
+        adapter_sideList_event1 = new main_side_event_rowdata(this,eventName_list1);
+        adapter_sideList_event2 = new main_side_event_rowdata(this,eventName_list2);
+        event_list1.setAdapter(adapter_sideList_event1);
+        event_list2.setAdapter(adapter_sideList_event2);
+        event_list1.setRelatedListView(event_list2);
+        event_list2.setRelatedListView(event_list1);
 
     }
 
@@ -442,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 super.onPostExecute(s);
 //                loading.dismiss();
                 JSON_STRING = s;
-                //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
                 //將取得的json轉換為array list, 顯示在畫面上
                 showUserGroup();
 
@@ -467,24 +528,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             groupName_array = new String[result.length()];
             groupId_array = new int[result.length()];
-
             for (int i = 0; i < result.length(); i++) {//從頭到尾跑一次array
                 JSONObject jo = result.getJSONObject(i);
 
                 int gId = parseInt(jo.getString("gId"));//取得event id , 由string轉為cId
                 String gName = jo.getString("gName");//取得event名稱
-
+//                Toast.makeText(this, "hello"+gName.toString(), Toast.LENGTH_LONG).show();
                 groupId_array[i] = gId;
                 groupName_array[i] = gName;
-
-                //Toast.makeText(MainActivity.this, gName, Toast.LENGTH_LONG).show();
-
 
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+
+        groupName_list= new ArrayList<>(Arrays.asList(groupName_array));//array to arraylist
+//        Toast.makeText(MainActivity.this, "start"+groupName_list+"end", Toast.LENGTH_LONG).show();
+        adapter_sideList_group = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,groupName_list);
+        group_list.setAdapter(adapter_sideList_group);
     }
 
     private void deleteBeacon(final String macAddress){
@@ -501,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-                Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
                 getBeacon();
             }
 
@@ -647,6 +709,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getUserEvent();
         getUserGroup();
         adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
+
         listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

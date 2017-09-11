@@ -26,6 +26,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
+
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
@@ -39,6 +40,7 @@
             android:name=".Compass"
             android:label="Compass" />
         <!-- <activity android:name=".AutoResizeTextView"></activity> -->
+
         <activity android:name=".CheckItem" />
         <activity
             android:name=".addNewBeacon"
@@ -76,14 +78,14 @@
             android:name=".Login"
             android:exported="true">
             android:theme="@style/AppTheme.NoActionBar"
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/fb_login_protocol_scheme" />
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+             <intent-filter>
+             <action android:name="android.intent.action.VIEW" />
+             <category android:name="android.intent.category.DEFAULT" />
+             <category android:name="android.intent.category.BROWSABLE" />
+             <data android:scheme="@string/fb_login_protocol_scheme" />
+             <action android:name="android.intent.action.MAIN" />
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity android:name=".sign_in">
 
@@ -95,12 +97,14 @@
         <activity android:name=".rowdata" />
         <activity android:name=".AutoResizeTextView" />
         <activity android:name=".add_rowdata" />
-        <activity android:name=".item_plus_content_rowdata"></activity>
-        <activity android:name=".NewGroup"></activity>
-        <activity android:name=".NewEvent"></activity>
-        <activity android:name=".ChangePic"></activity>
-        <activity android:name=".AlertDistance"></activity>
-        <activity android:name=".editBeacon"></activity>
+        <activity android:name=".item_plus_content_rowdata" />
+        <activity android:name=".NewGroup" />
+        <activity android:name=".NewEvent" />
+        <activity android:name=".ChangePic" />
+        <activity android:name=".AlertDistance" />
+        <activity android:name=".editBeacon" />
+        <activity android:name=".main_side_event_rowdata"></activity>
+        <activity android:name=".SplashScreen"></activity>
     </application>
 
 </manifest>

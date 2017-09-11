@@ -69,7 +69,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         btn_friends = (Button) findViewById(R.id.btn_friends);
         btn_friends.setOnClickListener(this);
-        btn_facebook = (Button) findViewById(R.id.btn_facebook);
         accessToken = AccessToken.getCurrentAccessToken();
         getUserEvent(); // 取得資料庫裡所有User的Email，存在user_list裡面
         login = (Button) findViewById(R.id.login);
@@ -97,6 +96,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     uId=(String) object.get("id");
                                     uName=(String) object.get("name");
                                     uEmail=(String) object.get("email");
+
                                     for(String email : user_list){
                                         Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
                                         if(uEmail.equals(email)) {
@@ -115,10 +115,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             Intent intent = new Intent();
                                             intent.setClass(Login.this, MainActivity.class);
                                             //傳遞變數
-                                            intent.putExtra("uEmail", uEmail);
-                                            intent.putExtra("uName", uName);
+//                                            intent.putExtra("uEmail", uEmail);
+//                                            intent.putExtra("uName", uName);
                                             startActivity(intent);
-                                            //                                finish();
+//                                            finish();
                                             /******/
                                             }
                                         });
@@ -204,12 +204,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     public void onClick(View v){
                                         /**換頁到Main**/
                                         Intent intent = new Intent();
-                                        intent.setClass(Login.this,MainActivity.class);
+                                        intent.setClass(Login.this, MainActivity.class);
                                         //傳遞變數
-                                        intent.putExtra("uEmail",uEmail);
-                                        intent.putExtra("uName",uName);
+//                                        intent.putExtra("uEmail",uEmail);
+//                                        intent.putExtra("uName",uName);
                                         startActivity(intent);
-        //                                finish();
+//                                        finish();
                                         /******/
                                     }
                                 });
