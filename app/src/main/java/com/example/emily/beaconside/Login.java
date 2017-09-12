@@ -109,7 +109,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             .commit();
 
                                     for(String email : user_list){
-                                        Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
                                         if(uEmail.equals(email)) {
                                             isRegistered = true;
                                         }
@@ -125,11 +125,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             /**換頁到Main**/
                                             Intent intent = new Intent();
                                             intent.setClass(Login.this, MainActivity.class);
-                                            //傳遞變數
-//                                            intent.putExtra("uEmail", uEmail);
-//                                            intent.putExtra("uName", uName);
                                             startActivity(intent);
-//                                            finish();
                                             /******/
                                             }
                                         });
@@ -194,6 +190,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
         accessToken = AccessToken.getCurrentAccessToken();
+        getUserEvent(); // 取得資料庫裡所有User的Email，存在user_list裡面
         if(accessToken!=null){
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
@@ -215,6 +212,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                         .putString("EMAIL", uEmail)
                                         .putString("ID", uId)
                                         .commit();
+                                for(String email : user_list){
+//                                    Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
+                                    if(uEmail.equals(email)) {
+                                        isRegistered = true;
+                                    }
+                                }
+                                if(!isRegistered) {
+                                    addUser();
+                                    Toast.makeText(Login.this,uEmail+"成功註冊",Toast.LENGTH_SHORT).show();
+                                }
                                 login.setText("以"+uName+"的身份繼續使用");
                                 login.setVisibility(View.VISIBLE);
                                 login.setOnClickListener(new View.OnClickListener(){

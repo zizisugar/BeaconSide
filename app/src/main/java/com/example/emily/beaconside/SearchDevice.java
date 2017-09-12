@@ -29,7 +29,7 @@ import static java.lang.Integer.parseInt;
 
 public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBack{
     //	private EditText editText1;
-    private ListView listView1;
+    private ListView beacon_listView;
     private boolean myStatusBT=true, firstOpenBT=true;
     /* 運用library */
     private ifrog mifrog;
@@ -69,7 +69,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         // 接收資料庫所有已註冊的beacon清單，如果已被註冊就不顯示該beacon
         getBeaconDatabase();
         /* DeviceList */
-        listView1=(ListView) findViewById(R.id.beaconList);   //取得listView1
+        beacon_listView=(ListView) findViewById(R.id.beaconList);   //取得beacon_listView
         /* bluetooth */
         spinner = (ProgressBar)findViewById(R.id.progressBar1);
         BTinit();
@@ -158,8 +158,8 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
 
     private void SetupList() {
         adapter = new device_rowdata(this, testValues, testValues2);//顯示的方式
-//        listView1.setAdapter(adapter);
-        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() { //選項按下反應
+        beacon_listView.setAdapter(adapter);
+        beacon_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() { //選項按下反應
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -212,7 +212,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         if(device.getName() != null && !isRegistered){
 
             if(t_NewDevice==true){//如果是新的device
-                listView1.setVisibility(View.VISIBLE);
+                beacon_listView.setVisibility(View.VISIBLE);
                 spinner.setVisibility(View.GONE);
                 Address.add(t_address);
                 Names.add(device.getName());//+" RSSI="+Integer.toString(rssi)+" d="+calculateDistance(rssi)+"cm"+" myD ="+Float.toString(turntoTarget));//抓名字然後放進列表

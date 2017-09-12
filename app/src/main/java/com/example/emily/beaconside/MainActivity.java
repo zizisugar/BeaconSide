@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Button side_new,side_group_bt,side_class_bt;
     View side_class_ls,side_group_ls;
     ImageView chooseGroup,chooseClass,userPicture;
-    ListView listView1;
+    ListView main_listView;
     rowdata adapter;
     ArrayAdapter<String> adapterPress;
     ArrayAdapter<String> adapter_sideList_group;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //listview
 
         mContext = this;
-        listView1=(ListView) findViewById(R.id.listView1);
+        main_listView=(ListView) findViewById(R.id.main_listview);
 
         /* list view function */
         mergeAdapter = new MergeAdapter();/*留這個*/
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mergeAdapter.addAdapter(adapterPress);///*留這個*/
 
 
-        registerForContextMenu(listView1);
+        registerForContextMenu(main_listView);
 
         // 設置側邊欄使用者名稱
         userName = (TextView) findViewById(R.id.name);
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(View v) {
                         Toast.makeText(MainActivity.this,"new group Clicked ",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent();
-//                        intent.setClass(MainActivity.this,NewGroup.class);
+                        intent.setClass(MainActivity.this,NewGroup.class);
                         bluetooth.bluetoothStop();
                         startActivity(intent);
                     }
@@ -266,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getUserEvent();
         getUserGroup();
 
-        listView1.setAdapter(mergeAdapter);/*留這個*/
+        main_listView.setAdapter(mergeAdapter);/*留這個*/
     }
 
     @Override
@@ -278,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uEmail = sharedPreferences.getString("EMAIL", "YOO@gmail.com");
         uId = sharedPreferences.getString("ID", "1234567890");
         get_uEmail = "\""+uEmail+"\"";
-
+        Toast.makeText(MainActivity.this,"現在使用者："+uEmail,Toast.LENGTH_SHORT).show();
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
         getBeacon();
@@ -539,11 +540,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);//!!!
-        if (v.getId()==R.id.listView1) {
+        if (v.getId()==R.id.main_listview) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
             menu.setHeaderTitle(bName_list.get(info.position-1));
             /*長按著的選項*/
-            String[] menuItems = new String[]{"Edit","Delete"};
+            String[] menuItems = new String[]{"Edit","Delete","hihi"};
             for (int i = 0; i<menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
@@ -553,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        String[] menuItems   = new String[]{"Edit","Delete"};
+        String[] menuItems   = new String[]{"Edit","Delete","hihi"};
         String menuItemName = menuItems[menuItemIndex];
         String listItemName = bName_list.get(info.position-1);
         final String listItemMac = macAddress_list.get(info.position-1);
@@ -661,17 +662,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
-//        getBeacon();
+        getBeacon();
         getUserEvent();
         getUserGroup();
 
-        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式/*留這個*/
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
-            }
-        }, 3000);
+        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
+//            }
+//        }, 3000);
 
         mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));/*留這個*/
         mergeAdapter.addAdapter(adapter);/*留這個*/

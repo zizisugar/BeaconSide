@@ -147,11 +147,12 @@ public class NewGroup extends AppCompatActivity {
 //                            builder2.show();
                 }
                 addGroup();
+
+                Intent backPressedIntent = new Intent();
+                backPressedIntent.setClass(getApplicationContext(), MainActivity.class);
+                startActivity(backPressedIntent);
             }
-
         });
-
-
     }
 
 
@@ -208,4 +209,5 @@ public class NewGroup extends AppCompatActivity {
         AddGroup ae = new AddGroup();
         ae.execute();
     }
+
 }
