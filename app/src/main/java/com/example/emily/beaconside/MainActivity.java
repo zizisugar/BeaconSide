@@ -103,19 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RelationListView event_list1;
     private RelationListView event_list2;
 
-//    private String[] mData1 = new String[] { "listView1", "listView1",
-//            "listView1", "listView1", "listView1", "listView1", "listView1",
-//            "listView1", "listView1", "listView1", "listView1", "listView1",
-//            "listView1", "listView1", "listView1", "listView1", "listView1",
-//            "listView1", "listView1", "listView1", "listView1", "listView1",
-//            "listView1", "listView1" };
-//    private String[] mData2 = new String[] { "ListView2", "ListView2",
-//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
-//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
-//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
-//            "ListView2", "ListView2", "ListView2", "ListView2", "ListView2",
-//            "ListView2", "ListView2", "ListView2", "ListView2" };
-
 
     /* long press */
     MergeAdapter mergeAdapter;
@@ -156,14 +143,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listView1=(ListView) findViewById(R.id.listView1);
 
         /* list view function */
-        mergeAdapter = new MergeAdapter();
+        mergeAdapter = new MergeAdapter();/*留這個*/
 
-        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, bName_list);
-        mergeAdapter.addAdapter(new ListTitleAdapter(this,adapterPress));
-        mergeAdapter.addAdapter(adapterPress);//
-
-
-//        listView1.setAdapter(mergeAdapter);
+        adapterPress = new ArrayAdapter<String>(this, R.layout.activity_rowdata, bName_list);/*留這個*/
+        mergeAdapter.addAdapter(new ListTitleAdapter(this,adapterPress));/*留這個*/
+        mergeAdapter.addAdapter(adapterPress);///*留這個*/
 
 
         registerForContextMenu(listView1);
@@ -281,13 +265,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getBeacon();
         getUserEvent();
         getUserGroup();
-//        listView1.setAdapter(mergeAdapter);
 
+        listView1.setAdapter(mergeAdapter);/*留這個*/
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        // 從本機取使用者資料
         sharedPreferences = getSharedPreferences("data" , MODE_PRIVATE);
         uName = sharedPreferences.getString("NAME", "YOO");
         uEmail = sharedPreferences.getString("EMAIL", "YOO@gmail.com");
@@ -307,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }, 3000);
     }
+
     //取得用戶擁有的beacon
     private void getBeacon(){
         class GetBeacon extends AsyncTask<Void,Void,String> {
@@ -322,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 super.onPostExecute(s);
 //                loading.dismiss();
                 JSON_STRING = s;
-                //Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
                 //將取得的json轉換為array list, 顯示在畫面上
                 showMyBeacon();
 
@@ -373,29 +359,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                distance.add("out of range");//distance先寫死
             }
             //上面的資料讀取完  才設置listview
-            adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式
-            mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));
-            mergeAdapter.addAdapter(adapter);
-//            listView1.setAdapter(adapter);/*如果你在merge，請把這句刪掉，這句不要用*/
-            listView1.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //選項按下反應
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String itemName = bName_list.get(position);      //哪一個列表
-                    String itemAddress = macAddress_list.get(position);
-                    Toast.makeText(MainActivity.this, itemName + " selected", Toast.LENGTH_SHORT).show(); //顯示訊號
-                    bluetooth.bluetoothFunction="searchItem";
+            adapter=new rowdata(getBaseContext(),bName_list,macAddress_list,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
+            mergeAdapter.notifyDataSetChanged();/*留這個*/
 
-//                /*換頁面 有換Activity*/
-                    Intent intent = new Intent();
-                    intent.setClass(MainActivity.this, Compass.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("itemName", itemName);
-                    bundle.putString("itemAddress", itemAddress);
-                    intent.putExtras(bundle);
-                    bluetooth.bluetoothStop();
-                    startActivity(intent);
-                }
-            } );
+
             bluetooth.Alert = bAlert_list;
 
         } catch (JSONException e) {
@@ -570,11 +537,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Item setting */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);//!!!
         if (v.getId()==R.id.listView1) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            menu.setHeaderTitle(bName_list.get(info.position));
+            menu.setHeaderTitle(bName_list.get(info.position-1));
             /*長按著的選項*/
             String[] menuItems = new String[]{"Edit","Delete"};
             for (int i = 0; i<menuItems.length; i++) {
@@ -588,8 +555,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int menuItemIndex = item.getItemId();
         String[] menuItems   = new String[]{"Edit","Delete"};
         String menuItemName = menuItems[menuItemIndex];
-        String listItemName = bName_list.get(info.position);
-        final String listItemMac = macAddress_list.get(info.position);
+        String listItemName = bName_list.get(info.position-1);
+        final String listItemMac = macAddress_list.get(info.position-1);
 //        TextView text = (TextView)findViewById(R.id.footer);
 //        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
 
@@ -697,16 +664,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        getBeacon();
         getUserEvent();
         getUserGroup();
-        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
 
-//        listView1.setAdapter(adapter);
+        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式/*留這個*/
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式
-//                listView1.setAdapter(adapter);
+                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
             }
         }, 3000);
+
+        mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));/*留這個*/
+        mergeAdapter.addAdapter(adapter);/*留這個*/
     }
 
     public void checkItem(View view) {

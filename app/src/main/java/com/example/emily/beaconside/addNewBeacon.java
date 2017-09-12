@@ -78,6 +78,7 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
 
     boolean switchMode = false;//紀錄switch是開或關
     Switch alarmSwitch;//switch按鈕
+
     item_plus_content_rowdata adapter;
     View inflatedView;
     ListView dialog_list;
@@ -619,45 +620,6 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /* cancel : go back button */
-    @Override
-    public boolean onSupportNavigateUp(){
-        finish();
-        return true;
-    }
-
-    /* check button*/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.new_item_save, menu);
-        //Toast.makeText(this,"叫出menu", Toast.LENGTH_SHORT).show();
-
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_new_item_check) {
-            //執行新增beacon
-            addBeacon();
-            /* 切回到原本的畫面 */
-            Intent intent = new Intent();
-            intent.setClass(addNewBeacon.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    /* check end */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -696,45 +658,39 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
     }
 
 
-//    /* cancel : go back button */
-//    @Override
-//    public boolean onSupportNavigateUp(){
-//        finish();
-//        return true;
-//    }
-//
-//    /* check button*/
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.new_item_save, menu);
-//        return true;
-//    }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_new_item_check) {
-//
-//            addBeacon();
-//
-//            Intent intent = new Intent();
-//            intent.setClass(addNewBeacon.this, MainActivity.class);
-//            startActivity(intent);
-//            finish();
-//            /* 切回到原本的畫面 */
-//            startActivity(new Intent(addNewBeacon.this, MainActivity.class));//same as following two
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-//    /* check end */
+    /* cancel : go back button */
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
 
+    /* check button*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.new_item_save, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.item_check:
+                addBeacon();
 
+                Intent intent = new Intent();
+                intent.setClass(addNewBeacon.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                /* 切回到原本的畫面 */
+                startActivity(new Intent(addNewBeacon.this, MainActivity.class));//same as following two
+                return true;
+            case R.id.item_back:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    /* check end */
 
 }

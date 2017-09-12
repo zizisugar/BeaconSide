@@ -7,6 +7,7 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -21,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.KeyListener;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,8 +38,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.R.id.list;
 
 public class editBeacon extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener ,OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
@@ -128,7 +128,7 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_beacon);
 
-        //畫面上方的bar
+//        //畫面上方的bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -834,6 +834,7 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+
     /* cancel : go back button */
     @Override
     public boolean onSupportNavigateUp(){
@@ -846,34 +847,29 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.new_item_save, menu);
-        //Toast.makeText(this,"叫出menu", Toast.LENGTH_SHORT).show();
-
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch(item.getItemId()){
+            case R.id.item_check:
+                updateBeacon();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_new_item_check) {
-
-            updateBeacon();
-            //執行更新beacon
-            /* 切回到原本的畫面 */
-            Intent intent = new Intent();
-            intent.setClass(editBeacon.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-
-            return true;
+                Intent intent = new Intent();
+                intent.setClass(editBeacon.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                /* 切回到原本的畫面 */
+                startActivity(new Intent(editBeacon.this, MainActivity.class));//same as following two
+                return true;
+            case R.id.item_back:
+                this.finish();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
     /* check end */
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
