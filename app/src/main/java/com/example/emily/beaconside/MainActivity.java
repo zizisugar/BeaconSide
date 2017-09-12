@@ -4,6 +4,7 @@ package com.example.emily.beaconside;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     int listItemPositionForPopupMenu;
 
+    // 本機資料
+    SharedPreferences sharedPreferences;
 
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
@@ -125,26 +128,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // 取得從Login頁面傳來的用戶的FB帳號
-//        Intent intent = this.getIntent();
 
-        uEmail = Login.uEmail;
-        uName = Login.uName;
-        uId = Login.uId;
-//        uEmail = "jennifer1024@livemail.tw";
-//        uName = intent.getStringExtra("uName");
-//        uId = "10211681925182086";
-//        uName = "Cuties";
-
-//        uId = intent.getStringExtra("uId");
-//        if(!intent.getStringExtra("uEmail").equals(""))
-//            uEmail = intent.getStringExtra("uEmail");
+        // 從本機資料取使用者資料
+        sharedPreferences = getSharedPreferences("data" , MODE_PRIVATE);
+        uName = sharedPreferences.getString("NAME", "YOO");
+        uEmail = sharedPreferences.getString("EMAIL", "YOO@gmail.com");
+        uId = sharedPreferences.getString("ID", "1234567890");
         get_uEmail = "\""+uEmail+"\"";
-//        get_uEmail = "jennifer1024@livemail.tw";
-//        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
-        // 初始化藍牙
-//        bluetooth.BTinit(this);
-//        bluetooth.getStartSearchDevice();
+
         // 設置SwipeView重整
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_main);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -257,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(View v) {
                         Toast.makeText(MainActivity.this,"new group Clicked ",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent();
-                        intent.setClass(MainActivity.this,NewGroup.class);
+//                        intent.setClass(MainActivity.this,NewGroup.class);
                         bluetooth.bluetoothStop();
                         startActivity(intent);
                     }
@@ -290,33 +281,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getBeacon();
         getUserEvent();
         getUserGroup();
-        listView1.setAdapter(mergeAdapter);
+//        listView1.setAdapter(mergeAdapter);
 
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        uEmail = Login.uEmail;
-//        uEmail = "jennifer1024@livemail.tw";
-
+        sharedPreferences = getSharedPreferences("data" , MODE_PRIVATE);
+        uName = sharedPreferences.getString("NAME", "YOO");
+        uEmail = sharedPreferences.getString("EMAIL", "YOO@gmail.com");
+        uId = sharedPreferences.getString("ID", "1234567890");
         get_uEmail = "\""+uEmail+"\"";
-//        uName = Login.uName;
-//        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
+
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
         getBeacon();
         getUserEvent();
         getUserGroup();
         bluetooth.getStartMyItemDistance(macAddress_list);
-        refresh();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 refresh();
             }
         }, 3000);
-//        animationView.setVisibility(View.INVISIBLE);
     }
     //取得用戶擁有的beacon
     private void getBeacon(){
@@ -617,7 +606,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("groupName_array",groupName_array);
                 intent.putExtra("groupId_array",groupId_array);
                 startActivity(intent);
-                finish();
+//                finish();
                 break;
             case "Delete":
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -710,12 +699,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getUserGroup();
         adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式
 
-        listView1.setAdapter(adapter);
+//        listView1.setAdapter(adapter);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式
-                listView1.setAdapter(adapter);
+//                listView1.setAdapter(adapter);
             }
         }, 3000);
     }

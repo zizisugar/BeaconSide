@@ -26,6 +26,7 @@ public class Config{
     public static final String URL_SEARCH = "http://140.117.71.114/beacon/search.php";
     public static final String URL_UPDATE_BEACON="http://140.117.71.114/beacon/updateBeacon.php";
     public static final String URL_DELETE_BEACON="http://140.117.71.114/beacon/deleteBeacon.php?macAddress=";
+    public static final String URL_CREATE_GROUP = "http://140.117.71.114/beacon/createGroup.php";
 
 
     //Keys that will be used to send the request to php scripts

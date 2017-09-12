@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -110,7 +111,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         if (mifrog.InitCheckBT(bluetoothManager) == null) {
             Toast.makeText(this,"this Device doesn't support Bluetooth BLE", Toast.LENGTH_SHORT).show();
-            finish();
+//            finish();
             return;
         }
         getStartSearch();
@@ -157,7 +158,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
 
     private void SetupList() {
         adapter = new device_rowdata(this, testValues, testValues2);//顯示的方式
-        listView1.setAdapter(adapter);
+//        listView1.setAdapter(adapter);
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() { //選項按下反應
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -179,7 +180,7 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
                 intent.putExtra("groupId_array",groupId_array);
                 Toast.makeText(SearchDevice.this, bName + " selected\n" + uEmail+"\n"+macAddress+"\n"+eventName_array+"\n"+eventId_array+"\n"+groupName_array+"\n"+groupId_array, Toast.LENGTH_LONG).show(); //顯示訊號
                 startActivity(intent);
-                finish();
+//                finish();
                 /******/
 
             }
@@ -291,10 +292,12 @@ public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBa
         mifrog.BTSearchStop();
     }
 
-    public void onBackPressed() {
+    public void onBackPressed(View v) {
         Intent backPressedIntent = new Intent();
-        backPressedIntent .setClass(getApplicationContext(), MainActivity.class);
+        backPressedIntent .setClass(getApplicationContext(), Login.class);
         startActivity(backPressedIntent );
-        finish();
+//        finish();
     }
+
+
 }
