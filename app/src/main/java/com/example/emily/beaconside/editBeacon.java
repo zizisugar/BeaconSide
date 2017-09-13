@@ -349,7 +349,7 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
         });
 
         /* 新增Notification */
-        add_notification.setOnClickListener( new View.OnClickListener() {
+        /*add_notification.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(editBeacon.this);
@@ -402,7 +402,7 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
                 dialog.show();
 
             }
-        });
+        });*/
 
 
     }

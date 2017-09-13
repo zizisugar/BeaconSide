@@ -3,6 +3,7 @@ package com.example.emily.beaconside;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,7 +45,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<String> cName_list = new ArrayList<String>();//我的event名稱list
     ArrayList<String> distance= new ArrayList<String>();
     ArrayList<Integer> bAlert_list = new ArrayList<>();
+    public int notificationId;
 
     int[] eventId_array;//儲存event id
     String[] eventName_array;//儲存event name
@@ -94,12 +101,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* long press */
     MergeAdapter mergeAdapter;
     /* end lon */
-
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
+
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -249,10 +257,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(MainActivity.this,"new event Clicked ",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent();
-                        intent.setClass(MainActivity.this,NewEvent.class);
+                        Intent MainToNewEvent = new Intent();
+                        MainToNewEvent.putExtra("uEmail",uEmail);
+                        MainToNewEvent.putExtra("bName_list",bName_list);
+                        MainToNewEvent.putExtra("macAddress_list",macAddress_list);
+                        MainToNewEvent.putExtra("bPic_list",bPic_list);
+                        MainToNewEvent.setClass(MainActivity.this,NewEvent.class);
                         bluetooth.bluetoothStop();
-                        startActivity(intent);
+                        startActivity(MainToNewEvent);
                     }
 
                 });
@@ -267,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onResume(){
         super.onResume();
         uEmail = Login.uEmail;
-//        uEmail = "sandy@gmail.com";
         get_uEmail = "\""+uEmail+"\"";
         uName = Login.uName;
         Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
@@ -661,16 +672,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }, 3000);
         for(int x = 0 ; x < bluetooth.myDeviceDistance.size() ; x++){
-            if(!(bluetooth.myDeviceDistance.get(x).equals("Out of Range"))){
+            String distance = bluetooth.myDeviceDistance.get(x);
+            if(!(distance.equals("Out of Range"))){
                 //如果這個beacon的距離不是out of range(表示有搜尋到)
                 //就傳給getNotice這顆beacon的mac
                 getNotice(bName_list.get(x),macAddress_list.get(x));
                 //Toast.makeText(getBaseContext(), "不是out of range", Toast.LENGTH_SHORT).show();
 
             }else{
-                //Toast.makeText(getBaseContext(), "是out of range", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), bName_list.get(x)+"是out of range", Toast.LENGTH_SHORT).show();
 
             }
+
+            //Toast.makeText(getBaseContext(),bName_list.get(x)+"距離"+bluetooth.myDeviceDistance.get(x), Toast.LENGTH_SHORT).show();
+
+
         }
     }
 
@@ -704,11 +720,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         for (int j = 0; j < jsonArrayNotice.length(); j++) { //跑迴圈從result json第一個開始到最後一個
                             JSONObject joo = jsonArrayNotice.getJSONObject(j);
+                            int nId = joo.getInt("nId");
                             String notice_macAddress = joo.getString("macAddress"); //取得json的"macAddress"
                             String nStartTime = joo.getString("nStartTime");
                             String nEndTime = joo.getString("nEndTime");
                             String nContent = joo.getString("nContent");
-                            broadcastNotice(bName, nContent);
+
+                            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date currentDate = new Date(System.currentTimeMillis()) ; // 獲取當前時間
+
+                            try {
+                                Date startDate = formatter.parse(nStartTime); //將string轉為date
+                                Date endDate = formatter.parse(nEndTime); //將string轉為date
+
+                                if(currentDate.after(startDate) && currentDate.before(endDate)){
+                                    //如果 startDate < currentDate < endDate 就推播
+                                    broadcastNotice(nId,bName, nContent);
+
+                                }
+
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
                         }
 
                     } else {
@@ -735,7 +770,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //推播
-    public void broadcastNotice(String title, String content) {
+    public void broadcastNotice(int nId,String title, String content) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.compass)
@@ -752,11 +787,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 建立通知物件
         Notification notification = builder.build();
 
-        //編號先寫死
-        int notificationId = 001;
-
         // 使用設定的通知編號為編號發出通知
-        manager.notify(notificationId, notification);
+        manager.notify(nId, notification);
 
     }
 

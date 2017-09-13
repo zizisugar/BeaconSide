@@ -235,8 +235,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 //null can appear
                 Names.add(device.getName());
                 Distance.add(calculateDistance(rssi));
-                Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
 
             }else{//如果不是新的device
                 Names.set(index,device.getName());

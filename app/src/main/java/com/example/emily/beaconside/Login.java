@@ -135,6 +135,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     intent.setClass(Login.this,MainActivity.class);
                                     //傳遞變數
                                     intent.putExtra("uEmail",uEmail);
+                                    intent.putExtra("uName",uName);
                                     startActivity(intent);
                                     finish();
                                     /******/
