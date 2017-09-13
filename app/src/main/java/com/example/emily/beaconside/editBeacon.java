@@ -5,17 +5,15 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
+
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.method.KeyListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -38,6 +37,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
+import android.os.Build;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 public class editBeacon extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener ,OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
@@ -123,14 +130,35 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
 
     private ListView listView_eventScroll;
 
+    /*toolbar*/
+    private ActionMenuView amvMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_beacon);
 
 //        //畫面上方的bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        ActionBar actionBar = getActionBar();
+//        actionBar.setHomeButtonEnabled(true);
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+////        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        /*toolbar*/
+        Toolbar t = (Toolbar) findViewById(R.id.tToolbar);
+        amvMenu = (ActionMenuView) t.findViewById(R.id.amvMenu);
+        amvMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                return onOptionsItemSelected(menuItem);
+            }
+        });
+
+        setSupportActionBar(t);
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         /**接收從SearchDevice傳過來的變數**/
         Intent intent = this.getIntent();
@@ -835,40 +863,7 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
     }
 
 
-    /* cancel : go back button */
-    @Override
-    public boolean onSupportNavigateUp(){
-        finish();
-        return true;
-    }
 
-    /* check button*/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.new_item_save, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.item_check:
-                updateBeacon();
-
-                Intent intent = new Intent();
-                intent.setClass(editBeacon.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                /* 切回到原本的畫面 */
-                startActivity(new Intent(editBeacon.this, MainActivity.class));//same as following two
-                return true;
-            case R.id.item_back:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    /* check end */
 
 
     @Override
@@ -910,7 +905,58 @@ public class editBeacon extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+//    /* cancel : go back button */
+//    @Override
+//    public boolean onSupportNavigateUp(){
+//        finish();
+//        return true;
+//    }
+//
+//    /* check button*/
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.new_item_save, menu);
+//        return true;
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch(item.getItemId()){
+//            case R.id.item_check:
+//                updateBeacon();
+//
+//                Intent intent = new Intent();
+//                intent.setClass(editBeacon.this, MainActivity.class);
+//                startActivity(intent);
+//                finish();
+//                /* 切回到原本的畫面 */
+//                startActivity(new Intent(editBeacon.this, MainActivity.class));//same as following two
+//                return true;
+////            case R.id.item_back:
+////                this.finish();
+////                return true;
+////            case android.R.id.home:
+////                this.finish();
+////                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//    /* check end */
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        // use amvMenu here
+        inflater.inflate(R.menu.new_item_save, amvMenu.getMenu());
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Do your actions here
+        return true;
+    }
 
 
 }

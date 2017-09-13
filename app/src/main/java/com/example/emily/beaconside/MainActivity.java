@@ -49,7 +49,7 @@ import static java.lang.Integer.parseInt;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     int listItemPositionForPopupMenu;
-
+    int times=0;
 
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int[] groupId_array;//儲存group id
     String[] groupName_array;//儲存group name
     ArrayList<String> groupName_list;
+    ArrayList<String> eventName_list;
     ArrayList<String> eventName_list1 = new ArrayList<String>();
     ArrayList<String> eventName_list2 = new ArrayList<String>();
 
@@ -276,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getUserEvent();
         getUserGroup();
         listView1.setAdapter(mergeAdapter);/*留這個*/
+
     }
 
     @Override
@@ -403,6 +405,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ge.execute();
     }
 
+
     private void showUserEvent() {
         JSONObject jsonObject = null;
         try {
@@ -421,27 +424,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 eventId_array[i] = cId;
                 eventName_array[i] = cName;
 
-                if(i==0) //left
-                    eventName_list1.add(cName);
-                else
-                    if(i%2==0) //left
+                if(eventName_list1.isEmpty() || eventName_list2.isEmpty())
+                    if(i==0 || i%2==0 )//left
                         eventName_list1.add(cName);
-                    else //right
+                    else//right
                         eventName_list2.add(cName);
-
-
             }
+//            times++;
+//            Toast.makeText(MainActivity.this, "list:"+times+"!!!", Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
-//        Toast.makeText(MainActivity.this, "start"+eventName_list1, Toast.LENGTH_LONG).show();
+//        Toast.makeText(MainActivity.this, "start"+eventName_list1+" start2:"+eventName_list2, Toast.LENGTH_LONG).show();
         adapter_sideList_event1 = new main_side_event_rowdata(this,eventName_list1);
         adapter_sideList_event2 = new main_side_event_rowdata(this,eventName_list2);
         event_list1.setAdapter(adapter_sideList_event1);
         event_list2.setAdapter(adapter_sideList_event2);
-        event_list1.setRelatedListView(event_list2);
+
+        event_list1.setRelatedListView(event_list2);/*兩個互相控制*/
         event_list2.setRelatedListView(event_list1);
 
     }
