@@ -3,6 +3,7 @@ package com.example.emily.beaconside;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -59,10 +60,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     boolean isRegistered = false;   // User是否已經註冊資料庫
     Button login;
     Button btn_facebook;
+    // 本機資料
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
 
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -96,9 +100,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     uId=(String) object.get("id");
                                     uName=(String) object.get("name");
                                     uEmail=(String) object.get("email");
+                                    // 存到本機
+                                    sharedPreferences = getSharedPreferences("data" , MODE_PRIVATE);
+                                    sharedPreferences.edit()
+                                            .putString("NAME", uName)
+                                            .putString("EMAIL", uEmail)
+                                            .putString("ID", uId)
+                                            .commit();
 
                                     for(String email : user_list){
-                                        Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
                                         if(uEmail.equals(email)) {
                                             isRegistered = true;
                                         }
@@ -114,11 +125,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             /**換頁到Main**/
                                             Intent intent = new Intent();
                                             intent.setClass(Login.this, MainActivity.class);
-                                            //傳遞變數
-                                            intent.putExtra("uEmail", uEmail);
-                                            intent.putExtra("uName", uName);
                                             startActivity(intent);
-                                            //                                finish();
                                             /******/
                                             }
                                         });
@@ -183,6 +190,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
         accessToken = AccessToken.getCurrentAccessToken();
+        getUserEvent(); // 取得資料庫裡所有User的Email，存在user_list裡面
         if(accessToken!=null){
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
@@ -198,18 +206,34 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 uId=(String) object.get("id");
                                 uName=(String) object.get("name");
                                 uEmail=(String) object.get("email");
+                                sharedPreferences = getSharedPreferences("data" , MODE_PRIVATE);
+                                sharedPreferences.edit()
+                                        .putString("NAME", uName)
+                                        .putString("EMAIL", uEmail)
+                                        .putString("ID", uId)
+                                        .commit();
+                                for(String email : user_list){
+//                                    Toast.makeText(Login.this,email,Toast.LENGTH_SHORT).show();
+                                    if(uEmail.equals(email)) {
+                                        isRegistered = true;
+                                    }
+                                }
+                                if(!isRegistered) {
+                                    addUser();
+                                    Toast.makeText(Login.this,uEmail+"成功註冊",Toast.LENGTH_SHORT).show();
+                                }
                                 login.setText("以"+uName+"的身份繼續使用");
                                 login.setVisibility(View.VISIBLE);
                                 login.setOnClickListener(new View.OnClickListener(){
                                     public void onClick(View v){
                                         /**換頁到Main**/
                                         Intent intent = new Intent();
-                                        intent.setClass(Login.this,MainActivity.class);
+                                        intent.setClass(Login.this, MainActivity.class);
                                         //傳遞變數
-                                        intent.putExtra("uEmail",uEmail);
-                                        intent.putExtra("uName",uName);
+//                                        intent.putExtra("uEmail",uEmail);
+//                                        intent.putExtra("uName",uName);
                                         startActivity(intent);
-        //                                finish();
+//                                        finish();
                                         /******/
                                     }
                                 });

@@ -4,6 +4,7 @@ package com.example.emily.beaconside;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,6 +19,7 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -35,6 +37,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airbnb.lottie.LottieAnimationView;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -51,11 +56,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int listItemPositionForPopupMenu;
     int times=0;
 
+    // 本機資料
+    SharedPreferences sharedPreferences;
+
     Context mContext;
     Button side_new,side_group_bt,side_class_bt;
     View side_class_ls,side_group_ls;
     ImageView chooseGroup,chooseClass,userPicture;
-    ListView listView1;
+    ListView main_listView;
     rowdata adapter;
     ArrayAdapter<String> adapterPress;
     ArrayAdapter<String> adapter_sideList_group;
@@ -67,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //    String[] address = new String[]{"84:EB:18:7A:5B:80","D0:39:72:DE:DC:3A","D0:39:72:DE:DC:3A","84:EB:18:7A:5B:80"};
 
     TextView userName;
-
 
     BluetoothMethod bluetooth = new BluetoothMethod();
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -109,31 +116,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
 
-
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // 取得從Login頁面傳來的用戶的FB帳號
-        Intent intent = this.getIntent();
 
-        uEmail = Login.uEmail;
-        uName = Login.uName;
-        uId = Login.uId;
-//        uEmail = "jennifer1024@livemail.tw";
-//        uName = intent.getStringExtra("uName");
-//        uId = "10211681925182086";
-//        uName = "Cuties";
-
-//        uId = intent.getStringExtra("uId");
-//        if(!intent.getStringExtra("uEmail").equals(""))
-//            uEmail = intent.getStringExtra("uEmail");
+        // 從本機資料取使用者資料
+        sharedPreferences = getSharedPreferences("data" , MODE_PRIVATE);
+        uName = sharedPreferences.getString("NAME", "YOO");
+        uEmail = sharedPreferences.getString("EMAIL", "YOO@gmail.com");
+        uId = sharedPreferences.getString("ID", "1234567890");
         get_uEmail = "\""+uEmail+"\"";
-//        get_uEmail = "jennifer1024@livemail.tw";
-//        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
-        // 初始化藍牙
-//        bluetooth.BTinit(this);
-//        bluetooth.getStartSearchDevice();
+
         // 設置SwipeView重整
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_main);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -151,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //listview
 
         mContext = this;
-        listView1=(ListView) findViewById(R.id.listView1);
+        main_listView=(ListView) findViewById(R.id.main_listview);
 
         /* list view function */
         mergeAdapter = new MergeAdapter();/*留這個*/
@@ -161,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mergeAdapter.addAdapter(adapterPress);///*留這個*/
 
 
-        registerForContextMenu(listView1);
+        registerForContextMenu(main_listView);
 
         // 設置側邊欄使用者名稱
         userName = (TextView) findViewById(R.id.name);
@@ -276,26 +268,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getBeacon();
         getUserEvent();
         getUserGroup();
-        listView1.setAdapter(mergeAdapter);/*留這個*/
-
+        mergeAdapter.notifyDataSetChanged();/*留這個*/
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        uEmail = Login.uEmail;
-//        uEmail = "jennifer1024@livemail.tw";
-//
+        // 從本機取使用者資料
+        sharedPreferences = getSharedPreferences("data" , MODE_PRIVATE);
+        uName = sharedPreferences.getString("NAME", "YOO");
+        uEmail = sharedPreferences.getString("EMAIL", "YOO@gmail.com");
+        uId = sharedPreferences.getString("ID", "1234567890");
         get_uEmail = "\""+uEmail+"\"";
-//        uName = Login.uName;
-//        Toast.makeText(this, uName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this,"現在使用者："+uEmail,Toast.LENGTH_SHORT).show();
         bluetooth.BTinit(this);
         bluetooth.getStartSearchDevice();
         getBeacon();
         getUserEvent();
         getUserGroup();
         bluetooth.getStartMyItemDistance(macAddress_list);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refresh();
+//                mergeAdapter.notifyDataSetChanged();/*留這個*/
+            }
+        }, 3000);
+        mergeAdapter.notifyDataSetChanged();/*留這個*/
     }
+
     //取得用戶擁有的beacon
     private void getBeacon(){
         class GetBeacon extends AsyncTask<Void,Void,String> {
@@ -541,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);//!!!
-        if (v.getId()==R.id.listView1) {
+        if (v.getId()==R.id.main_listview) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
             menu.setHeaderTitle(bName_list.get(info.position-1));
             /*長按著的選項*/
@@ -575,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("groupName_array",groupName_array);
                 intent.putExtra("groupId_array",groupId_array);
                 startActivity(intent);
-                finish();
+//                finish();
                 break;
             case "Delete":
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -663,19 +664,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void refresh() {
         bluetooth.getStartMyItemDistance(macAddress_list);  // 傳送使用者目前擁有的裝置列表，檢查是否在周圍，如果有的話就會顯示距離
-//        getBeacon();
+        getBeacon();
         getUserEvent();
         getUserGroup();
-        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,true);//顯示的方式/*留這個*/
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
-            }
-        }, 3000);
+
+        adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//                adapter=new rowdata(getBaseContext(),bName_list,bluetooth.myDeviceDistance,macAddress_list,bPic_list,false);//顯示的方式/*留這個*/
+//            }
+//        }, 3000);
 
         mergeAdapter.addAdapter(new ListTitleAdapter(this,adapter));/*留這個*/
         mergeAdapter.addAdapter(adapter);/*留這個*/
+
+        main_listView.setAdapter(mergeAdapter);/*留這個*/
+
     }
 
     public void checkItem(View view) {

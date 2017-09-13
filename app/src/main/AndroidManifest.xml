@@ -104,6 +104,7 @@
         <activity android:name=".AlertDistance" />
         <activity android:name=".editBeacon" />
         <activity android:name=".main_side_event_rowdata"></activity>
+        <activity android:name=".SplashScreen"></activity>
     </application>
 
 </manifest>
