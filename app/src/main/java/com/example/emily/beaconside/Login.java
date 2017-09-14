@@ -117,14 +117,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     }
                                     else {
                                         login.setVisibility(View.VISIBLE);
-//                                        loginButton.setVisibility(View.INVISIBLE);
                                         login.setOnClickListener(new View.OnClickListener() {
                                             public void onClick(View v) {
-                                            /**換頁到Main**/
-                                            Intent intent = new Intent();
-                                            intent.setClass(Login.this, MainActivity.class);
-                                            startActivity(intent);
-                                            /******/
+                                                /**換頁到Main**/
+                                                Intent intent = new Intent();
+                                                intent.setClass(Login.this, MainActivity.class);
+                                                startActivity(intent);
+                                                /******/
                                             }
                                         });
                                     }
@@ -173,6 +172,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     }).start();
                     login.setVisibility(View.INVISIBLE);
                     loginButton.setVisibility(View.VISIBLE);
+
                 }
 
             }
@@ -224,6 +224,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 login.setText("以"+uName+"的身份繼續使用");
                                 login.setVisibility(View.VISIBLE);
 //                                loginButton.setVisibility(View.INVISIBLE);
+
                                 login.setOnClickListener(new View.OnClickListener(){
                                     public void onClick(View v){
                                         /**換頁到Main**/
@@ -252,7 +253,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-/**
+    /**
      *  分享到user塗鴉牆，需另外要求權限，未使用dialog方塊
      */
     private void publishImage(){
@@ -278,8 +279,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void search(){
         class Search extends AsyncTask<Void,Void,String> {
-
-//            ProgressDialog loading;
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -483,8 +482,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         accessTokenTracker.stopTracking();
+//        if(v == btn_friends){
+//            friendsList();
+//        }
+//        if(v == btn_search){
+//            search();
+//        }
     }
 }
-
-
-//

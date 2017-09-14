@@ -29,7 +29,9 @@ import static java.lang.Integer.parseInt;
 
 public class SearchDevice extends AppCompatActivity implements ifrog.ifrogCallBack{
     //	private EditText editText1;
+
     private ListView beacon_listView;
+
     private boolean myStatusBT=true, firstOpenBT=true;
     /* 運用library */
     private ifrog mifrog;

@@ -235,14 +235,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
                 //null can appear
                 Names.add(device.getName());
                 Distance.add(calculateDistance(rssi));
-                Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
-
-                //檢查新的device有沒有notification
-                /*try {
-                    CheckIfThere(t_address);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
+                //Toast.makeText(mContext,"Find new device"+ device.getName(), Toast.LENGTH_SHORT).show();
 
             }else{//如果不是新的device
                 Names.set(index,device.getName());
@@ -268,6 +261,7 @@ public class BluetoothMethod implements ifrog.ifrogCallBack{
     }
 
     public void getStartSearchDevice() {
+
         bluetoothFunction="searchDevice";
         if(!isSearching) // 如果現在還沒開始搜尋
             getStartSearch(mContext, new Long(3600000));

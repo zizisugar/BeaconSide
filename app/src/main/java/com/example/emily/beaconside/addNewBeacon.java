@@ -1,46 +1,35 @@
 package com.example.emily.beaconside;
 
-        import com.sleepbot.datetimepicker.time.RadialPickerLayout;
-        import com.fourmob.datetimepicker.date.DatePickerDialog;
-        import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
-        import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
-        import android.app.Dialog;
-        import android.app.ProgressDialog;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.os.AsyncTask;
-        import android.os.Bundle;
-        import android.support.v7.app.AlertDialog;
-        import android.support.v7.app.AppCompatActivity;
-        import android.support.v7.widget.LinearLayoutManager;
-        import android.support.v7.widget.RecyclerView;
-        import android.support.v7.widget.Toolbar;
-        import android.text.method.KeyListener;
-        import android.view.Menu;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.widget.*;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
-        import org.json.JSONArray;
-        import org.json.JSONException;
-        import org.json.JSONObject;
-
-        import java.util.ArrayList;
-        import java.util.Arrays;
-        import java.util.Calendar;
-        import java.util.HashMap;
-        import java.util.List;
-
-        import static android.R.id.list;
-
-        import android.support.v7.app.ActionBarActivity;
-        import android.support.v7.widget.ActionMenuView;
-        import android.support.v7.widget.Toolbar;
-        import android.view.Menu;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.method.KeyListener;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.ActionMenuView;
 
 public class addNewBeacon extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener ,OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
@@ -115,8 +104,25 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
     int dateToYear, dateToMonth, dateToDay;
     int timeFromHour, timeFromMin;
     int timeToHour, timeToMin;
+    ListView listViewNotification;
+    NotificationAdapter notificationAdapter;
+    ArrayList<String> nContent_array = new ArrayList<String>();
+    ArrayList<String> nStartTime_array = new ArrayList<String>();
+    ArrayList<String> nEndTime_array = new ArrayList<String>();
+    StringBuffer nContent_stringBuffer = new StringBuffer();
+    StringBuffer nStartTime_stringBuffer = new StringBuffer();
 
-    private ListView listView_eventScroll;
+
+
+    ScrollView sv3;
+    LinearLayout linearLayout4;
+    ConstraintLayout constraintLayout4;
+
+
+
+
+
+    //以notification_content為型態的arrayList
 
     /*toolbar*/
     private ActionMenuView amvMenu;
@@ -178,22 +184,30 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         editTextMile.setText("0", TextView.BufferType.EDITABLE);
         buttonChangePic = (ImageButton) findViewById(R.id.buttonChangePic);
         buttonChangePic.setOnClickListener(this);
+        listViewNotification = (ListView) findViewById(R.id.listViewNotification);
+        registerForContextMenu(listViewNotification);//
+
+        sv3 = (ScrollView) findViewById(R.id.sv3);
+        linearLayout4 = (LinearLayout) findViewById(R.id.linearLayout4);
+        constraintLayout4 = (ConstraintLayout) findViewById(R.id.constraintLayout4);
+        
+        //constraintLayout3 = (ConstraintLayout) findViewById(R.id.constraintLayout3);
 
 
         add_event = (ImageButton)findViewById(R.id.add_event);
         add_group = (ImageButton)findViewById(R.id.add_group);
         add_notification = (ImageButton)findViewById(R.id.add_notification);
-        notification_content_button = (Button) findViewById(R.id.notification_content_button);
-        notification_content_button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        //notification_content_button = (Button) findViewById(R.id.notification_content_button);
+        ///notification_content_button.setOnClickListener(new View.OnClickListener() {
+            //public void onClick(View v) {
                 /*進入編輯狀態，所以要傳入原本的值*/
-                edit=true;
-                notification_click_claim();
+                //edit=true;
+                //notification_click_claim();
 
 
-            }
-        });
-        notification_content_button.setOnLongClickListener(new View.OnLongClickListener() {//長按就刪除
+            //}
+        //});
+        /*notification_content_button.setOnLongClickListener(new View.OnLongClickListener() {//長按就刪除
             @Override
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
@@ -218,7 +232,7 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
                 alert.show();
                 return true;
             }
-        });
+        });*/
 
 
 //        listView_eventScroll = (ListView) findViewById(R.id.listview_eventScroll);
@@ -403,9 +417,11 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         add_notification.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                notification_click_claim();
+                    notification_click_claim();
             }
         });
+
+
 
 
     }
@@ -473,11 +489,11 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
 
 
     /*notification click*/
-    public void notification_click_claim(){
+    public void notification_click_claim() {
         final Dialog dialog = new Dialog(addNewBeacon.this);
         final Calendar calendar = Calendar.getInstance();
-        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),false);
-        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
+        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(addNewBeacon.this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false);
         // first dialog
         dialog.setContentView(R.layout.notification_dialog);
         buttonDateto = (Button) dialog.findViewById(R.id.buttonDateto);
@@ -500,15 +516,15 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
 
 //                buttonDateto.setClickable(false);
 //                buttonDateto.setClickable(false);
-        if(edit){
+        if (edit) {
             //抓資料庫裡的data去設定這些的值
             //timeFromHour + ":" + timeFromMin
             //timeToHour + ":" + timeToMin
             //dateFromYear + "-" + dateFromMonth + "-" + dateFromDay
             //dateToYear + "-" + dateToMonth + "-" + dateToDay
             //notification_content
-            add_notification_check.setText("Check");//原本是"Add notifiaction"
-            edit = false;//此次編輯結束
+            add_notification_check.setText("更新");//原本是"Add notifiaction"
+            //edit = false;//此次編輯結束
         }
 
 
@@ -547,23 +563,96 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         });
 
 
-
-
         //set first dialog
-
         add_notification_check.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String content = notification_content.getText().toString();
-                if(dateFlag!=0 && timeFlag!=0 && content!=null){
+                //String content = notification_content.getText().toString();
+                /*if(dateFlag!=0 && timeFlag!=0 && content!=null){
                     notification_content_button.setText(content+"\n\n"+
                             dateFromYear+"/"+dateFromMonth+"/"+dateFromDay+" ~ "+dateToYear+"/"+dateToMonth+"/"+dateToDay+"\n"+
                             timeFromHour+":"+timeFromMin+" ~ "+timeToHour+":"+timeToMin);
 
+                }*/
+                if(dateFlag!=0 && timeFlag!=0) {
+                    String nContent = notification_content.getText().toString();
+
+                    String dateFromYear_s = Integer.toString(dateFromYear);
+                    String dateFromMonth_s = Integer.toString(dateFromMonth);
+                    String dateFromDay_s = Integer.toString(dateFromDay);
+                    String timeFromHour_s = Integer.toString(timeFromHour);
+                    String timeFromMin_s = Integer.toString(timeFromMin);
+                    String dateToYear_s = Integer.toString(dateToYear);
+                    String dateToMonth_s = Integer.toString(dateToMonth);
+                    String dateToDay_s = Integer.toString(dateToDay);
+                    String timeToHour_s = Integer.toString(timeToHour);
+                    String timeToMin_s = Integer.toString(timeToMin);
+
+                    //檢查如果只有個位數的話 加上"0" 變為二位數 符合datetime格式
+                    if(dateFromMonth < 10){
+                        dateFromMonth_s = "0" + dateFromMonth;
+                    }
+                    if(dateFromDay < 10){
+                        dateFromDay_s = "0" + dateFromDay;
+                    }
+                    if(timeFromHour < 10){
+                        timeFromHour_s = "0" + timeFromHour;
+                    }
+                    if(timeFromMin < 10){
+                        timeFromMin_s = "0" + timeFromMin;
+                    }
+                    if(dateToMonth < 10){
+                        dateToMonth_s = "0" + dateToMonth;
+                    }
+                    if(dateToDay < 10){
+                        dateToDay_s = "0" + dateToDay;
+                    }
+                    if(timeToHour < 10){
+                        timeToHour_s = "0" + timeToHour;
+                    }
+                    if(timeToMin < 10){
+                        timeToMin_s = "0" + timeToMin;
+                    }
+
+
+                    String nStartTime = dateFromYear_s+"-"+dateFromMonth_s+"-"+dateFromDay_s+" "+timeFromHour_s+":"+timeFromMin_s;
+                    String nEndTime = dateToYear_s+"-"+dateToMonth_s+"-"+dateToDay_s+" "+timeToHour_s+":"+timeToMin_s;
+
+                    if (edit) {
+                        nContent_array.set(0,nContent);
+                        nStartTime_array.set(0,nStartTime);
+                        nEndTime_array.set(0,nEndTime);
+                    } else {
+                        nContent_array.add(nContent);
+                        nStartTime_array.add(nStartTime);
+                        nEndTime_array.add(nEndTime);
+
+                        //計算constraintLayout應有的高度
+                        int x = nContent_array.size();
+                        int height = 150 + 240*x;
+
+                        //重新設定constraintLayout的高度 listview才不會擠成一團
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+                        constraintLayout4.setLayoutParams(params);
+                        String uri = "@drawable/" + "edit"; //圖片路徑和名稱
+
+                        int imageResource = getResources().getIdentifier(uri, null, getPackageName()); //取得圖片Resource位子
+
+                        add_notification.setImageResource(imageResource);
+
+                        edit = true;
+                    }
                 }
+
+
+                        notificationAdapter=new NotificationAdapter(getBaseContext(),nContent_array,nStartTime_array,nEndTime_array);//顯示的方式
+                        listViewNotification.setAdapter(notificationAdapter);
+
 //                        Toast.makeText(addNewBeacon.this, "Add Notification successfully", Toast.LENGTH_LONG).show();
 //                Toast.makeText(addNewBeacon.this, "this:"+notification_content.getText().toString(), Toast.LENGTH_LONG).show();
+
                 dialog.dismiss();
+
             }
         });
 
@@ -572,6 +661,7 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         dialog.show();
 
     }
+
 
 
     //新增程序
@@ -685,58 +775,68 @@ public class addNewBeacon extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-//    /* cancel : go back button */
-//    @Override
-//    public boolean onSupportNavigateUp(){
-//        finish();
-//        return true;
-//    }
-//
-//    /* check button*/
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.new_item_save, menu);
-//        return true;
-//    }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch(item.getItemId()){
-//            case R.id.item_check:
-//                addBeacon();
-//
-//                Intent intent = new Intent();
-//                intent.setClass(addNewBeacon.this, MainActivity.class);
-//                startActivity(intent);
-//                finish();
-//                /* 切回到原本的畫面 */
-//                startActivity(new Intent(addNewBeacon.this, MainActivity.class));//same as following two
-//                return true;
-////            case R.id.item_back:
-////                this.finish();
-////                return true;
-////            case android.R.id.home:
-////                this.finish();
-////                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//    /* check end */
+    /* Item setting */
+   /* @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.listViewNotification) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            //menu.setHeaderTitle(bName_list.get(info.position));
+            String[] menuItems = new String[]{"Edit","Delete"};
+            for (int i = 0; i<menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
+        }
+    }*/
 
 
+   /*有問題?*/
+    //長按
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        // use amvMenu here
-        inflater.inflate(R.menu.new_item_save, amvMenu.getMenu());
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        String[] menuItems   = new String[]{"Edit","Delete"};
+        String menuItemName = menuItems[menuItemIndex];
+        String listItemName = nContent_array.get(info.position);
+        //final String listItemMac = macAddress_list.get(info.position);
+//        TextView text = (TextView)findViewById(R.id.footer);
+//        text.setText(String.format("Selected %s for item %s", menuItemName, listItemName));
+
+        switch (menuItemName){
+            case "Edit":
+                //Toast.makeText(addNewBeacon.this,"進入編輯"+ listItemName, Toast.LENGTH_LONG).show();
+                edit=true;
+                notification_click_claim();
+
+                break;
+            case "Delete":
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setTitle("Delete this Item");
+                alert.setMessage("Do you want to delete ?");
+
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //deleteBeacon(listItemMac);
+                    }
+                });
+
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+                alert.show();
+
+                break;
+        }
+//        Toast.makeText(MainActivity.this, String.format("Selected %s for item %s", menuItemName, listItemName), Toast.LENGTH_LONG).show();
         return true;
     }
+    /* Item setting end */
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Do your actions here
-        return true;
-    }
+
+
+
 
 }
