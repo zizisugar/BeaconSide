@@ -7,18 +7,33 @@
     android:orientation="horizontal"
     tools:context=".MainActivity">
 
-    <com.example.emily.beaconside.RelationListView
-        android:id="@+id/event_list1"
-        android:layout_width="0dp"
+
+    <GridView
+        android:id="@+id/event_list"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="8dp"
+        android:numColumns="2">
+
+    </GridView>
+
+    <!--<com.example.emily.beaconside.RelationListView-->
+        <!--android:id="@+id/event_list1"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"/>-->
 
 
-    <com.example.emily.beaconside.RelationListView
-        android:id="@+id/event_list2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
+    <!--<com.example.emily.beaconside.RelationListView-->
+        <!--android:id="@+id/event_list2"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"/>-->
 
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->

@@ -47,10 +47,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     CallbackManager callbackManager;
     AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
-    private Button btn_add;
-    private Button btn_friends;
-    private Button btn_search;
-
+//    private Button btn_friends;
+    LoginButton loginButton;
     public static String uEmail;
     public static String uId ;
     public static String uName ;
@@ -59,7 +57,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private ArrayList<String> user_list;
     boolean isRegistered = false;   // User是否已經註冊資料庫
     Button login;
-    Button btn_facebook;
     // 本機資料
     SharedPreferences sharedPreferences;
     @Override
@@ -71,8 +68,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         callbackManager = CallbackManager.Factory.create();
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-        btn_friends = (Button) findViewById(R.id.btn_friends);
-        btn_friends.setOnClickListener(this);
+//        btn_friends = (Button) findViewById(R.id.btn_friends);
+//        btn_friends.setOnClickListener(this);
         accessToken = AccessToken.getCurrentAccessToken();
         getUserEvent(); // 取得資料庫裡所有User的Email，存在user_list裡面
         login = (Button) findViewById(R.id.login);
@@ -81,7 +78,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
  *         未做 : 登入時將資料寫進資料庫
  */
 
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -120,6 +117,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     }
                                     else {
                                         login.setVisibility(View.VISIBLE);
+//                                        loginButton.setVisibility(View.INVISIBLE);
                                         login.setOnClickListener(new View.OnClickListener() {
                                             public void onClick(View v) {
                                             /**換頁到Main**/
@@ -174,6 +172,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         }
                     }).start();
                     login.setVisibility(View.INVISIBLE);
+                    loginButton.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -224,6 +223,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 }
                                 login.setText("以"+uName+"的身份繼續使用");
                                 login.setVisibility(View.VISIBLE);
+//                                loginButton.setVisibility(View.INVISIBLE);
                                 login.setOnClickListener(new View.OnClickListener(){
                                     public void onClick(View v){
                                         /**換頁到Main**/
@@ -470,13 +470,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
-        if(v == btn_friends){
-            friendsList();
-        }
-        if(v == btn_search){
-            search();
-        }
+//
+//        if(v == btn_friends){
+//            friendsList();
+//        }
+//        if(v == btn_search){
+//            search();
+//        }
     }
 
     @Override

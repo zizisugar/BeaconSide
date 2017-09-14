@@ -58,6 +58,7 @@ import org.w3c.dom.Text;
 
 import static java.lang.Integer.parseInt;
 import java.util.Arrays;
+import android.widget.GridView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -99,13 +100,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* class main side */
     ListView group_list;
-    private RelationListView event_list1;
-    private RelationListView event_list2;
+//    private RelationListView event_list1;
+//    private RelationListView event_list2;
+    private GridView event_list;
     ArrayList<String> groupName_list;
     ArrayList<String> eventName_list;
     ArrayList<String> eventName_list1 = new ArrayList<String>();
     ArrayList<String> eventName_list2 = new ArrayList<String>();
     ArrayAdapter<String> adapter_sideList_group;
+    main_side_event_rowdata  adapter_sideList_event;
     main_side_event_rowdata adapter_sideList_event1;
     main_side_event_rowdata adapter_sideList_event2;
 
@@ -160,10 +163,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* class main side */
         group_list = (ListView)findViewById(R.id.group_list);
-        event_list1 = (RelationListView) findViewById(R.id.event_list1);
-        event_list2 = (RelationListView) findViewById(R.id.event_list2);
-        event_list1.setRelatedListView(event_list2);
-        event_list2.setRelatedListView(event_list1);
+        event_list = (GridView) findViewById(R.id.event_list);
+//        event_list1 = (RelationListView) findViewById(R.id.event_list1);
+//        event_list2 = (RelationListView) findViewById(R.id.event_list2);
+//        event_list1.setRelatedListView(event_list2);
+//        event_list2.setRelatedListView(event_list1);
 
 
 
@@ -460,24 +464,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 eventId_array[i] = cId;
                 eventName_array[i] = cName;
 
-                if(eventName_list1.isEmpty() || eventName_list2.isEmpty())
-                    if(i==0 || i%2==0 )//left
-                        eventName_list1.add(cName);
-                    else//right
-                        eventName_list2.add(cName);
+//                if(eventName_list1.isEmpty() || eventName_list2.isEmpty())
+//                    if(i==0 || i%2==0 )//left
+//                        eventName_list1.add(cName);
+//                    else//right
+//                        eventName_list2.add(cName);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         //        Toast.makeText(MainActivity.this, "start"+eventName_list1+" start2:"+eventName_list2, Toast.LENGTH_LONG).show();
-        adapter_sideList_event1 = new main_side_event_rowdata(this,eventName_list1);
-        adapter_sideList_event2 = new main_side_event_rowdata(this,eventName_list2);
-        event_list1.setAdapter(adapter_sideList_event1);
-        event_list2.setAdapter(adapter_sideList_event2);
 
-        event_list1.setRelatedListView(event_list2);/*兩個互相控制*/
-        event_list2.setRelatedListView(event_list1);
+        eventName_list= new ArrayList<>(Arrays.asList(eventName_array));//array to arraylist
+        adapter_sideList_event = new main_side_event_rowdata(this,eventName_list);
+        event_list.setAdapter(adapter_sideList_event);
+//        adapter_sideList_event1 = new main_side_event_rowdata(this,eventName_list1);
+//        adapter_sideList_event2 = new main_side_event_rowdata(this,eventName_list2);
+//        event_list1.setAdapter(adapter_sideList_event1);
+//        event_list2.setAdapter(adapter_sideList_event2);
+//
+//        event_list1.setRelatedListView(event_list2);/*兩個互相控制*/
+//        event_list2.setRelatedListView(event_list1);
 
     }
 
